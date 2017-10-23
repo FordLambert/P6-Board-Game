@@ -8,14 +8,20 @@
 	</head>
 	<body>
 		<div class="container text-center"><!--Bootstrap container, contain all the page-->
-			<h1>Board Game 1.0</h1>
+			<div class="row">
+				<div class="title-block col-md-offset-4 col-md-4">
+					<h1>Board Game 1.0</h1>
+				</div>
+			</div>
+
 			<button class="start-button">Nouvelle partie</button>
+			<button class="rules-button">Règles du jeu</button>
 
 			<div class="row game-infos-block">
 				<div class="col-md-3">
 					<div class="player-1-display">
 						<h2>Joueur 1</h2>
-						<img src="pictures/player-1.png" alt="player-1-red">
+						<img src="pictures/player-1.png" alt="player-1-red" class="player-picture">
 						<div class="player-infos">
 							<p>100/100 pv</p>
 							<p>Arme : Batte</p>
@@ -29,7 +35,7 @@
 				<div class="col-md-3">
 					<div class="player-2-display">
 						<h2>Joueur 2</h2>
-						<img src="pictures/player-2.png" alt="player-2-blue">
+						<img src="pictures/player-2.png" alt="player-2-blue" class="player-picture">
 						<div class="player-infos">
 							<p>100/100 pv</p>
 							<p>Arme : Batte</p>
@@ -40,10 +46,11 @@
 			</div>
 
 			<div class="actions-block col-md-offset-3 col-md-6">
-				<button class="col-md-4" title="Seulement possible en étant collé à un ennemi">Attaquer</button>
+				<button class="col-md-4 attack-button" title="Seulement possible en étant collé à un ennemi">Attaquer</button>
 				<p class="col-md-4"> ou </p>
-				<button class="col-md-4" title="50% des dégats en moins au prochain tour">Se défendre</button>
+				<button class="col-md-4 defense-button" title="50% des dégats en moins au prochain tour">Se défendre</button>
 			</div>
+
 		</div><!--End of page container-->
 		<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
 		<script type="text/javascript" src="js/librairies/banana.js"></script>
