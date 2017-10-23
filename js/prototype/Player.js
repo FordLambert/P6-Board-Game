@@ -1,10 +1,11 @@
-var Player = function() {
+var Player = function(name, color) {
 	//all action must depend on an 'if not dead' condition
-	this.cell = ; //find a way to select a cell randomly when the gae start
+	this.name = 'Rouge' or 'Bleu';//just to avoid mistake on who is who
+	this.cell = ; //find a way to select a cell randomly when the game start
 	this.weapon = aGunOrSomethingIdk;
-	this.life = 100; //must change when the ennemi shoot
-	this.protected = false //change with the protect function
-	this.color = blue or red //just to avoid mistake on who is who
+	this.life = 100;
+	this.protected = false;
+	this.color = 'red' or 'blue'; //this will be used in css
 	this.alive = true; //at first, if not anymore the game end
 
 };
@@ -28,27 +29,34 @@ Player.prototype.move = function move(direction) {
 		i++; //this is not good, what if we want to go up only one time ? and one to the right after that ?
 };
 
-
+//actual state is satisfactoring
 Player.prototype.pickUp = function pickUp(weapon) {
 	this.weapon = weapon;
-	console.log('The weapon ' + weapon + ' is now equipped');
+	console.log(this.color + ' a rammssé l\'arme "' + this.weapon + '"');
 };
 
+
+//actual state is satisfactoring
 Player.prototype.shoot = function shoot() {
-	if (the other player is not farer than one block && ennemy.protected = false) {
-		ennemi.life = ennemi.life - weapon.damage 
-	} else if (the other player is not farer than one block && ennemy.protected = true) {
-		ennemy.life = enemy.life (weapon.damage / 2);
-	if (ennemy.life <= 0) {
-		enemy.alive = false;
+	if (this.canShoot) {
+		var hitPoints = 0;
+		if (this.canShoot() && ennemy.protected = false) {
+			hitPoints = weapon.damage;
+			console.log(ennemy.name + ' a reçu ' + weapon.damage ' points de dégats !');
+		} else if (this.canShoot() && ennemy.protected = true) {
+			hitPoints = weapon.damage / 2;
+			console.log(ennemy.name + ' a paré la moitié des dégats et n\'en reçoit que ' + weapon.damage ' !');
+		}
+		ennemy.life = enemy.life - hitPoints;
 	} else {
-		console.log('you can not shoot from that far');
+		console.log('Vous ne pouvez pas tirer d\'ici !');
 	}
 };
 
+//actual state is satisfactoring
 Player.prototype.protect = function protect() {
 	this. protected = true; //must be set to false on the next action
-	console.log('the player is protected and will take only half damage !');
+	console.log(this.name + ' est sur la défensif et ne subira que la moitié des dégats au prochain tour');
 };
 
 Player.prototype.play = function play() {
@@ -70,6 +78,9 @@ Player.prototype.canShoot = function() {
 	if (manager.getDistance() == 0) {
 		return true;
 	} else {
-		console.log('Vous êtes trop loin pour attaquer !');
+		return false;
 	}
 };
+
+var playerRed = new Player('Joueur Rouge', 'red');
+var playerBlue = new Player('Joueur Bleu', 'blue');

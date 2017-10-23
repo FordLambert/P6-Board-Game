@@ -32,10 +32,10 @@ Manager.prototype.startGame = function startGame() {
 
 Manager.prototype.endGame = function endGame() {
 	var winner = '';
-	if (playerBlue.alive) {
-		winner = 'Player blue';
+	if (firstPlayer.alive) {
+		winner = 'Joueur Rouge';
 	} else {
-		winner = 'Player red';
+		winner = 'Joueur Bleu';
 	}
 	alert(winner + ' won the game ! Another try ?');
 	window.location.reload();
@@ -43,9 +43,9 @@ Manager.prototype.endGame = function endGame() {
 
 Manager.prototype.playing = function playing() {
 	this.startGame();
-	while (playerBlue.alive && playerRed.alive) {
-		playerBlue.play();
-		playerRed.play();
+	while (playerRed.alive && playerBlue.alive) {
+		firstPlayer.play();
+		secondPlayer.play();
 	}
 	this.endGame();
 };
@@ -61,5 +61,5 @@ Manager.prototype.getDistance = function {
 
 //starting the fight
 
-var manager = new Manager();
+var manager = new Manager('rien', playerBlue, playerRed);
 manager.playing();
