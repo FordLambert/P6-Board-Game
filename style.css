@@ -1,5 +1,5 @@
 body {
-
+	background-image: url(pictures/background2.jpg);
 }
 
 .container {
@@ -20,9 +20,21 @@ body {
 	height: 500px;
 }
 
+.player-infos {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
 .player-1-display {
-	background-color: red;
+	background-image: url(pictures/red-background.png);
 }
 .player-2-display {
-	background-color: blue;
+	background-image: url(pictures/blue-background.png);
+}
+
+.player-1-display, .player-2-display {
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	border: 1px solid black;
+	box-shadow: 2px 2px 2px black;
 }
