@@ -1,0 +1,28 @@
+body {
+
+}
+
+.container {
+	margin-top: 35px;
+	margin-bottom: 35px;
+	margin-left: 0px;
+	margin-right: 0px;
+	width: 100vw;
+}
+
+.game-infos-block {
+	margin-top: 30px;
+	margin-bottom: 30px;
+}
+
+.board-place {
+	background-color: grey;
+	height: 500px;
+}
+
+.player-1-display {
+	background-color: red;
+}
+.player-2-display {
+	background-color: blue;
+}
