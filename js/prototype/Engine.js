@@ -1,23 +1,19 @@
-var Manager = function(board, firstPlayer, secondPlayer) { //this class should exist from the begining and react to event by calling object's functions
-	this.actionButton = document.querySelector('start-button');
+var Manager = function(board) {
 	this.board = board;
-	this.firstPlayer = firstPlayer;
-	this.secondPlayer = secondPlayer;
 	this.startButton = $('.start-button');
 	this.actionsButtons = $('.actions-buttons');
 };
 
-Manager.prototype.addEvents = function() {
-	this.actionsButtons.addEventListener('click' function {
-		
-	});
+Manager.prototype.createPlayers = function() {
+	var playerRed = new Player('Joueur Rouge', 'red', true); //Only the first player playing should have 'true'
+	var playerBlue = new Player('Joueur Bleu', 'blue', false);
+
+	this.playerStore = new PlayerStore();
+	this.playerStore.addPlayer(playerRed);
+	this.playerStore.addPlayer(playerBlue);
 };
 
-Manager.prototype.createBoard = function createBoard() {
-	console.log('Création du terrain');
-};
-
-Manager.prototype.createWeapon = function createWeapon() {
+Manager.prototype.createWeapons = function() {
 	var bat = new Weapon('Batte', 15);
 	var knife = new Weapon('Couteau', 10);
 	var shovel = new Weapon('Pelle', 20);
@@ -33,37 +29,69 @@ Manager.prototype.createWeapon = function createWeapon() {
 };
 
 Manager.prototype.distributeWeapons = function() {
-	this.firstPlayer.weapon = this.weaponStore.getWeapon(0);
-	this.secondPlayer.weapon = this.weaponStore.getWeapon(0);
+	var i = 0
+	while (i < this.playerStore.length) {
+		this.playerStore[i].weapon = this.weaponStore.getWeapon(0);
+		i++;
+	}
 };
 
-Manager.prototype.startGame = function startGame() {
-	this.createWeapon();
+Manager.prototype.createBoard = function() {
+	console.log('Création du terrain');
+};
+
+Manager.prototype.startGame = function() {
+	this.createPlayers();
+	this.createWeapons();
 	this.distributeWeapons();
 	this.createBoard();
+
+	this.firstPlayer.setEnemy(this.secondPlayer);
+	this.secondPlayer.setEnemy(this.firstPlayer);
 };
 
-Manager.prototype.playing = function playing() {
-	this.startGame();
-	while (this.firstPlayer.alive && this.secondPlayer.alive) {
-		this.changeTheme('red');
-		this.firstPlayer.play(this.secondPlayer);
-		this.changeTheme('blue');
-		this.secondPlayer.play(this.firstPlayer);
+Manager.prototype.playing = function() {
+	var i = 0;
+	while (i < this.playerStore.length) {
+		if (this.playerStore[i].turnToPlay) {
+			this.changeTheme(this.playerStore[i].color);
+			this.chooseAction(this.playerStore[i], this.getActionType());
+			this.playerStore[i].turnToPlay = false;
+			if (i != this.playerStore.length - 1) {
+				i++;
+			} else {
+				i = 0;
+			}
+			this.playerStore[i].turnToPlay = true;
+			break;
+		}
+		i++;
 	}
-	this.endGame();
 };
 
-Manager.prototype.endGame = function endGame() {
+Manager.prototype.endGame = function() {
+	var i = 0;
 	var winner = '';
-	if (this.firstPlayer.alive) {
-		winner = 'Joueur Rouge';
-	} else {
-		winner = 'Joueur Bleu';
+	while (i < this.playerStore.length) {
+		if (this.playerStore[i].isAlive()) {
+			winner = this.playerStore[i];
+			alert(winner + ' a gagné ! Un nouvel essai ?');
+			window.location.reload();
+		} 
+		i++;
 	}
-	alert(winner + ' won the game ! Another try ?');
-	window.location.reload();
 };
+
+
+Manager.prototype.launchNewGame = function() {
+	this.startButton.click(function() {
+		this.startGame();
+
+
+		this.endGame();
+	}.bind(this));
+};
+
 
 Manager.prototype.changeTheme = function(color) {
 	$('.progress-bar').removeAttr('progress-bar-success');
@@ -88,20 +116,23 @@ Manager.prototype.getDistance = function() {
 	return i;
 };
 
-Manager.prototype.actionReaction = function() {
-	this.actionsButtons.addEventListener("click", function() {
-		if (this.actionsButtons.value = 'attack') {
-			this.shoot(this.enemy);
-		} else if (this.actionsButtons.value = 'protect') {
-			this.protect();
-		} else {
-			console.log('Action inconnue');
-		}
-	});
+Manager.prototype.chooseAction = function(player, action) {
+	if (action == 'attack') {
+		player.shoot();
+	} else if (action == 'defend') {
+		player.protect();
+	} else {
+		console.log('Erreur: type d\'action inconnue');
+	}
 };
 
+Manager.prototype.getActionType = function() {
+	this.actionsButtons.click(function() {
+		return this.actionsButtons.value;
+	}.bind(this));
+};
 
 //starting the fight
 
-var manager = new Manager('rien', playerBlue, playerRed);
-manager.playing();
+var manager = new Manager('rien');
+manager.launchNewGame();
