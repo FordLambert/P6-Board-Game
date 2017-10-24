@@ -1,16 +1,16 @@
 var Player = function(name, color) {
 	//all action must depend on an 'if not dead' condition
-	this.name = 'Rouge' or 'Bleu';//just to avoid mistake on who is who
-	this.cell = ; //find a way to select a cell randomly when the game start
+	this.name = '';
+	this.cell = ''; //find a way to select a cell randomly when the game start
 	this.weapon = {};
 	this.life = 100;
 	this.protected = false;
-	this.color = 'red' or 'blue'; //this will be used in css
+	this.color = '';
 	this.alive = true; //at first, if not anymore the game end
 
 };
 
-Player.prototype.move = function move(direction) {
+/*Player.prototype.move = function move(direction) {
 	//something like : if the cell that had been clicked is not more than 3 cell away AND if it's not a wall the 
 	//player will mmove on it
 	i = 0;
@@ -27,7 +27,7 @@ Player.prototype.move = function move(direction) {
 			console.log('no direction had been choosen');
 		};
 		i++; //this is not good, what if we want to go up only one time ? and one to the right after that ?
-};
+};*/
 
 //actual state is satisfactoring
 Player.prototype.pickUp = function pickUp(weapon) {
@@ -35,17 +35,29 @@ Player.prototype.pickUp = function pickUp(weapon) {
 	console.log(this.color + ' a rammssé l\'arme "' + this.weapon + '"');
 };
 
+Player.prototype.isAlive = function() {
+	if (this.life <= 0) {
+		this.life = 0;
+		return false;
+	} else {
+		return true;
+	}
+};
 
 //actual state is satisfactoring
+Player.prototype.actions = function() {
+	if
+}
+
 Player.prototype.shoot = function shoot() {
 	if (this.canShoot) {
 		var hitPoints = 0;
 		if (/*this.canShoot() &&*/ enemy.protected = false) {
 			hitPoints = weapon.damage;
-			console.log(enemy.name + ' a reçu ' + weapon.damage ' points de dégats !');
+			console.log(enemy.name + ' a reçu ' + weapon.damage + ' points de dégats !');
 		} else if (/*this.canShoot() &&*/ enemy.protected = true) {
 			hitPoints = weapon.damage / 2;
-			console.log(enemy.name + ' a paré la moitié des dégats et n\'en reçoit que ' + weapon.damage ' !');
+			console.log(enemy.name + ' a paré la moitié des dégats et n\'en reçoit que ' + weapon.damage + ' !');
 		}
 		enemy.life = enemy.life - hitPoints;
 	} else {
@@ -59,21 +71,21 @@ Player.prototype.protect = function protect() {
 	console.log(this.name + ' est sur la défensif et ne subira que la moitié des dégats au prochain tour');
 };
 
+Player.prototype.isMyTurn = function() {
+	if (this.myturn == true) {
+
+	}
+}
+
 Player.prototype.play = function play(enemy) {
 	this.setEnemy(enemy);
-	if (this.alive) {
+	if (this.isAlive()) {
 		//this.move();
 		console.log(this.name + 'bouge');
-		manager.actionButton.addEventListener("click", function() {
-			if (manager.startButton.value = shoot) {
-				this.shoot(this.enemy);
-			} else {
-				this.protect();
-			}
-		});
+		this.actions();
 	} else {
 		manager.endGame();
-	};
+	}
 };
 
 Player.prototype.canShoot = function() {

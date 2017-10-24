@@ -3,6 +3,14 @@ var Manager = function(board, firstPlayer, secondPlayer) { //this class should e
 	this.board = board;
 	this.firstPlayer = firstPlayer;
 	this.secondPlayer = secondPlayer;
+	this.startButton = $('.start-button');
+	this.actionsButtons = $('.actions-buttons');
+};
+
+Manager.prototype.addEvents = function() {
+	this.actionsButtons.addEventListener('click' function {
+		
+	});
 };
 
 Manager.prototype.createBoard = function createBoard() {
@@ -16,13 +24,17 @@ Manager.prototype.createWeapon = function createWeapon() {
 	var banana = new Weapon('Banane', 2);
 	var axe = new Weapon('Hache', 25);
 
-	var weaponStore = new WeaponStore();
-	weaponStore.addWeapon(bat, knife, shovel, banana, axe);
+	this.weaponStore = new WeaponStore();
+	this.weaponStore.addWeapon(bat);
+	this.weaponStore.addWeapon(knife);
+	this.weaponStore.addWeapon(shovel);
+	this.weaponStore.addWeapon(banana);
+	this.weaponStore.addWeapon(axe);
 };
 
 Manager.prototype.distributeWeapons = function() {
-	firstPlayer.weapon = weaponStore.getWeapon(0);
-	secondPlayer.weapon = weaponStore.getWeapon(0);
+	this.firstPlayer.weapon = this.weaponStore.getWeapon(0);
+	this.secondPlayer.weapon = this.weaponStore.getWeapon(0);
 };
 
 Manager.prototype.startGame = function startGame() {
@@ -33,18 +45,18 @@ Manager.prototype.startGame = function startGame() {
 
 Manager.prototype.playing = function playing() {
 	this.startGame();
-	while (firstPlayer.alive && secondPlayer.alive) {
+	while (this.firstPlayer.alive && this.secondPlayer.alive) {
 		this.changeTheme('red');
-		firstPlayer.play(secondPlayer);
+		this.firstPlayer.play(this.secondPlayer);
 		this.changeTheme('blue');
-		secondPlayer.play(firstPlayer);
+		this.secondPlayer.play(this.firstPlayer);
 	}
 	this.endGame();
 };
 
 Manager.prototype.endGame = function endGame() {
 	var winner = '';
-	if (firstPlayer.alive) {
+	if (this.firstPlayer.alive) {
 		winner = 'Joueur Rouge';
 	} else {
 		winner = 'Joueur Bleu';
@@ -54,26 +66,38 @@ Manager.prototype.endGame = function endGame() {
 };
 
 Manager.prototype.changeTheme = function(color) {
-	$('progress-bar').removeAttr('progress-bar-success');
+	$('.progress-bar').removeAttr('progress-bar-success');
 	if (color == 'red') {
-		$('changing-button').removeAttr('blue');
-		$('changing-button').addAttr('red');
-		$('progress-bar').toggleClass('progress-bar-danger');
+		$('.changing-button').removeAttr('blue');
+		$('.changing-button').toggleClass('red');
+		$('.progress-bar').toggleClass('progress-bar-danger');
 	} else if (color == 'blue') {
-		$('changing-button').removeAttr('red');
-		$('changing-button').addAttr('blue');
-		$('progress-bar').toggleClass('progress-bar-danger');
+		$('.changing-button').removeAttr('red');
+		$('.changing-button').toggleClass('blue');
+		$('.progress-bar').toggleClass('progress-bar-danger');
 	} else {
 		console.log('Theme color error : red or blue accepted');
 	}
 }
 
-Manager.prototype.getDistance = function {
+Manager.prototype.getDistance = function() {
 	var i = 0;
 	while ('distance betweeen 2players cell' > 1) {
 		i++;
 	}
 	return i;
+};
+
+Manager.prototype.actionReaction = function() {
+	this.actionsButtons.addEventListener("click", function() {
+		if (this.actionsButtons.value = 'attack') {
+			this.shoot(this.enemy);
+		} else if (this.actionsButtons.value = 'protect') {
+			this.protect();
+		} else {
+			console.log('Action inconnue');
+		}
+	});
 };
 
 
