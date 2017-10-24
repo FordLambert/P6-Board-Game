@@ -13,12 +13,21 @@ p {
 }
 
 button {
-	background-color: #5289B3;
-	border-color: #3F3834;
 	border-radius: 5px;
 	font-size: 1.2em;
 	padding: 5px;
 }
+
+/*This concern the parts that will be change by Js */
+.red {
+	background-color: #D34245;
+	border-color: #BC6352;
+}
+.blue {
+	background-color: #5289B3;
+	border-color: #3F3834;
+}
+/**/
 
 .container {
 	
@@ -52,8 +61,23 @@ button {
 
 /*this is gonna change when javascript will arrive*/
 .board-place {
-	background-color: grey;
+	position: relative;
 	height: 500px;
+}
+
+.board {
+	background-color: grey;
+	position: absolute;
+	top: 10px;
+	bottom: 10px;
+	right: 10px;
+	left: 10px;
+}
+
+.bottom-bar {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
 }
 
 /*players info and picture zones*/

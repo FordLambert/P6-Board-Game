@@ -6,28 +6,34 @@ var Manager = function(board, firstPlayer, secondPlayer) { //this class should e
 };
 
 Manager.prototype.createBoard = function createBoard() {
-	//create random non praticables blocks, like 10 or such
+	console.log('Création du terrain');
 };
 
 Manager.prototype.createWeapon = function createWeapon() {
-	var pistol = new Weapon(10);
-	var sword = new Weapon(8);
-	var shotgun = new Weapon(13);
-	var banana = new Weapon(2);
-	var uzi = new Weapon(11);
-};
+	var bat = new Weapon('Batte', 15);
+	var knife = new Weapon('Couteau', 10);
+	var shovel = new Weapon('Pelle', 20);
+	var banana = new Weapon('Banane', 2);
+	var axe = new Weapon('Hache', 25);
 
-Manager.prototype.createPlayer = function createPlayer() {
-	var playerBlue = new Player();
-	var playerRed = new Player();
-	//should we keep this ? is it a good thing to have an object creating another one ? same for createWepon()
+	var weaponStore = new WeaponStore();
+	weaponStore.addWeapon(bat, knife, shovel, banana, axe);
 };
 
 Manager.prototype.startGame = function startGame() {
-	this.createBoard();
-	this.createPlayer();
 	this.createWeapon();
+	this.createBoard();
+};
 
+Manager.prototype.playing = function playing() {
+	this.startGame();
+	while (firstPlayer.alive && secondPlayer.alive) {
+		this.changeTheme('red');
+		firstPlayer.play(secondPlayer);
+		this.changeTheme('blue');
+		secondPlayer.play(firstPlayer);
+	}
+	this.endGame();
 };
 
 Manager.prototype.endGame = function endGame() {
@@ -41,14 +47,20 @@ Manager.prototype.endGame = function endGame() {
 	window.location.reload();
 };
 
-Manager.prototype.playing = function playing() {
-	this.startGame();
-	while (playerRed.alive && playerBlue.alive) {
-		firstPlayer.play();
-		secondPlayer.play();
+Manager.prototype.changeTheme = function(color) {
+	$('progress-bar').removeAttr('progress-bar-success');
+	if (color == 'red') {
+		$('changing-button').removeAttr('blue');
+		$('changing-button').addAttr('red');
+		$('progress-bar').toggleClass('progress-bar-danger');
+	} else if (color == 'blue') {
+		$('changing-button').removeAttr('red');
+		$('changing-button').addAttr('blue');
+		$('progress-bar').toggleClass('progress-bar-danger');
+	} else {
+		console.log('Theme color error : red or blue accepted');
 	}
-	this.endGame();
-};
+}
 
 Manager.prototype.getDistance = function {
 	var i = 0;

@@ -40,10 +40,10 @@ Player.prototype.pickUp = function pickUp(weapon) {
 Player.prototype.shoot = function shoot() {
 	if (this.canShoot) {
 		var hitPoints = 0;
-		if (this.canShoot() && ennemy.protected = false) {
+		if (/*this.canShoot() &&*/ ennemy.protected = false) {
 			hitPoints = weapon.damage;
 			console.log(ennemy.name + ' a reçu ' + weapon.damage ' points de dégats !');
-		} else if (this.canShoot() && ennemy.protected = true) {
+		} else if (/*this.canShoot() &&*/ ennemy.protected = true) {
 			hitPoints = weapon.damage / 2;
 			console.log(ennemy.name + ' a paré la moitié des dégats et n\'en reçoit que ' + weapon.damage ' !');
 		}
@@ -59,12 +59,14 @@ Player.prototype.protect = function protect() {
 	console.log(this.name + ' est sur la défensif et ne subira que la moitié des dégats au prochain tour');
 };
 
-Player.prototype.play = function play() {
+Player.prototype.play = function play(enemy) {
+	this.setEnemy(enemy);
 	if (this.alive) {
-		this.move();
+		//this.move();
+		console.log(this.name + 'bouge');
 		manager.actionButton.addEventListener("click", function() {
 			if (manager.startButton.value = shoot) {
-				this.shoot();
+				this.shoot(this.enemy);
 			} else {
 				this.protect();
 			}
@@ -79,6 +81,12 @@ Player.prototype.canShoot = function() {
 		return true;
 	} else {
 		return false;
+	}
+};
+
+Player.prototype.setEnemy = function(enemy) {
+	if (this.enemy != enemy) {
+		this.enemy = enemy;
 	}
 };
 
