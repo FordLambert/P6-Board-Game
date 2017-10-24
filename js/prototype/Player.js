@@ -2,7 +2,7 @@ var Player = function(name, color) {
 	//all action must depend on an 'if not dead' condition
 	this.name = 'Rouge' or 'Bleu';//just to avoid mistake on who is who
 	this.cell = ; //find a way to select a cell randomly when the game start
-	this.weapon = aGunOrSomethingIdk;
+	this.weapon = {};
 	this.life = 100;
 	this.protected = false;
 	this.color = 'red' or 'blue'; //this will be used in css
@@ -40,14 +40,14 @@ Player.prototype.pickUp = function pickUp(weapon) {
 Player.prototype.shoot = function shoot() {
 	if (this.canShoot) {
 		var hitPoints = 0;
-		if (/*this.canShoot() &&*/ ennemy.protected = false) {
+		if (/*this.canShoot() &&*/ enemy.protected = false) {
 			hitPoints = weapon.damage;
-			console.log(ennemy.name + ' a reçu ' + weapon.damage ' points de dégats !');
-		} else if (/*this.canShoot() &&*/ ennemy.protected = true) {
+			console.log(enemy.name + ' a reçu ' + weapon.damage ' points de dégats !');
+		} else if (/*this.canShoot() &&*/ enemy.protected = true) {
 			hitPoints = weapon.damage / 2;
-			console.log(ennemy.name + ' a paré la moitié des dégats et n\'en reçoit que ' + weapon.damage ' !');
+			console.log(enemy.name + ' a paré la moitié des dégats et n\'en reçoit que ' + weapon.damage ' !');
 		}
-		ennemy.life = enemy.life - hitPoints;
+		enemy.life = enemy.life - hitPoints;
 	} else {
 		console.log('Vous ne pouvez pas tirer d\'ici !');
 	}

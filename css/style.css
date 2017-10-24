@@ -4,7 +4,7 @@
 }
 
 body {
-	background-image: url(pictures/background2.jpg);
+	background-image: url(../pictures/background2.jpg);
 	font-family: "TF2", Georgia, Serif;
 }
 
@@ -42,7 +42,7 @@ button {
 	margin-bottom: 35px;
 	padding-top: 50px;
 	height: 15vh;
-	background-image: url(pictures/main-sign.png);
+	background-image: url(../pictures/main-sign.png);
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
 	border-radius: 10px;
@@ -82,11 +82,11 @@ button {
 
 /*players info and picture zones*/
 .player-1-display {
-	background-image: url(pictures/red-background.png);
+	background-image: url(../pictures/red-background.png);
 }
 
 .player-2-display {
-	background-image: url(pictures/blue-background.png);
+	background-image: url(../pictures/blue-background.png);
 }
 
 .player-1-display, .player-2-display {

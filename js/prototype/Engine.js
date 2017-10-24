@@ -20,8 +20,14 @@ Manager.prototype.createWeapon = function createWeapon() {
 	weaponStore.addWeapon(bat, knife, shovel, banana, axe);
 };
 
+Manager.prototype.distributeWeapons = function() {
+	firstPlayer.weapon = weaponStore.getWeapon(0);
+	secondPlayer.weapon = weaponStore.getWeapon(0);
+};
+
 Manager.prototype.startGame = function startGame() {
 	this.createWeapon();
+	this.distributeWeapons();
 	this.createBoard();
 };
 

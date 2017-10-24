@@ -15,6 +15,6 @@ WeaponStore.prototype.addWeapon = function(1, 2, 3, 4, 5) {
 	}
 };
 
-WeaponStore.prototype.getWeaponList = function(weaponIndex) {
+WeaponStore.prototype.getWeapon = function(weaponIndex) {
 	return this.WeaponStore[weaponIndex];
 };
