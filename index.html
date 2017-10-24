@@ -3,8 +3,11 @@
 	<head>
 		<title>P6 - Jeu de plateau</title>
 		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 		<link rel="stylesheet" type="text/css" href="style.css">
+		<script type="text/javascript" src="js/librairies/jquery-3.2.1.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	</head>
 	<body>
 		<div class="container text-center"><!--Bootstrap container, contain all the page-->
@@ -15,7 +18,31 @@
 			</div>
 
 			<button class="start-button">Nouvelle partie</button>
-			<button class="rules-button" disabled="">Règles du jeu</button>
+			<button type="button" class="rules-button" data-toggle="modal" data-target="#myModal">Règles du jeu</button>
+			<!-- Modal -->
+			<div class="modal fade" id="myModal" role="dialog">
+			    <div class="modal-dialog"> 
+			     	<div class="modal-content">
+			        	<div class="modal-header">
+			          		<button type="button" class="close" data-dismiss="modal">&times;</button>
+			          		<h4 class="modal-title">Règles du jeu</h4>
+			        	</div>
+			        	<div class="modal-body text-left">
+			        		<img src="pictures/icon.png" alt="rules-icon" class="icon center-block">
+			          		<p>Se joue à deux, les joueurs jouent l'un après l'autre.</p>
+			          		<p>- Un joueur peut choisir de se déplacer jusqu'à trois case de distance si aucun
+			          		obstacle n'est présent sur le chemin.</br>
+			          		- Si un joueur passe sur une case contenant une arme, il s'en équipera automatiquement.</br>
+			          		- Après la phase de mouvement, un joueur peut choisir d'attaquer ou de défendre : l'attaque n'est possible
+			          		que si l'adversaire est sur une case adjacent horizontalement ou verticalement.</br>
+			          		La défense permet de ne recevoir que la moitié des dégats au tour suivant seulement.</p>
+			        	</div>
+			        	<div class="modal-footer">
+			          		<button type="button" class="btn btn-default" data-dismiss="modal">fermer</button>
+			        	</div>
+			      	</div>  
+			    </div>
+			</div>
 
 			<div class="row game-infos-block">
 				<div class="col-md-3">
@@ -52,11 +79,11 @@
 			</div>
 
 		</div><!--End of page container-->
-		<script type="text/javascript" src="js/prototype/Board.js"></script>
+
+		<!--<script type="text/javascript" src="js/prototype/Board.js"></script>
 		<script type="text/javascript" src="js/prototype/Weapon.js"></script>
 		<script type="text/javascript" src="js/prototype/Player.js"></script>
 		<script type="text/javascript" src="js/prototype/Engine.js"></script>
-		<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
-		<script type="text/javascript" src="js/librairies/banana.js"></script>
+		<script type="text/javascript" src="js/librairies/banana.js"></script>-->
 	</body>
 </html>
