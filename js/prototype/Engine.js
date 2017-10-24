@@ -82,12 +82,12 @@ Manager.prototype.endGame = function() {
 	}
 };
 
-
 Manager.prototype.launchNewGame = function() {
 	this.startButton.click(function() {
 		this.startGame();
-
-
+		while (this.enoughPlayersToFight()) {
+			this.playing();
+		}
 		this.endGame();
 	}.bind(this));
 };
@@ -130,6 +130,26 @@ Manager.prototype.getActionType = function() {
 	this.actionsButtons.click(function() {
 		return this.actionsButtons.value;
 	}.bind(this));
+};
+
+Manager.prototype.getDeadPlayersNumber = function() {
+	var i = 0;
+	var deadPlayersNumber = 0;
+	while (i < this.playerStore.length - 1) {
+		if (this.playerStore[i].isAlive() == false) {
+			deadPlayersNumber ++;
+		}
+	i++;
+	}
+	return deadPlayersNumber;
+};
+
+Manager.prototype.enoughPlayersToFight = function() {
+	if (this.getDeadPlayersNumber == this.playerStore.length - 1) {
+		return false;
+	} else {
+		return true;
+	}
 };
 
 //starting the fight
