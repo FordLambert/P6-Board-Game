@@ -36,7 +36,7 @@ var Player = function(name, color, turnToPlay) {
 //actual state is satisfactoring
 Player.prototype.pickUp = function(weapon) {
 	this.weapon = weapon;
-	console.log(this.color + ' a ramassé l\'arme "' + this.weapon + '"');
+	console.log(this.name + ' a ramassé l\'arme "' + this.weapon + '"');
 };
 
 Player.prototype.isAlive = function() {
@@ -74,6 +74,10 @@ Player.prototype.isMyTurn = function() {
 
 	}
 }
+
+Player.prototype.getNearestEnemy = function() {
+
+};
 
 Player.prototype.canShoot = function() {
 	if (manager.getDistance() == 0) {
