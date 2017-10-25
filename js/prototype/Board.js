@@ -5,12 +5,22 @@ var Board = function(cellsStore, place) {
 
 Board.prototype.createBoard = function() {
 	for(var i = 0; i <= this.cellsStore.cellsList.length - 1; i ++) {
-		var newCell = this.cellsStore.getCell[i];
-    	newCell = $('<div>').addClass('cell').attr('id', i);
-    	$(this.place).append(newCell);
+		var newCell = this.cellsStore.getCell(i);
+    	newCell = $('<div>').addClass('cell').attr('id', i + 1);
+  		$(this.place).append(newCell);
+  		
+    	//$(newCell).css('background-color', this.cellsStore.getCell(i).color);
 	}
+	this.updateBoard;
 	var h = $('.cell:last-of-type').width();
 	$('.cell').css({height: h, lineHeight: h + 'px'});
+};
+
+Board.prototype.updateBoard = function() {
+	for(var i = 0; i <= this.cellsStore.cellsList.length - 1; i ++) {
+		var actualCell = $('#' + (i + 1));
+		actualCell.css('background-color', this.cellsStore.getCell(i).color);
+	}
 };
 
 var Cell = function(Id) {

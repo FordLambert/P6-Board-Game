@@ -5,12 +5,13 @@ var Manager = function(board) {
 };
 
 Manager.prototype.createPlayers = function() {
-	var playerRed = new Player('Joueur Rouge', 'red', true); //Only the first player playing should have 'true'
-	var playerBlue = new Player('Joueur Bleu', 'blue', false);
+	var playerRed = new Player('Joueur Rouge', 'red', true, this.getRandomNumber(this.board.cellsStore.cellsList.length));
+	var playerBlue = new Player('Joueur Bleu', 'blue', false, this.getRandomNumber(this.board.cellsStore.cellsList.length));
 
 	this.playerStore = new PlayerStore();
 	this.playerStore.addPlayer(playerRed);
 	this.playerStore.addPlayer(playerBlue);
+	console.log('Nombre de joueur(s): ' + this.playerStore.length);
 };
 
 Manager.prototype.createWeapons = function() {
@@ -37,13 +38,13 @@ Manager.prototype.distributeWeapons = function() {
 };
 
 Manager.prototype.randomizeBoardElements = function() {
+	this.updateCellStatus();
 	console.log('Création du terrain');
 };
 
 Manager.prototype.move = function() {
-	this.board.cells.click(function() {
+	this.board.click(function() {
 		console.log('Click sur une case !');
-		console.log(this.board.cell.value);
 	}.bind(this));
 };
 
@@ -52,15 +53,15 @@ Manager.prototype.startGame = function() {
 	this.createWeapons();
 	this.distributeWeapons();
 	this.randomizeBoardElements();
-	this.move();
+	//this.move();
 
-	this.firstPlayer.setEnemy(this.secondPlayer);
-	this.secondPlayer.setEnemy(this.firstPlayer);
+	//this.firstPlayer.setEnemy(this.secondPlayer);
+	//this.secondPlayer.setEnemy(this.firstPlayer);
 };
 
 Manager.prototype.playing = function() {
 	var i = 0;
-	while (i < this.playerStore.length) {
+	while (i < this.playerStore.playerStoreList.length) {
 		if (this.playerStore[i].turnToPlay) {
 			this.changeTheme(this.playerStore[i].color);
 			this.chooseAction(this.playerStore[i], this.getActionType());
@@ -160,7 +161,24 @@ Manager.prototype.enoughPlayersToFight = function() {
 	}
 };
 
+Manager.prototype.getRandomNumber = function(number) {
+	return Math.floor(Math.random() * number);
+};
 
+Manager.prototype.updateCellStatus = function() {
+	var i = 0;
+	while (i < this.playerStore.playerStoreList.length) {
+
+		console.log('Case de joueur : ' + this.playerStore.getPlayer(i).cell);
+		console.log('Case à changer: ' + this.board.cellsStore.getCell(this.playerStore.getPlayer(i).cell).Id);
+
+		this.board.cellsStore.getCell(this.playerStore.getPlayer(i).cell).color = this.playerStore.getPlayer(i).color;
+		this.board.updateBoard();
+
+		console.log('Couleur de case changée: ' + this.board.cellsStore.getCell(this.playerStore.getPlayer(i).cell).color);
+		i++;
+	}
+};
 
 //starting the fight
 

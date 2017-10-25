@@ -1,7 +1,7 @@
-var Player = function(name, color, turnToPlay) {
+var Player = function(name, color, turnToPlay, cell) {
 	//all action must depend on an 'if not dead' condition
 	this.name = name;
-	this.cell = ''; //find a way to select a cell randomly when the game start
+	this.cell = cell;
 	this.weapon = {};
 	this.life = 100;
 	this.protected = false;
@@ -10,7 +10,10 @@ var Player = function(name, color, turnToPlay) {
 
 };
 
-/*Player.prototype.move = function move(direction) {
+Player.prototype.move = function move(direction) {
+
+	
+
 	if (this.isAlive()) {
 		this. protected = false;
 		//something like : if the cell that had been clicked is not more than 3 cell away AND if it's not a wall the 
@@ -31,7 +34,7 @@ var Player = function(name, color, turnToPlay) {
 			i++; //this is not good, what if we want to go up only one time ? and one to the right after that ?
 		}
 	}
-};*/
+};
 
 //actual state is satisfactoring
 Player.prototype.pickUp = function(weapon) {
