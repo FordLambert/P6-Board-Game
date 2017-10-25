@@ -1,15 +1,18 @@
-var Board = function(cellsStore, place) {
-	this.cellsStore= cellsStore;
+var Cell = function(Id) {
+	this.Id = Id;
+	this.color = '#706F69'; //it's grey
+};
+
+var Board = function(cellStore, place) {
+	this.cellStore= cellStore;
 	this.place = place;
 };
 
 Board.prototype.createBoard = function() {
-	for(var i = 0; i <= this.cellsStore.cellsList.length - 1; i ++) {
-		var newCell = this.cellsStore.getCell(i);
+	for(var i = 0; i <= this.cellStore.cellList.length - 1; i ++) {
+		var newCell = this.cellStore.getCell(i);
     	newCell = $('<div>').addClass('cell').attr('id', i + 1);
   		$(this.place).append(newCell);
-  		
-    	//$(newCell).css('background-color', this.cellsStore.getCell(i).color);
 	}
 	this.updateBoard;
 	var h = $('.cell:last-of-type').width();
@@ -17,34 +20,8 @@ Board.prototype.createBoard = function() {
 };
 
 Board.prototype.updateBoard = function() {
-	for(var i = 0; i <= this.cellsStore.cellsList.length - 1; i ++) {
+	for(var i = 0; i <= this.cellStore.cellList.length - 1; i ++) {
 		var actualCell = $('#' + (i + 1));
-		actualCell.css('background-color', this.cellsStore.getCell(i).color);
+		actualCell.css('background-color', this.cellStore.getCell(i).color);
 	}
 };
-
-var Cell = function(Id) {
-	this.Id = Id;
-	this.color = '#706F69'; //it's grey
-};
-
-var CellStore = function() {
-	this.cellsList = [];
-};
-
-CellStore.prototype.addCells = function(cellNumber) {
-	for(var i = 1; i <= cellNumber; i ++) {
-		var cell = new Cell(i);
-		this.cellsList.push(cell);
-	}
-};
-
-CellStore.prototype.getCell = function(cellIndex) {
-	return this.cellsList[cellIndex];
-};
-
-var cellStore = new CellStore;
-cellStore.addCells(64);
-
-var board = new Board(cellStore, '#board');
-board.createBoard();

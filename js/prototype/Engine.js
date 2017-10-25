@@ -1,12 +1,18 @@
-var Manager = function(board) {
-	this.board = board;
+var Manager = function() {
 	this.startButton = $('.start-button');
 	this.actionsButtons = $('.actions-buttons');
 };
 
+Manager.prototype.createBoard = function(cellNumber) {
+	this.cellStore = new CellStore();
+	this.cellStore.addCells(cellNumber);//64 cells
+	this.board = new Board(this.cellStore, '#board');
+	this.board.createBoard();
+};
+
 Manager.prototype.createPlayers = function() {
-	var playerRed = new Player('Joueur Rouge', 'red', true, this.getRandomNumber(this.board.cellsStore.cellsList.length));
-	var playerBlue = new Player('Joueur Bleu', 'blue', false, this.getRandomNumber(this.board.cellsStore.cellsList.length));
+	var playerRed = new Player('Joueur Rouge', 'red', true, this.getRandomNumber(this.board.cellStore.cellList.length));
+	var playerBlue = new Player('Joueur Bleu', 'blue', false, this.getRandomNumber(this.board.cellStore.cellList.length));
 
 	this.playerStore = new PlayerStore();
 	this.playerStore.addPlayer(playerRed);
@@ -37,6 +43,7 @@ Manager.prototype.distributeWeapons = function() {
 	}
 };
 
+//Now everything exist, we can put them randomly on the board
 Manager.prototype.randomizeBoardElements = function() {
 	this.updateCellStatus();
 	console.log('Création du terrain');
@@ -62,10 +69,10 @@ Manager.prototype.startGame = function() {
 Manager.prototype.playing = function() {
 	var i = 0;
 	while (i < this.playerStore.playerStoreList.length) {
-		if (this.playerStore[i].turnToPlay) {
-			this.changeTheme(this.playerStore[i].color);
-			this.chooseAction(this.playerStore[i], this.getActionType());
-			this.playerStore[i].turnToPlay = false;
+		if (this.playerStore.getPlayer(i).turnToPlay) {
+			this.changeTheme(this.playerStore.getPlayer(i).color);
+			this.chooseAction(this.playerStore.getPlayer(i), this.getActionType());
+			this.playerStore.getPlayer(i).turnToPlay = false;
 			if (i != this.playerStore.length - 1) {
 				i++;
 			} else {
@@ -92,6 +99,8 @@ Manager.prototype.endGame = function() {
 };
 
 Manager.prototype.launchNewGame = function() {
+	//I choose to create a empty board here because it's sad and empty if not
+	this.createBoard(64);
 	this.startButton.click(function() {
 		this.startGame();
 		while (this.enoughPlayersToFight()) {
@@ -168,14 +177,8 @@ Manager.prototype.getRandomNumber = function(number) {
 Manager.prototype.updateCellStatus = function() {
 	var i = 0;
 	while (i < this.playerStore.playerStoreList.length) {
-
-		console.log('Case de joueur : ' + this.playerStore.getPlayer(i).cell);
-		console.log('Case à changer: ' + this.board.cellsStore.getCell(this.playerStore.getPlayer(i).cell).Id);
-
-		this.board.cellsStore.getCell(this.playerStore.getPlayer(i).cell).color = this.playerStore.getPlayer(i).color;
+		this.board.cellStore.getCell(this.playerStore.getPlayer(i).cell).color = this.playerStore.getPlayer(i).color;
 		this.board.updateBoard();
-
-		console.log('Couleur de case changée: ' + this.board.cellsStore.getCell(this.playerStore.getPlayer(i).cell).color);
 		i++;
 	}
 };
