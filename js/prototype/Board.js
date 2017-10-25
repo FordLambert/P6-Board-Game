@@ -1,22 +1,40 @@
-var Cell = function() {
-	this.class = 'cell'; //each cell should have a 'cell' class in DOM that can change to 'playerOneCell' or 'playerTwoCell'
-	// when a player are on it. 
-	this.color = 'white'; //this can change if mouseover, css background change ? or changing class in dom too ? like class 'red'
-	//or class 'white' ?
+var Board = function(cellsStore, place) {
+	this.cellsStore= cellsStore;
+	this.place = place;
 };
 
-var cells = 64;
-var cell;
-var h;
+Board.prototype.createBoard = function() {
+	for(var i = 0; i <= this.cellsStore.cellsList.length - 1; i ++) {
+		var newCell = this.cellsStore.getCell[i];
+    	newCell = $('<div>').addClass('cell').attr('id', i);
+    	$(this.place).append(newCell);
+	}
+	var h = $('.cell:last-of-type').width();
+	$('.cell').css({height: h, lineHeight: h + 'px'});
+};
 
-for(var i = 1; i <= cells; i ++)
-{
-    cell = $('<div>').addClass('cell').attr('data-cell', i).text(i);
-    if(i % 2 == 1)
-        cell.addClass('odd');
-    
-    $('#board').append(cell);
-}
+var Cell = function(Id) {
+	this.Id = Id;
+	this.color = '#706F69'; //it's grey
+};
 
-h = $('.cell:last-of-type').width();
-$('.cell').css({height: h, lineHeight: h + 'px'});
+var CellStore = function() {
+	this.cellsList = [];
+};
+
+CellStore.prototype.addCells = function(cellNumber) {
+	for(var i = 1; i <= cellNumber; i ++) {
+		var cell = new Cell(i);
+		this.cellsList.push(cell);
+	}
+};
+
+CellStore.prototype.getCell = function(cellIndex) {
+	return this.cellsList[cellIndex];
+};
+
+var cellStore = new CellStore;
+cellStore.addCells(64);
+
+var board = new Board(cellStore, '#board');
+board.createBoard();

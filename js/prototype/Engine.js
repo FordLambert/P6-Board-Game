@@ -36,15 +36,23 @@ Manager.prototype.distributeWeapons = function() {
 	}
 };
 
-Manager.prototype.createBoard = function() {
+Manager.prototype.randomizeBoardElements = function() {
 	console.log('Création du terrain');
+};
+
+Manager.prototype.move = function() {
+	this.board.cells.click(function() {
+		console.log('Click sur une case !');
+		console.log(this.board.cell.value);
+	}.bind(this));
 };
 
 Manager.prototype.startGame = function() {
 	this.createPlayers();
 	this.createWeapons();
 	this.distributeWeapons();
-	this.createBoard();
+	this.randomizeBoardElements();
+	this.move();
 
 	this.firstPlayer.setEnemy(this.secondPlayer);
 	this.secondPlayer.setEnemy(this.firstPlayer);
@@ -152,7 +160,9 @@ Manager.prototype.enoughPlayersToFight = function() {
 	}
 };
 
+
+
 //starting the fight
 
-var manager = new Manager('rien');
+var manager = new Manager(board);
 manager.launchNewGame();

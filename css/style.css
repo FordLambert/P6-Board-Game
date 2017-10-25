@@ -77,6 +77,14 @@ button {
 	top: -15px;
 }
 
+.cell{
+	background-color: #706F69;
+	border: 1px solid black;
+    width:12.5%;
+    float:left;
+    text-align:center;
+}
+
 /*players info and picture zones*/
 .player-1-display {
 	background-image: url(../pictures/red-background.png);
@@ -110,16 +118,4 @@ button {
 	border-radius: 10px;
 	box-shadow: 2px 2px 2px black;
 	background-color: white;
-}
-
-.cell{
-	background-color: #706F69;
-	border: 1px solid black;
-    width:12.5%;
-    float:left;
-    text-align:center;
-}
-
-.odd{
- background:#eee;   
 }
