@@ -4,13 +4,13 @@ var Displayer = function() {};
 Displayer.prototype.changeTheme = function(color) {
 	$('.progress-bar').removeAttr('progress-bar-success');
 	if (color == 'red') {
-		$('.changing-button').removeAttr('blue');
-		$('.changing-button').toggleClass('red');
-		$('.progress-bar').toggleClass('progress-bar-danger');
+		$('.changing-button').removeClass('blue');
+		$('.changing-button').addClass('red');
+		$('.progress-bar').addClass('progress-bar-danger');
 	} else if (color == 'blue') {
-		$('.changing-button').removeAttr('red');
-		$('.changing-button').toggleClass('blue');
-		$('.progress-bar').toggleClass('progress-bar-danger');
+		$('.changing-button').removeClass('red');
+		$('.changing-button').addClass('blue');
+		$('.progress-bar').removeClass('progress-bar-danger');
 	} else {
 		console.log('Theme color error: red or blue accepted');
 	}
@@ -25,8 +25,17 @@ Displayer.prototype.updateBoard = function() {
 
 Displayer.prototype.updateCellStatus = function() {
 	var i = 0;
-	while (i < manager.playerStore.playerStoreList.length) {
+	while (i < manager.playerStore.playerStoreList.length - 1) {
 		manager.board.cellStore.getCell((manager.playerStore.getPlayer(i).cell) - 1).color = manager.playerStore.getPlayer(i).color;
+		this.updateBoard();
+		i++;
+	}
+};
+
+Displayer.prototype.resetCellStatus = function() {
+	var i = 0;
+	while (i < manager.cellStore.cellList.length - 1) {
+		manager.board.cellStore.getCell(i).color = '#706F69';
 		this.updateBoard();
 		i++;
 	}

@@ -3,6 +3,8 @@ var Manager = function() {
 	this.actionsButtons = $('.actions-buttons');
 };
 
+
+//Creation part, before starting to play
 Manager.prototype.createBoard = function(cellNumber) {
 	this.cellStore = new CellStore();
 	this.cellStore.addCells(cellNumber);//64 cells
@@ -47,36 +49,32 @@ Manager.prototype.createDisplayer = function() {
 	this.displayer = new Displayer();
 };
 
-//Now everything exist, we can put them randomly on the board
+//Now that everything exist, we can put them randomly on the board
 Manager.prototype.randomizeBoardElements = function() {
-	this.updateCellStatus();
-	console.log('Création du terrain');
+	this.displayer.updateCellStatus();
+	console.log('Ici bientôt : des obstacles et des armes aléatoires !');
 };
 
-Manager.prototype.move = function(playerCell) {
-	this.isThreeCellAwayMax(playerCell);
-	this.board.click(function() {
-		console.log('Click sur une case !');
-	}.bind(this));
-};
-
+//And the game itself can start
 Manager.prototype.startGame = function() {
 	this.createPlayers();
 	this.createWeapons();
 	this.distributeWeapons();
 	this.createDisplayer();
+	this.displayer.resetCellStatus();
 	this.randomizeBoardElements();
 };
 
-Manager.prototype.playing = function() {
+Manager.prototype.playturns = function() {
 	if (this.enoughPlayersToFight()) {
+		this.ChangeTurnToPlay();
+		this.banane();
+		this.choosePlayerActions('move');
 		var i = 0;
 		while (i < this.playerStore.playerStoreList.length - 1) {
 			if (this.playerStore.getPlayer(i).turnToPlay) {
 				var actualPlayer = this.playerStore.getPlayer(i);
 				this.displayer.changeTheme(actualPlayer.color);
-
-				this.move(actualPlayer.cell);
 
 				actualPlayer.move(actualPlayer.cell);
 				this.chooseAction(actualPlayer, this.getActionType());
@@ -91,31 +89,65 @@ Manager.prototype.playing = function() {
 			}
 			i++;
 		}
+
+
 	}
 };
 
 Manager.prototype.endGame = function() {
+	var winner = this.getPlayerAttribute('.isAlive()');
+	alert(winner + ' a gagné ! Un nouvel essai ?');
+	window.location.reload();
+};
+
+Manager.prototype.launchNewGame = function() {
+	this.createBoard(64);
+	this.startButton.click(function() {
+		this.startGame();
+		this.playturns();
+		this.endGame();
+	}.bind(this));
+};
+
+Manager.prototype.ChangeTurnToPlay = function() {
 	var i = 0;
-	var winner = '';
-	while (i < this.playerStore.length) {
-		if (this.playerStore[i].isAlive()) {
-			winner = this.playerStore[i];
-			alert(winner + ' a gagné ! Un nouvel essai ?');
-			window.location.reload();
-		} 
+	while (i < this.playerStore.playerStoreList.length - 1) {
+		var actualPlayer = this.playerStore.getPlayer(i);
+		if (this.playerStore.getPlayer(i).turnToPlay) {
+		actualPlayer.turnToPlay = false;
+		this.displayer.changeTheme(actualPlayer.color);
+			if (i != this.playerStore.length - 1) {
+				i++;
+			} else {
+				i = 0;
+			}
+			this.playerStore.getPlayer(i).turnToPlay = true;
+			break;
+		}
+		i++;
+	}
+}
+
+Manager.prototype.move = function(playerCell) {
+	this.isThreeCellAwayMax(playerCell);
+	this.board.click(function() {
+		console.log('Click sur une case !');
+	}.bind(this));
+};
+
+Manager.prototype.getPlayerAttribute = function(attribute) {
+	var i = 0;
+	var condition = this.playerStore.getPlayer(i) + attribute;
+	while (i < this.playerStore.playerStoreList.length - 1) {
+		if (condition) {
+			return this.playerStore.getPlayer(i);
+		}
 		i++;
 	}
 };
 
-Manager.prototype.launchNewGame = function() {
-	//I choose to create a empty board here because it's sad and empty if not
-	this.createBoard(64);
-	this.startButton.click(function() {
-		this.startGame();
-		this.playing();
-		this.endGame();
-	}.bind(this));
-};
+
+
 
 Manager.prototype.getDistance = function() {
 	var i = 0;
@@ -125,13 +157,11 @@ Manager.prototype.getDistance = function() {
 	return i;
 };
 
-Manager.prototype.chooseAction = function(player, action) {
-	if (action == 'attack') {
-		player.shoot();
-	} else if (action == 'defend') {
-		player.protect();
-	} else {
-		console.log('Erreur: type d\'action inconnue');
+Manager.prototype.choosePlayerActions = function(requestedaction) {
+	if (requestedaction == 'move') {
+		this.getPlayerAttribute('.turnToPlay').move();
+	} else if (requestedActionType == 'combat') {
+
 	}
 };
 
@@ -158,19 +188,6 @@ Manager.prototype.enoughPlayersToFight = function() {
 		return false;
 	} else {
 		return true;
-	}
-};
-
-
-
-Manager.prototype.updateCellStatus = function() {
-	var i = 0;
-	while (i < this.playerStore.playerStoreList.length) {
-
-		this.board.cellStore.getCell((this.playerStore.getPlayer(i).cell) - 1).color = this.playerStore.getPlayer(i).color;
-		this.displayer.updateBoard();
-
-		i++;
 	}
 };
 
