@@ -49,7 +49,8 @@ Manager.prototype.randomizeBoardElements = function() {
 	console.log('Création du terrain');
 };
 
-Manager.prototype.move = function() {
+Manager.prototype.move = function(playerCell) {
+	this.isThreeCellAwayMax(playerCell);
 	this.board.click(function() {
 		console.log('Click sur une case !');
 	}.bind(this));
@@ -60,28 +61,31 @@ Manager.prototype.startGame = function() {
 	this.createWeapons();
 	this.distributeWeapons();
 	this.randomizeBoardElements();
-	//this.move();
-
-	//this.firstPlayer.setEnemy(this.secondPlayer);
-	//this.secondPlayer.setEnemy(this.firstPlayer);
 };
 
 Manager.prototype.playing = function() {
-	var i = 0;
-	while (i < this.playerStore.playerStoreList.length) {
-		if (this.playerStore.getPlayer(i).turnToPlay) {
-			this.changeTheme(this.playerStore.getPlayer(i).color);
-			this.chooseAction(this.playerStore.getPlayer(i), this.getActionType());
-			this.playerStore.getPlayer(i).turnToPlay = false;
-			if (i != this.playerStore.length - 1) {
-				i++;
-			} else {
-				i = 0;
+	if (this.enoughPlayersToFight()) {
+		var i = 0;
+		while (i < this.playerStore.playerStoreList.length - 1) {
+			if (this.playerStore.getPlayer(i).turnToPlay) {
+				var actualPlayer = this.playerStore.getPlayer(i);
+				this.changeTheme(actualPlayer.color);
+
+				this.move(actualPlayer.cell);
+
+				actualPlayer.move(actualPlayer.cell);
+				this.chooseAction(actualPlayer, this.getActionType());
+				actualPlayer.turnToPlay = false;
+				if (i != this.playerStore.length - 1) {
+					i++;
+				} else {
+					i = 0;
+				}
+				this.playerStore.getPlayer(i).turnToPlay = true;
+				break;
 			}
-			this.playerStore[i].turnToPlay = true;
-			break;
+			i++;
 		}
-		i++;
 	}
 };
 
@@ -103,9 +107,7 @@ Manager.prototype.launchNewGame = function() {
 	this.createBoard(64);
 	this.startButton.click(function() {
 		this.startGame();
-		while (this.enoughPlayersToFight()) {
-			this.playing();
-		}
+		this.playing();
 		this.endGame();
 	}.bind(this));
 };
@@ -177,12 +179,33 @@ Manager.prototype.getRandomNumber = function(number) {
 Manager.prototype.updateCellStatus = function() {
 	var i = 0;
 	while (i < this.playerStore.playerStoreList.length) {
-		this.board.cellStore.getCell(this.playerStore.getPlayer(i).cell).color = this.playerStore.getPlayer(i).color;
+
+		this.board.cellStore.getCell((this.playerStore.getPlayer(i).cell) - 1).color = this.playerStore.getPlayer(i).color;
 		this.board.updateBoard();
+
 		i++;
 	}
 };
 
+Manager.prototype.isThreeCellAwayMax = function(playerCell) {
+	var targetedCell = $(".cell").click(function() {
+
+		console.log($(targetedCell).attr("id"));
+		if ($(targetedCell).attr("id") == playerCell) {
+			console.log('Vous avez cliqué sur la case du joueur 1 !');
+		} else {
+			console.log('Vous avez cliauqé ailleurs...')
+;		}
+		return true;
+
+	}.bind(this));
+};
+
+
+
+Manager.prototype.banane = function(cellId) {
+	console.log('banane' + cellId);
+};
 //starting the fight
 
 var manager = new Manager(board);

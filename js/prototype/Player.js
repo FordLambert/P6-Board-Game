@@ -11,9 +11,6 @@ var Player = function(name, color, turnToPlay, cell) {
 };
 
 Player.prototype.move = function move(direction) {
-
-	
-
 	if (this.isAlive()) {
 		this. protected = false;
 		//something like : if the cell that had been clicked is not more than 3 cell away AND if it's not a wall the 
