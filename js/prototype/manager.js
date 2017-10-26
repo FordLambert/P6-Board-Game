@@ -3,8 +3,6 @@ var Manager = function() {
 	this.actionsButtons = $('.actions-buttons');
 };
 
-
-//Creation part, before starting to play
 Manager.prototype.createBoard = function(cellNumber) {
 	this.cellStore = new CellStore();
 	this.cellStore.addCells(cellNumber);//64 cells
@@ -51,7 +49,7 @@ Manager.prototype.createDisplayer = function() {
 
 //Now everything exist, we can put them randomly on the board
 Manager.prototype.randomizeBoardElements = function() {
-	this.displayer.updateCellStatus();
+	this.updateCellStatus();
 	console.log('Création du terrain');
 };
 
@@ -160,6 +158,19 @@ Manager.prototype.enoughPlayersToFight = function() {
 		return false;
 	} else {
 		return true;
+	}
+};
+
+
+
+Manager.prototype.updateCellStatus = function() {
+	var i = 0;
+	while (i < this.playerStore.playerStoreList.length) {
+
+		this.board.cellStore.getCell((this.playerStore.getPlayer(i).cell) - 1).color = this.playerStore.getPlayer(i).color;
+		this.displayer.updateBoard();
+
+		i++;
 	}
 };
 

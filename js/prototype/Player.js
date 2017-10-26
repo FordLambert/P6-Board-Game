@@ -13,27 +13,10 @@ var Player = function(name, color, turnToPlay, cell) {
 Player.prototype.move = function move(direction) {
 	if (this.isAlive()) {
 		this. protected = false;
-		//something like : if the cell that had been clicked is not more than 3 cell away AND if it's not a wall the 
-		//player will mmove on it
-		i = 0;
-		while (i < 4) {
-			if (direction == up) {
-				row --;
-			} else if (direction == down) {
-				row ++;
-			} else if (direction == right){
-				col ++;
-			} else if (direction == left) {
-				col --;
-			} else {
-				console.log('no direction had been choosen');
-			};
-			i++; //this is not good, what if we want to go up only one time ? and one to the right after that ?
-		}
+
 	}
 };
 
-//actual state is satisfactoring
 Player.prototype.pickUp = function(weapon) {
 	this.weapon = weapon;
 	console.log(this.name + ' a ramassé l\'arme "' + this.weapon + '"');
@@ -65,28 +48,16 @@ Player.prototype.shoot = function() {
 };
 
 Player.prototype.protect = function() {
-	this. protected = true;
+	this.protected = true;
 	console.log(this.name + ' est sur la défensif et ne subira que la moitié des dégats au prochain tour');
 };
 
-Player.prototype.isMyTurn = function() {
-	if (this.myturn == true) {
 
-	}
-}
-
-Player.prototype.getNearestEnemy = function() {
-
-};
-
+//we'll see if this stay here or if it's a manager job
 Player.prototype.canShoot = function() {
 	if (manager.getDistance() == 0) {
 		return true;
 	} else {
 		return false;
 	}
-};
-
-Player.prototype.setEnemy = function(enemy) {
-	this.enemy = enemy;
 };
