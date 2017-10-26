@@ -16,7 +16,7 @@ Player.prototype.move = function move(direction) {
 		$('#board').click(function() {
 			console.log('Le ' + this.name + ' se déplace');
 			manager.choosePlayerActions('combat');
-			$( "#board").unbind( "click" );
+			manager.removeEvent('#board');
 		}.bind(this));
 	}
 };

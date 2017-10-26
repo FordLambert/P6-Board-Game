@@ -1,6 +1,7 @@
 var Manager = function() {
 	this.startButton = $('.start-button');
-	this.actionsButtons = $('.actions-buttons');
+	this.attackButton = $('.attack');
+	this.defendButton = $('.defend');
 	this.actualPlayer = {};
 };
 
@@ -134,14 +135,16 @@ Manager.prototype.choosePlayerActions = function(requestedAction) {
 		if (requestedAction == 'move') {
 			this.actualPlayer.move();
 		} else if (requestedAction == 'combat') {
-			this.actionsButtons.click(function() {
-				if (this.value == 'attack') {
-					console.log('A l\'attaque !');
-				} else if (this.value == 'defend') {
-					console.log('Levée de bouclier !');
-				} else {
-					console.log('Erreur: cette action est inconnue: ' + this.value);
-				}
+			this.attackButton.click(function() {
+				console.log('A l\'attaque !');
+				this.removeEvent(this.attackButton);
+				this.removeEvent(this.defendButton);
+			}.bind(this));
+
+			this.defendButton.click(function() {
+				console.log('Levée de bouclier !');
+				this.removeEvent(this.defendButton);
+				this.removeEvent(this.attackButton);
 			}.bind(this));
 		} 
 	} else {
@@ -149,10 +152,8 @@ Manager.prototype.choosePlayerActions = function(requestedAction) {
 	}
 };
 
-Manager.prototype.getActionType = function() {
-	this.actionsButtons.click(function() {
-		return this.actionsButtons.value;
-	}.bind(this));
+Manager.prototype.removeEvent = function(element) {
+	$(element).unbind( "click" );
 };
 
 Manager.prototype.getDeadPlayersNumber = function() {
