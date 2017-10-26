@@ -13,7 +13,11 @@ var Player = function(name, color, turnToPlay, cell) {
 Player.prototype.move = function move(direction) {
 	if (this.isAlive()) {
 		this. protected = false;
-		console.log('Le jouuuuueuuur ' + this.name);
+		$('#board').click(function() {
+			console.log('Le ' + this.name + ' se déplace');
+			manager.choosePlayerActions('combat');
+			$( "#board").unbind( "click" );
+		}.bind(this));
 	}
 };
 

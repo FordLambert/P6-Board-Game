@@ -25,7 +25,7 @@ Displayer.prototype.updateBoard = function() {
 
 Displayer.prototype.updateCellStatus = function() {
 	var i = 0;
-	while (i < manager.playerStore.playerStoreList.length - 1) {
+	while (i < manager.playerStore.playerStoreList.length) {
 		manager.board.cellStore.getCell((manager.playerStore.getPlayer(i).cell) - 1).color = manager.playerStore.getPlayer(i).color;
 		this.updateBoard();
 		i++;
@@ -34,7 +34,7 @@ Displayer.prototype.updateCellStatus = function() {
 
 Displayer.prototype.resetCellStatus = function() {
 	var i = 0;
-	while (i < manager.cellStore.cellList.length - 1) {
+	while (i < manager.cellStore.cellList.length) {
 		manager.board.cellStore.getCell(i).color = '#706F69';
 		this.updateBoard();
 		i++;
