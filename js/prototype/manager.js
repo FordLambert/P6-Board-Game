@@ -1,10 +1,8 @@
 var Manager = function() {
 	this.startButton = $('.start-button');
-	this.attackButton = $('.attack');
-	this.defendButton = $('.defend');
+	this.actionsButtons = $('.action-button');
 	this.actualPlayer = {};
 };
-
 
 //Creation part, before starting to play
 Manager.prototype.createBoard = function(cellNumber) {
@@ -67,12 +65,10 @@ Manager.prototype.startGame = function() {
 	this.randomizeBoardElements();
 };
 
-Manager.prototype.playturns = function() {
+Manager.prototype.playTurns = function() {
 	if (this.enoughPlayersToFight()) {
 		this.ChangeTurnToPlay();
 		this.choosePlayerActions('move');
-
-		
 	} else {
 		this.endGame();
 	}
@@ -88,18 +84,18 @@ Manager.prototype.launchNewGame = function() {
 	this.createBoard(64);
 	this.startButton.click(function() {
 		this.startGame();
-		this.playturns();
+		this.playTurns();
 	}.bind(this));
 };
 
 Manager.prototype.ChangeTurnToPlay = function() {
 	var i = 0;
-	while (i < this.playerStore.playerStoreList.length - 1) {
+	while (i < this.playerStore.playerStoreList.length) {
 		if (this.playerStore.getPlayer(i).turnToPlay) {
-		this.actualPlayer.turnToPlay = false;
+		this.playerStore.getPlayer(i).turnToPlay = false;
 		this.actualPlayer = this.playerStore.getPlayer(i);
 		this.displayer.changeTheme(this.actualPlayer.color);
-			if (i != this.playerStore.length - 1) {
+			if (i != this.playerStore.playerStoreList.length - 1) {
 				i++;
 			} else {
 				i = 0;
@@ -122,29 +118,23 @@ Manager.prototype.getPlayerAttribute = function(attribute) {
 	}
 };
 
-Manager.prototype.getDistance = function() {
-	var i = 0;
-	while ('distance betweeen 2players cell' > 1) {
-		i++;
-	}
-	return i;
-};
-
 Manager.prototype.choosePlayerActions = function(requestedAction) {
 	if (this.enoughPlayersToFight()) {
 		if (requestedAction == 'move') {
 			this.actualPlayer.move();
 		} else if (requestedAction == 'combat') {
-			this.attackButton.click(function() {
-				console.log('A l\'attaque !');
-				this.removeEvent(this.attackButton);
-				this.removeEvent(this.defendButton);
-			}.bind(this));
 
-			this.defendButton.click(function() {
-				console.log('Levée de bouclier !');
-				this.removeEvent(this.defendButton);
-				this.removeEvent(this.attackButton);
+			this.actionsButtons.click(function(e) {
+				var target = $(e.target);
+				if (target.is('#attack')) {
+					this.actualPlayer.shoot();
+				} else if (target.is('#defend')) {
+					this.actualPlayer.defend();
+				} else {
+					console.log('Erreur: type d\'action inconnu');
+				}
+				this.removeEvent(this.actionsButtons);
+
 			}.bind(this));
 		} 
 	} else {
@@ -159,8 +149,8 @@ Manager.prototype.removeEvent = function(element) {
 Manager.prototype.getDeadPlayersNumber = function() {
 	var i = 0;
 	var deadPlayersNumber = 0;
-	while (i < this.playerStore.length - 1) {
-		if (this.playerStore[i].isAlive() == false) {
+	while (i < this.playerStore.playerStoreList.length - 1) {
+		if (this.playerStore.getPlayer(i).isAlive() == false) {
 			deadPlayersNumber ++;
 		}
 	i++;
@@ -169,13 +159,17 @@ Manager.prototype.getDeadPlayersNumber = function() {
 };
 
 Manager.prototype.enoughPlayersToFight = function() {
-	if (this.getDeadPlayersNumber == this.playerStore.length - 1) {
+	if (this.getDeadPlayersNumber() == this.playerStore.playerStoreList.length - 1) {
 		return false;
 	} else {
 		return true;
 	}
 };
 
+
+
+
+//methods that will maybe be erased
 Manager.prototype.isThreeCellAwayMax = function(playerCell) {
 	var targetedCellId = this.getCurrentCellId();
 	$('#board').click(function() {
@@ -193,6 +187,17 @@ Manager.prototype.getCurrentCellId = function(cellId) {
 	var banane = cellId;
 	return (banane);
 };
+
+Manager.prototype.getDistance = function() {
+	var i = 0;
+	while ('distance betweeen 2players cell' > 1) {
+		i++;
+	}
+	return i;
+};
+
+
+
 
 
 //Very simple and impersonnal function, maybe for another file later

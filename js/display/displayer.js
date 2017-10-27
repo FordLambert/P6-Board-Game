@@ -1,19 +1,29 @@
 //if a function whatsoever had an impact on what the user see, it should be here 
-var Displayer = function() {};
+var Displayer = function() {
+	this.actionButton = $('.action-button');
+	this.changingBackground = $('.progress-bar');
+};
 
 Displayer.prototype.changeTheme = function(color) {
-	$('.progress-bar').removeAttr('progress-bar-success');
-	if (color == 'red') {
-		$('.changing-button').removeClass('blue');
-		$('.changing-button').addClass('red');
-		$('.progress-bar').addClass('progress-bar-danger');
-	} else if (color == 'blue') {
-		$('.changing-button').removeClass('red');
-		$('.changing-button').addClass('blue');
-		$('.progress-bar').removeClass('progress-bar-danger');
-	} else {
-		console.log('Theme color error: red or blue accepted');
+	this.changingBackground.attr( 'class', 'progress-bar progress-bar-striped active');
+	this.changingBackground.addClass(this.updateBakcgroundColor(color));
+	this.actionButton.attr( 'class', 'col-md-4 actions-buttons');
+	this.actionButton.addClass(color);
+};
+
+Displayer.prototype.updateBakcgroundColor = function(color) {
+	var strippedColor = '';
+	switch (color) {
+	    case 'red':
+	        strippedColor = 'progress-bar-danger';
+	        break;
+	    case 'blue':
+	       	strippedColor = '';
+	        break;
+	    default:
+	        console.log('Erreur: Couleur Inconnue');
 	}
+	return strippedColor;
 };
 
 Displayer.prototype.updateBoard = function() {
