@@ -1,4 +1,4 @@
-var Player = function(name, color, turnToPlay, cell) {
+var Player = function(name, color, turnToPlay, cell, texture) {
 	//all action must depend on an 'if not dead' condition
 	this.name = name;
 	this.cell = cell;
@@ -6,12 +6,12 @@ var Player = function(name, color, turnToPlay, cell) {
 	this.life = 100;
 	this.protected = false;
 	this.color = color;
+	this.texture = texture;
 	this.turnToPlay = turnToPlay;
 
 };
 
 Player.prototype.move = function move(direction) {
-	this. protected = false;
 	$('#board').click(function() {
 		console.log('Le ' + this.name + ' se déplace');
 		manager.choosePlayerActions('combat');
@@ -24,16 +24,8 @@ Player.prototype.pickUp = function(weapon) {
 	console.log(this.name + ' a ramassé l\'arme "' + this.weapon + '"');
 };
 
-Player.prototype.isAlive = function() {
-	if (this.life <= 0) {
-		this.life = 0;
-		return false;
-	} else {
-		return true;
-	}
-};
-
 Player.prototype.shoot = function() {
+	this. protected = false;
 	console.log('Le ' + this.name + ' tire !');
 
 	/*var hitPoints = 0;
@@ -51,7 +43,7 @@ Player.prototype.shoot = function() {
 
 Player.prototype.defend = function() {
 	this.protected = true;
-	console.log(this.name + ' est sur la défensif et ne subira que la moitié des dégats au prochain tour');
+	console.log(this.name + ' se prépare à prendre un coup.');
 	manager.playTurns();
 };
 

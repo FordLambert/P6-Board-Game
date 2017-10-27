@@ -42,7 +42,7 @@ button {
 }
 
 .title-block {
-	margin-top: 35px;
+	margin-top: 20px;
 	margin-bottom: 35px;
 	padding-top: 50px;
 	height: 15vh;
@@ -59,7 +59,7 @@ button {
 }
 
 .game-infos-block {
-	margin-top: 30px;
+	margin-top: 10px;
 	margin-bottom: 30px;
 }
 
@@ -73,7 +73,7 @@ button {
 	position: absolute;
 	z-index: -1;
 	height: 105%;
-	right: 0px;
+	right: -15px;
 	top: -15px;
 }
 
@@ -82,6 +82,13 @@ button {
     width:12.5%;
     float:left;
     text-align:center;
+    background-size: contain;
+}
+
+#board {
+	background-image: url(../pictures/blackboard.png);
+	background-size: contain;
+	padding: 0px;
 }
 
 /*players info and picture zones*/
@@ -94,6 +101,7 @@ button {
 }
 
 .player-1-display, .player-2-display {
+	padding: 15px;
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
 	border: 1px solid black;

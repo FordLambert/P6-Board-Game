@@ -29,24 +29,24 @@ Displayer.prototype.updateBakcgroundColor = function(color) {
 Displayer.prototype.updateBoard = function() {
 	for(var i = 0; i < manager.board.cellStore.cellList.length; i ++) {
 		var actualCell = $('#' + (i + 1));
-		actualCell.css('background-color', manager.board.cellStore.getCell(i).color);
+		actualCell.css('background-image', 'url(pictures/' + manager.board.cellStore.getCell(i).texture + ')');
 	}
 };
 
 Displayer.prototype.updateCellStatus = function() {
 	var i = 0;
 	while (i < manager.playerStore.playerStoreList.length) {
-		manager.board.cellStore.getCell((manager.playerStore.getPlayer(i).cell) - 1).color = manager.playerStore.getPlayer(i).color;
-		this.updateBoard();
+		manager.board.cellStore.getCell((manager.playerStore.getPlayer(i).cell) - 1).texture = manager.playerStore.getPlayer(i).texture;
 		i++;
 	}
+	this.updateBoard();
 };
 
 Displayer.prototype.resetCellStatus = function() {
 	var i = 0;
 	while (i < manager.cellStore.cellList.length) {
-		manager.board.cellStore.getCell(i).color = '#706F69';
-		this.updateBoard();
+		manager.board.cellStore.getCell(i).texture = '';
 		i++;
 	}
+	this.updateBoard();
 };

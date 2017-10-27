@@ -1,6 +1,6 @@
 var Cell = function(Id) {
 	this.Id = Id;
-	this.color = '#706F69';
+	this.texture = '';
 };
 
 var Board = function(cellStore, place) {

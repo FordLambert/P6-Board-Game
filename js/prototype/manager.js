@@ -13,27 +13,24 @@ Manager.prototype.createBoard = function(cellNumber) {
 };
 
 Manager.prototype.createPlayers = function() {
-	var playerRed = new Player('Joueur Rouge', 'red', true, this.getRandomNumber(this.board.cellStore.cellList.length));
-	var playerBlue = new Player('Joueur Bleu', 'blue', false, this.getRandomNumber(this.board.cellStore.cellList.length));
+	var playerRed = new Player('Joueur Rouge', 'red', true, this.getRandomNumber(this.board.cellStore.cellList.length), 'red-background.png');
+	var playerBlue = new Player('Joueur Bleu', 'blue', false, this.getRandomNumber(this.board.cellStore.cellList.length), 'blue-background.png');
 
 	this.playerStore = new PlayerStore();
 	this.playerStore.addPlayer(playerRed);
 	this.playerStore.addPlayer(playerBlue);
-	console.log('Nombre de joueur(s): ' + this.playerStore.length);
 };
 
 Manager.prototype.createWeapons = function() {
-	var bat = new Weapon('Batte', 15);
+	var bat = new Weapon('Batte', 10);
 	var knife = new Weapon('Couteau', 10);
 	var shovel = new Weapon('Pelle', 20);
-	var banana = new Weapon('Banane', 2);
 	var axe = new Weapon('Hache', 25);
 
 	this.weaponStore = new WeaponStore();
 	this.weaponStore.addWeapon(bat);
 	this.weaponStore.addWeapon(knife);
 	this.weaponStore.addWeapon(shovel);
-	this.weaponStore.addWeapon(banana);
 	this.weaponStore.addWeapon(axe);
 };
 
@@ -51,6 +48,7 @@ Manager.prototype.createDisplayer = function() {
 
 //Now that everything exist, we can put them randomly on the board
 Manager.prototype.randomizeBoardElements = function() {
+	this.blockRandomCells();
 	this.displayer.updateCellStatus();
 	console.log('Ici bientôt : des obstacles et des armes aléatoires !');
 };
@@ -150,7 +148,7 @@ Manager.prototype.getDeadPlayersNumber = function() {
 	var i = 0;
 	var deadPlayersNumber = 0;
 	while (i < this.playerStore.playerStoreList.length - 1) {
-		if (this.playerStore.getPlayer(i).isAlive() == false) {
+		if (this.playerStore.getPlayer(i).isAlive == false) {
 			deadPlayersNumber ++;
 		}
 	i++;
@@ -167,7 +165,15 @@ Manager.prototype.enoughPlayersToFight = function() {
 };
 
 
+Manager.prototype.blockRandomCells = function() {
+	var blockedCellNumber = Math.floor(Math.random() * 12) + 6;
 
+	for(var i = 0; i < blockedCellNumber; i ++) {
+		var actualCell = $(manager.board.cellStore.getCell(this.getRandomNumber(this.board.cellStore.cellList.length)));
+		actualCell.css('background-image', 'pictures/blockedCell.png');
+		actualCell.addClass('has-weapon');
+	}
+};
 
 //methods that will maybe be erased
 Manager.prototype.isThreeCellAwayMax = function(playerCell) {
