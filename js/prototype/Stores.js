@@ -39,3 +39,14 @@ CellStore.prototype.addCells = function(cellNumber) {
 CellStore.prototype.getCell = function(cellIndex) {
 	return this.cellList[cellIndex];
 };
+
+CellStore.prototype.getCellById = function(domID) {
+	console.log(domID);
+	for(var i = 0; i < cellNumber; i ++) {
+		if (domID == getCell(i)) {
+			return getCell(i);
+		}
+	}
+
+	return cellId;
+};

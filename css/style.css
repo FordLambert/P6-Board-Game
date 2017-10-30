@@ -82,7 +82,7 @@ button {
     width:12.5%;
     float:left;
     text-align:center;
-    background-size: contain;
+    background-size: cover;
 }
 
 #board {

@@ -1,41 +1,31 @@
 var Cell = function(Id) {
 	this.Id = Id;
 	this.texture = '';
+	this.status = 'empty';
 };
 
-var Board = function(cellStore, place) {
-	this.cellStore= cellStore;
+var BoardMaker = function(/*cellStore,*/ place) {
+	this.board = [];
 	this.place = place;
-	this.rowNumber = Math.sqrt(this.cellStore.cellList.length);
-	this.rowLetters = Array.from('abcdefghijklmnopqrstuvwxyz');
+	this.rowLetters = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
 };
 
-Board.prototype.createBoard = function() {
-	this.assembleCells();
-	this.addRowLetters();
-
-	var h = $('.cell:last-of-type').width();
-	$('.cell').css({height: h, lineHeight: h + 'px'});
+BoardMaker.prototype.addCell = function(cell) {
+	this.board.push(cell);
 };
 
-Board.prototype.assembleCells = function() {
-	for(var i = 0; i < this.cellStore.cellList.length; i ++) {
-		var newCell = this.cellStore.getCell(i);
-    	newCell = $('<div>').addClass('cell').attr('id', i + 1);
-    	newCell.mouseover(function() {
-			manager.getCurrentCellId($(this).attr('id'));
-    	});
-  		$(this.place).append(newCell);
-	}
+BoardMaker.prototype.getCell = function(cellIndex) {
+	return this.board[cellIndex];
 };
 
-Board.prototype.addRowLetters = function() {
-	var rowChanger = 0;
-	for(var line = 0; line < this.rowNumber; line++) {
-		var rowLetter = this.rowLetters[line];
-		for (var i = 1 ; i <= this.rowNumber; i++) {
-			$('#' + (i + rowChanger)).addClass(rowLetter);
+BoardMaker.prototype.createBoard = function(boardSize) {
+	for (var rowIndex = 0; rowIndex < boardSize; rowIndex++) {
+		var letterIndex = this.rowLetters[rowIndex];
+
+		for (var cellIndex = 1; cellIndex <= boardSize; cellIndex++) {
+			var cell = new Cell(letterIndex + cellIndex);
+			this.addCell(cell);
 		}
-		rowChanger += this.rowNumber;
+
 	}
-}
+};

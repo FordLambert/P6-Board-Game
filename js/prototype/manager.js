@@ -5,16 +5,15 @@ var Manager = function() {
 };
 
 //Creation part, before starting to play
-Manager.prototype.createBoard = function(cellNumber) {
-	this.cellStore = new CellStore();
-	this.cellStore.addCells(cellNumber);//64 cells
-	this.board = new Board(this.cellStore, '#board');
-	this.board.createBoard();
+Manager.prototype.createBoard = function(size) {
+	this.boardMaker = new BoardMaker('#board');
+	this.boardMaker.createBoard(size);
+	this.displayer.displayBoard(this.boardMaker);
 };
 
 Manager.prototype.createPlayers = function() {
-	var playerRed = new Player('Joueur Rouge', 'red', true, this.getRandomNumber(this.board.cellStore.cellList.length), 'red-background.png');
-	var playerBlue = new Player('Joueur Bleu', 'blue', false, this.getRandomNumber(this.board.cellStore.cellList.length), 'blue-background.png');
+	var playerRed = new Player('Joueur Rouge', 'red', true, this.getRandomCell(this.boardMaker.rowNumber), 'red-background.png');
+	var playerBlue = new Player('Joueur Bleu', 'blue', false, this.getRandomCell(this.boardMaker.rowNumber), 'blue-background.png');
 
 	this.playerStore = new PlayerStore();
 	this.playerStore.addPlayer(playerRed);
@@ -58,7 +57,6 @@ Manager.prototype.startGame = function() {
 	this.createPlayers();
 	this.createWeapons();
 	this.distributeWeapons();
-	this.createDisplayer();
 	this.displayer.resetCellStatus();
 	this.randomizeBoardElements();
 };
@@ -79,7 +77,8 @@ Manager.prototype.endGame = function() {
 };
 
 Manager.prototype.launchNewGame = function() {
-	this.createBoard(64);
+	this.createDisplayer();
+	this.createBoard(8);
 	this.startButton.click(function() {
 		this.startGame();
 		this.playTurns();
@@ -169,9 +168,11 @@ Manager.prototype.blockRandomCells = function() {
 	var blockedCellNumber = Math.floor(Math.random() * 12) + 6;
 
 	for(var i = 0; i < blockedCellNumber; i ++) {
-		var actualCell = $(manager.board.cellStore.getCell(this.getRandomNumber(this.board.cellStore.cellList.length)));
-		actualCell.css('background-image', 'pictures/blockedCell.png');
-		actualCell.addClass('has-weapon');
+		var actualCell = manager.board.cellStore.getCell(this.getRandomNumber(this.board.cellStore.cellList.length));
+		//if ($('#' + (actualCell.Id)).is(".has-player") {
+			actualCell.texture = 'blockedCell.png';
+			$('#' + (actualCell.Id)).addClass('is-blocked');
+		//}
 	}
 };
 
@@ -210,6 +211,24 @@ Manager.prototype.getDistance = function() {
 Manager.prototype.getRandomNumber = function(number) {
 	return Math.floor(Math.random() * number + 1);
 };
+
+Manager.prototype.getRandomLetter = function(number) {
+	//number is here to say : "how far must we go into the alphabet ?"
+	var letter = this.boardMaker.rowLetters[this.getRandomNumber(number)];
+	return letter;
+};
+
+Manager.prototype.getRandomCell = function(number) {
+	var row = this.getRandomLetter(number);
+	var index = this.getRandomNumber(number);
+	var randomCell = "'#" + row + index + "'";
+	return randomCell;
+};
+
+Manager.prototype.getPlayerNumber = function() {
+	return this.playerStore.playerStoreList.length;
+};
+
 
 //starting the game
 var manager = new Manager(board);
