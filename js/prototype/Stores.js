@@ -24,7 +24,7 @@ PlayerStore.prototype.getPlayer = function(playerIndex) {
 	return this.playerStoreList[playerIndex];
 };
 
-//Cell store : it store the cells that will compose a board
+/*//Cell store : it store the cells that will compose a board
 var CellStore = function() {
 	this.cellList = [];
 };
@@ -49,4 +49,4 @@ CellStore.prototype.getCellById = function(domID) {
 	}
 
 	return cellId;
-};
+};*/

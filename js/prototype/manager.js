@@ -12,8 +12,8 @@ Manager.prototype.createBoard = function(size) {
 };
 
 Manager.prototype.createPlayers = function() {
-	var playerRed = new Player('Joueur Rouge', 'red', true, this.getRandomCell(this.boardMaker.rowNumber), 'red-background.png');
-	var playerBlue = new Player('Joueur Bleu', 'blue', false, this.getRandomCell(this.boardMaker.rowNumber), 'blue-background.png');
+	var playerRed = new Player('Joueur Rouge', 'red', true, this.getRandomCell(this.boardMaker.boardSize), 'red-background.png');
+	var playerBlue = new Player('Joueur Bleu', 'blue', false, this.getRandomCell(this.boardMaker.boardSize), 'blue-background.png');
 
 	this.playerStore = new PlayerStore();
 	this.playerStore.addPlayer(playerRed);
@@ -168,11 +168,11 @@ Manager.prototype.blockRandomCells = function() {
 	var blockedCellNumber = Math.floor(Math.random() * 12) + 6;
 
 	for(var i = 0; i < blockedCellNumber; i ++) {
-		var actualCell = manager.board.cellStore.getCell(this.getRandomNumber(this.board.cellStore.cellList.length));
-		//if ($('#' + (actualCell.Id)).is(".has-player") {
+		var actualCell = this.boardMaker.getCell(this.getRandomNumber(this.boardMaker.board.length-1));
+		if (actualCell.status = 'empty') {
 			actualCell.texture = 'blockedCell.png';
-			$('#' + (actualCell.Id)).addClass('is-blocked');
-		//}
+			actualCell.status = 'is-blocked';
+		}
 	}
 };
 
@@ -214,19 +214,23 @@ Manager.prototype.getRandomNumber = function(number) {
 
 Manager.prototype.getRandomLetter = function(number) {
 	//number is here to say : "how far must we go into the alphabet ?"
-	var letter = this.boardMaker.rowLetters[this.getRandomNumber(number)];
+	var letter = this.boardMaker.rowLetters[this.getRandomNumber(this.boardMaker.boardSize)];
 	return letter;
 };
 
 Manager.prototype.getRandomCell = function(number) {
 	var row = this.getRandomLetter(number);
 	var index = this.getRandomNumber(number);
-	var randomCell = "'#" + row + index + "'";
+	var randomCell = row + index;
 	return randomCell;
 };
 
 Manager.prototype.getPlayerNumber = function() {
 	return this.playerStore.playerStoreList.length;
+};
+
+Manager.prototype.getWeaponNumber = function() {
+	return this.weaponStore.weaponStoreList.length;
 };
 
 

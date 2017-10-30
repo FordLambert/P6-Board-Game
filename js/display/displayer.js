@@ -40,37 +40,38 @@ Displayer.prototype.displayBoard = function(boardMaker) {
 	$('.cell').css({height: h, lineHeight: h + 'px'});
 };
 
-Displayer.prototype.updateBoard = function() {
-	//for(var i = 0; i < manager.board.cellStore.cellList.length; i ++) {
-		var cells = $('.cell');
-		var actualCell = $('#' + (i + 1));
-		actualCell.css('background-image', 'url(pictures/' + manager.board.cellStore.getCell(i).texture + ')');
-	//}
+Displayer.prototype.updateBoardDisplay = function() {	
+	for (var i = 0; i < manager.boardMaker.board.length; i ++) {
+		var actualCell = $('#' + manager.boardMaker.getCell(i).Id);
+		actualCell.css('background-image', 'url(pictures/' + manager.boardMaker.getCell(i).texture + ')');
+		actualCell.attr('class', 'cell' +  ' ' + manager.boardMaker.getCell(i).status);
+	}
 };
 
 Displayer.prototype.updateCellStatus = function() {
-	var i = 0;
-	while (i < manager.getPlayerNumber()) {
-		var cell = $('#E5'/*manager.playerStore.getPlayer(i).cell*/);
-		cell.texture = manager.playerStore.getPlayer(i).texture;
-		cell.status = 'has-player';
-		i++;
-	}
-
-	/*while (i < manager.getPlayerNumber()) {
-		var cell = manager.board.cellStore.getCell((manager.playerStore.getPlayer(i).cell) - 1)
-		cell.texture = manager.playerStore.getPlayer(i).texture;
-		cell.status = 'has-player';
-		i++;
-	}*/
-	this.updateBoard();
+	$('.cell').each(function() {
+		for (var i = 0; i < manager.getPlayerNumber(); i ++) {
+			var player = manager.playerStore.getPlayer(i);
+			if ($(this).attr('id') == player.cell) {
+			    manager.boardMaker.getCellById(player.cell).texture = manager.playerStore.getPlayer(i).texture;
+			    manager.boardMaker.getCellById(player.cell).status = 'has-player';
+			}
+		}
+		for (var i = 0; i < manager.getWeaponNumber(); i ++) {
+			var weapon = manager.weaponStore.getWeapon(i);
+			if  ($(this).attr('id') == weapon.cell) {
+			    manager.boardMaker.getCellById(weapon.cell).texture = manager.playerStore.getWeapon(i).texture;
+			    manager.boardMaker.getCellById(weapon.cell).status = 'has-weapon';
+			}
+		}
+	});
+	this.updateBoardDisplay();
 };
 
 Displayer.prototype.resetCellStatus = function() {
-	var i = 0;
-	while (i < manager.cellStore.cellList.length) {
-		manager.board.cellStore.getCell(i).texture = '';
-		i++;
+	for (var i = 0; i < manager.boardMaker.board.length; i ++) {
+		manager.boardMaker.getCell(i).texture = '';
+		manager.boardMaker.getCell(i).status = 'empty';
 	}
-	this.updateBoard();
+	this.updateBoardDisplay();
 };

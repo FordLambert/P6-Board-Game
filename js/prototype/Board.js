@@ -4,7 +4,7 @@ var Cell = function(Id) {
 	this.status = 'empty';
 };
 
-var BoardMaker = function(/*cellStore,*/ place) {
+var BoardMaker = function(place) {
 	this.board = [];
 	this.place = place;
 	this.rowLetters = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
@@ -18,7 +18,16 @@ BoardMaker.prototype.getCell = function(cellIndex) {
 	return this.board[cellIndex];
 };
 
+BoardMaker.prototype.getCellById = function(id) {
+	for (var i = 0; i < this.board.length; i++) {
+		if (this.getCell(i).Id == id) {
+			return this.getCell(i);
+		}
+	}
+};
+
 BoardMaker.prototype.createBoard = function(boardSize) {
+	this.boardSize = boardSize;
 	for (var rowIndex = 0; rowIndex < boardSize; rowIndex++) {
 		var letterIndex = this.rowLetters[rowIndex];
 
