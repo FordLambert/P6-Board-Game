@@ -1,5 +1,4 @@
 var Player = function(name, cell, color, turnToPlay, texture) {
-	//all action must depend on an 'if not dead' condition
 	this.name = name;
 	this.cell = cell;
 	this.weapon = {};
@@ -14,8 +13,8 @@ var Player = function(name, cell, color, turnToPlay, texture) {
 Player.prototype.move = function move(direction) {
 	$('#board').click(function() {
 		console.log('Le ' + this.name + ' se déplace');
-		manager.choosePlayerActions('combat');
-		manager.removeEvent('#board');
+		gameManager.choosePlayerActions('combat');
+		gameManager.removeEvent('#board');
 	}.bind(this));
 };
 
@@ -38,19 +37,19 @@ Player.prototype.shoot = function() {
 	}
 	enemy.life -= hitPoints;*/
 
-	manager.playTurns();
+	gameManager.playTurns();
 };
 
 Player.prototype.defend = function() {
 	this.protected = true;
 	console.log(this.name + ' se prépare à prendre un coup.');
-	manager.playTurns();
+	gameManager.playTurns();
 };
 
 
 //we'll see if this stay here or if it's a manager job
 Player.prototype.canShoot = function() {
-	if (manager.getDistance() == 0) {
+	if (gameManager.getDistance() == 0) {
 		return true;
 	} else {
 		return false;

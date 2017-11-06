@@ -4,21 +4,23 @@ var Cell = function(Id) {
 	this.status = 'empty';
 };
 
-var BoardMaker = function(place) {
+var BoardManager = function(place) {
 	this.board = [];
+	//usedCells is used when the engine start a game for not using twice the same cell
+	this.usedCellsId = [];
 	this.place = place;
 	this.rowLetters = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
 };
 
-BoardMaker.prototype.addCell = function(cell) {
+BoardManager.prototype.addCell = function(cell) {
 	this.board.push(cell);
 };
 
-BoardMaker.prototype.getCell = function(cellIndex) {
+BoardManager.prototype.getCell = function(cellIndex) {
 	return this.board[cellIndex];
 };
 
-BoardMaker.prototype.getCellById = function(id) {
+BoardManager.prototype.getCellById = function(id) {
 	for (var i = 0; i < this.board.length; i++) {
 		if (this.getCell(i).Id == id) {
 			return this.getCell(i);
@@ -26,7 +28,7 @@ BoardMaker.prototype.getCellById = function(id) {
 	}
 };
 
-BoardMaker.prototype.createBoard = function(boardSize) {
+BoardManager.prototype.createBoard = function(boardSize) {
 	this.boardSize = boardSize;
 	for (var rowIndex = 0; rowIndex < boardSize; rowIndex++) {
 		var letterIndex = this.rowLetters[rowIndex];
@@ -38,3 +40,15 @@ BoardMaker.prototype.createBoard = function(boardSize) {
 
 	}
 };
+
+BoardManager.prototype.addUsedCellId = function(cellId) {
+	this.usedCellsId.push(cellId);
+};
+
+BoardManager.prototype.getUsedCellId = function(index) {
+	return this.usedCellsId[index];
+};
+
+BoardManager.prototype.resetUsedCellList = function() {
+	this.usedCellsId = [];
+}

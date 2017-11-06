@@ -26,12 +26,12 @@ Displayer.prototype.updateBakcgroundColor = function(color) {
 	return strippedColor;
 };
 
-Displayer.prototype.displayBoard = function(boardMaker) {
+Displayer.prototype.displayBoard = function(boardManager) {
 
-	for (var i = 0; i < boardMaker.board.length; i ++) {
-		var newCell = boardMaker.getCell(i);
+	for (var i = 0; i < boardManager.board.length; i ++) {
+		var newCell = boardManager.getCell(i);
 		newCell = $('<div>').addClass('cell').attr('id', newCell.Id);
-		$(boardMaker.place).append(newCell);
+		$(boardManager.place).append(newCell);
 			/*newCell.mouseover(function() {
 				manager.getCurrentCellId($(this).attr('id'));
 			});*/
@@ -41,27 +41,27 @@ Displayer.prototype.displayBoard = function(boardMaker) {
 };
 
 Displayer.prototype.updateBoardDisplay = function() {	
-	for (var i = 0; i < manager.boardMaker.board.length; i ++) {
-		var actualCell = $('#' + manager.boardMaker.getCell(i).Id);
-		actualCell.css('background-image', 'url(pictures/' + manager.boardMaker.getCell(i).texture + ')');
-		actualCell.attr('class', 'cell' +  ' ' + manager.boardMaker.getCell(i).status);
+	for (var i = 0; i < gameManager.boardManager.board.length; i ++) {
+		var actualCell = $('#' + gameManager.boardManager.getCell(i).Id);
+		actualCell.css('background-image', 'url(pictures/' + gameManager.boardManager.getCell(i).texture + ')');
+		actualCell.attr('class', 'cell' +  ' ' + gameManager.boardManager.getCell(i).status);
 	}
 };
 
 Displayer.prototype.updateCellStatus = function() {
 	$('.cell').each(function() {
-		for (var i = 0; i < manager.getPlayerNumber(); i ++) {
-			var player = manager.playerStore.getPlayer(i);
+		for (var i = 0; i < gameManager.getPlayerNumber(); i ++) {
+			var player = gameManager.playerStore.getPlayer(i);
 			if ($(this).attr('id') == player.cell) {
-			    manager.boardMaker.getCellById(player.cell).texture = manager.playerStore.getPlayer(i).texture;
-			    manager.boardMaker.getCellById(player.cell).status = 'has-player';
+			    gameManager.boardManager.getCellById(player.cell).texture = gameManager.playerStore.getPlayer(i).texture;
+			    gameManager.boardManager.getCellById(player.cell).status = 'has-player';
 			}
 		}
-		for (var i = 0; i < manager.getWeaponNumber(); i ++) {
-			var weapon = manager.weaponStore.getWeapon(i);
+		for (var i = 0; i < gameManager.getWeaponNumber(); i ++) {
+			var weapon = gameManager.weaponStore.getWeapon(i);
 			if  ($(this).attr('id') == weapon.cell) {
-			    manager.boardMaker.getCellById(weapon.cell).texture = manager.playerStore.getWeapon(i).texture;
-			    manager.boardMaker.getCellById(weapon.cell).status = 'has-weapon';
+			    gameManager.boardManager.getCellById(weapon.cell).texture = gameManager.weaponStore.getWeapon(i).texture;
+			    gameManager.boardManager.getCellById(weapon.cell).status = 'has-weapon';
 			}
 		}
 	});
@@ -69,9 +69,9 @@ Displayer.prototype.updateCellStatus = function() {
 };
 
 Displayer.prototype.resetCellStatus = function() {
-	for (var i = 0; i < manager.boardMaker.board.length; i ++) {
-		manager.boardMaker.getCell(i).texture = '';
-		manager.boardMaker.getCell(i).status = 'empty';
+	for (var i = 0; i < gameManager.boardManager.board.length; i ++) {
+		gameManager.boardManager.getCell(i).texture = '';
+		gameManager.boardManager.getCell(i).status = 'empty';
 	}
 	this.updateBoardDisplay();
 };

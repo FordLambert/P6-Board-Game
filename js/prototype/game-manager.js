@@ -1,30 +1,31 @@
-var Manager = function() {
+var GameManager = function(boardId) {
+	this.boardId = boardId;
 	this.startButton = $('.start-button');
 	this.actionsButtons = $('.action-button');
 	this.actualPlayer = {};
 };
 
 //Creation part, before starting to play
-Manager.prototype.createBoard = function(size) {
-	this.boardMaker = new BoardMaker('#board');
-	this.boardMaker.createBoard(size);
-	this.displayer.displayBoard(this.boardMaker);
+GameManager.prototype.createBoard = function(size) {
+	this.boardManager = new BoardManager(this.boardId);
+	this.boardManager.createBoard(size);
+	this.displayer.displayBoard(this.boardManager);
 };
 
-Manager.prototype.createPlayers = function() {
-	var playerRed = new Player('Joueur Rouge', this.getRandomCell(this.boardMaker.boardSize), 'red', true, 'red-background.png');
-	var playerBlue = new Player('Joueur Bleu', this.getRandomCell(this.boardMaker.boardSize), 'blue', false, 'blue-background.png');
+GameManager.prototype.createPlayers = function() {
+	var playerRed = new Player('Joueur Rouge', this.getRandomCellId(this.boardManager.boardSize), 'red', true, 'red-background.png');
+	var playerBlue = new Player('Joueur Bleu', this.getRandomCellId(this.boardManager.boardSize), 'blue', false, 'blue-background.png');
 
 	this.playerStore = new PlayerStore();
 	this.playerStore.addPlayer(playerRed);
 	this.playerStore.addPlayer(playerBlue);
 };
 
-Manager.prototype.createWeapons = function() {
-	var bat = new Weapon('Batte', 10, this.getRandomCell(this.boardMaker.boardSize));
-	var knife = new Weapon('Couteau', 10, this.getRandomCell(this.boardMaker.boardSize));
-	var shovel = new Weapon('Pelle', 20, this.getRandomCell(this.boardMaker.boardSize));
-	var axe = new Weapon('Hache', 25, this.getRandomCell(this.boardMaker.boardSize));
+GameManager.prototype.createWeapons = function() {
+	var bat = new Weapon('Batte', 10, 'bat.png', this.getRandomCellId(this.boardManager.boardSize));
+	var knife = new Weapon('Couteau', 10, 'knife.png', this.getRandomCellId(this.boardManager.boardSize));
+	var shovel = new Weapon('Pelle', 20, 'shovel.png', this.getRandomCellId(this.boardManager.boardSize));
+	var axe = new Weapon('Hache', 25, 'axe.png', this.getRandomCellId(this.boardManager.boardSize));
 
 	this.weaponStore = new WeaponStore();
 	this.weaponStore.addWeapon(bat);
@@ -33,7 +34,7 @@ Manager.prototype.createWeapons = function() {
 	this.weaponStore.addWeapon(axe);
 };
 
-Manager.prototype.distributeWeapons = function() {
+GameManager.prototype.distributeWeapons = function() {
 	var i = 0
 	while (i < this.playerStore.length) {
 		this.playerStore[i].weapon = this.weaponStore.getWeapon(0);
@@ -41,27 +42,26 @@ Manager.prototype.distributeWeapons = function() {
 	}
 };
 
-Manager.prototype.createDisplayer = function() {
+GameManager.prototype.createDisplayer = function() {
 	this.displayer = new Displayer();
 };
 
 //Now that everything exist, we can put them randomly on the board
-Manager.prototype.randomizeBoardElements = function() {
+GameManager.prototype.randomizeBoardElements = function() {
 	this.blockRandomCells();
 	this.displayer.updateCellStatus();
-	console.log('Ici bientôt : des obstacles et des armes aléatoires !');
 };
 
 //And the game itself can start
-Manager.prototype.startGame = function() {
+GameManager.prototype.startGame = function() {
+	this.resetGame();
 	this.createPlayers();
 	this.createWeapons();
 	this.distributeWeapons();
-	this.displayer.resetCellStatus();
 	this.randomizeBoardElements();
 };
 
-Manager.prototype.playTurns = function() {
+GameManager.prototype.playTurns = function() {
 	if (this.enoughPlayersToFight()) {
 		this.ChangeTurnToPlay();
 		this.choosePlayerActions('move');
@@ -70,13 +70,13 @@ Manager.prototype.playTurns = function() {
 	}
 };
 
-Manager.prototype.endGame = function() {
+GameManager.prototype.endGame = function() {
 	var winner = this.getPlayerAttribute('.isAlive()');
 	alert(winner + ' a gagné ! Un nouvel essai ?');
 	window.location.reload();
 };
 
-Manager.prototype.launchNewGame = function() {
+GameManager.prototype.launchNewGame = function() {
 	this.createDisplayer();
 	this.createBoard(8);
 	this.startButton.click(function() {
@@ -85,7 +85,7 @@ Manager.prototype.launchNewGame = function() {
 	}.bind(this));
 };
 
-Manager.prototype.ChangeTurnToPlay = function() {
+GameManager.prototype.ChangeTurnToPlay = function() {
 	var i = 0;
 	while (i < this.playerStore.playerStoreList.length) {
 		if (this.playerStore.getPlayer(i).turnToPlay) {
@@ -104,7 +104,7 @@ Manager.prototype.ChangeTurnToPlay = function() {
 	}
 }
 
-Manager.prototype.getPlayerAttribute = function(attribute) {
+GameManager.prototype.getPlayerAttribute = function(attribute) {
 	var i = 0;
 	var condition = this.playerStore.getPlayer(i) + attribute;
 	while (i < this.playerStore.playerStoreList.length - 1) {
@@ -115,7 +115,7 @@ Manager.prototype.getPlayerAttribute = function(attribute) {
 	}
 };
 
-Manager.prototype.choosePlayerActions = function(requestedAction) {
+GameManager.prototype.choosePlayerActions = function(requestedAction) {
 	if (this.enoughPlayersToFight()) {
 		if (requestedAction == 'move') {
 			this.actualPlayer.move();
@@ -139,11 +139,11 @@ Manager.prototype.choosePlayerActions = function(requestedAction) {
 	}
 };
 
-Manager.prototype.removeEvent = function(element) {
+GameManager.prototype.removeEvent = function(element) {
 	$(element).unbind( "click" );
 };
 
-Manager.prototype.getDeadPlayersNumber = function() {
+GameManager.prototype.getDeadPlayersNumber = function() {
 	var i = 0;
 	var deadPlayersNumber = 0;
 	while (i < this.playerStore.playerStoreList.length - 1) {
@@ -155,7 +155,7 @@ Manager.prototype.getDeadPlayersNumber = function() {
 	return deadPlayersNumber;
 };
 
-Manager.prototype.enoughPlayersToFight = function() {
+GameManager.prototype.enoughPlayersToFight = function() {
 	if (this.getDeadPlayersNumber() == this.playerStore.playerStoreList.length - 1) {
 		return false;
 	} else {
@@ -164,11 +164,14 @@ Manager.prototype.enoughPlayersToFight = function() {
 };
 
 
-Manager.prototype.blockRandomCells = function() {
-	var blockedCellNumber = Math.floor(Math.random() * 12) + 6;
+GameManager.prototype.blockRandomCells = function() {
+	var blockedCellNumber = Math.floor(Math.random() * 4) + 5;
 
 	for(var i = 0; i < blockedCellNumber; i ++) {
-		var actualCell = this.boardMaker.getCell(this.getRandomNumber(this.boardMaker.board.length-1));
+
+		var randomId = this.getRandomCellId(this.boardManager.boardSize);
+		console.log('Id renvoyé: ' + randomId);
+		var actualCell = this.boardManager.getCellById(randomId);
 		if (actualCell.status = 'empty') {
 			actualCell.texture = 'blockedCell.png';
 			actualCell.status = 'is-blocked';
@@ -176,64 +179,64 @@ Manager.prototype.blockRandomCells = function() {
 	}
 };
 
-//methods that will maybe be erased
-Manager.prototype.isThreeCellAwayMax = function(playerCell) {
-	var targetedCellId = this.getCurrentCellId();
-	$('#board').click(function() {
-		console.log(targetedCellId);
-		if ($(targetedCell).attr("id") == playerCell) {
-			console.log('Vous avez cliqué sur la case du joueur 1 !');
-		} else {
-			console.log('Vous avez cliqué ailleurs...');
-		}
-		return true;
-	}.bind(this));
-};
 
-Manager.prototype.getCurrentCellId = function(cellId) {
-	var banane = cellId;
-	return (banane);
+GameManager.prototype.resetGame = function() {
+	this.removeEvent(this.boardId);
+	this.boardManager.resetUsedCellList();
+	this.displayer.resetCellStatus();
 };
-
-Manager.prototype.getDistance = function() {
-	var i = 0;
-	while ('distance betweeen 2players cell' > 1) {
-		i++;
-	}
-	return i;
-};
-
 
 
 
 
 //Very simple and impersonnal function, maybe for another file later
-Manager.prototype.getRandomNumber = function(number) {
-	return Math.floor(Math.random() * number + 1);
+GameManager.prototype.getRandomNumber = function(number) {
+	var number = Math.floor(Math.random() * number + 1);
+	return number;
 };
 
-Manager.prototype.getRandomLetter = function(number) {
+GameManager.prototype.getRandomLetter = function(number) {
 	//number is here to say : "how far must we go into the alphabet ?"
-	var letter = this.boardMaker.rowLetters[this.getRandomNumber(this.boardMaker.boardSize)];
+	var letter = this.boardManager.rowLetters[this.getRandomNumber(this.boardManager.boardSize - 1)];
 	return letter;
 };
 
-Manager.prototype.getRandomCell = function(number) {
-	var row = this.getRandomLetter(number);
-	var index = this.getRandomNumber(number);
-	var randomCell = row + index;
-	return randomCell;
+
+//only unsed at board generation, not after to see if a cell is occupied
+GameManager.prototype.getRandomCellId = function(number) {
+	var cellId = this.generateRandomId(number);
+	//check if this cell Id is not used yet
+	for (var i = 0; i <= this.boardManager.usedCellsId.length; i++) {
+		//if this id had already been given
+		if (cellId == this.boardManager.getUsedCellId(i)) {
+			//we set a new value
+			cellId = this.generateRandomId();
+		}
+	}
+	//we add the new id to the "used" list and we return it
+	this.boardManager.addUsedCellId(cellId);
+	return cellId;
 };
 
-Manager.prototype.getPlayerNumber = function() {
+GameManager.prototype.generateRandomId = function(number) {
+	var row = this.getRandomLetter(number);
+	var index = this.getRandomNumber(number);
+	var randomCellId = row + index;
+	return randomCellId;
+}
+
+
+
+
+GameManager.prototype.getPlayerNumber = function() {
 	return this.playerStore.playerStoreList.length;
 };
 
-Manager.prototype.getWeaponNumber = function() {
+GameManager.prototype.getWeaponNumber = function() {
 	return this.weaponStore.weaponStoreList.length;
 };
 
 
 //starting the game
-var manager = new Manager(board);
-manager.launchNewGame();
+var gameManager = new GameManager('#board');
+gameManager.launchNewGame();
