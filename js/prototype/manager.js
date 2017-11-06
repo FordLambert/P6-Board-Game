@@ -12,8 +12,8 @@ Manager.prototype.createBoard = function(size) {
 };
 
 Manager.prototype.createPlayers = function() {
-	var playerRed = new Player('Joueur Rouge', 'red', true, this.getRandomCell(this.boardMaker.boardSize), 'red-background.png');
-	var playerBlue = new Player('Joueur Bleu', 'blue', false, this.getRandomCell(this.boardMaker.boardSize), 'blue-background.png');
+	var playerRed = new Player('Joueur Rouge', this.getRandomCell(this.boardMaker.boardSize), 'red', true, 'red-background.png');
+	var playerBlue = new Player('Joueur Bleu', this.getRandomCell(this.boardMaker.boardSize), 'blue', false, 'blue-background.png');
 
 	this.playerStore = new PlayerStore();
 	this.playerStore.addPlayer(playerRed);
@@ -21,10 +21,10 @@ Manager.prototype.createPlayers = function() {
 };
 
 Manager.prototype.createWeapons = function() {
-	var bat = new Weapon('Batte', 10);
-	var knife = new Weapon('Couteau', 10);
-	var shovel = new Weapon('Pelle', 20);
-	var axe = new Weapon('Hache', 25);
+	var bat = new Weapon('Batte', 10, this.getRandomCell(this.boardMaker.boardSize));
+	var knife = new Weapon('Couteau', 10, this.getRandomCell(this.boardMaker.boardSize));
+	var shovel = new Weapon('Pelle', 20, this.getRandomCell(this.boardMaker.boardSize));
+	var axe = new Weapon('Hache', 25, this.getRandomCell(this.boardMaker.boardSize));
 
 	this.weaponStore = new WeaponStore();
 	this.weaponStore.addWeapon(bat);

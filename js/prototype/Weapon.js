@@ -1,6 +1,6 @@
-var Weapon = function(name, damage, texture) {
+var Weapon = function(name, damage, texture, cell) {
 	this.name = name;
 	this.damage = damage;
 	this.texture = texture;
-	this.cell = '';//find a way to select a random cell to place it on creation.
+	this.cell = cell;
 };

@@ -1,4 +1,4 @@
-var Player = function(name, color, turnToPlay, cell, texture) {
+var Player = function(name, cell, color, turnToPlay, texture) {
 	//all action must depend on an 'if not dead' condition
 	this.name = name;
 	this.cell = cell;
