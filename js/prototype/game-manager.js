@@ -1,3 +1,4 @@
+//-----Constructor
 var GameManager = function(boardId) {
 	this.boardId = boardId;
 	this.startButton = $('.start-button');
@@ -5,8 +6,91 @@ var GameManager = function(boardId) {
 	this.actualPlayer = {};
 };
 
+//-----Getters
+GameManager.prototype.getPlayerAttribute = function(attribute) {
+	var i = 0;
+	var condition = this.playerStore.getPlayer(i) + attribute;
+	while (i < this.playerStore.playerStoreList.length - 1) {
+		if (condition) {
+			return this.playerStore.getPlayer(i);
+		}
+		i++;
+	}
+};
+
+GameManager.prototype.getPlayersNumber = function() {
+	return this.playerStore.playerStoreList.length;
+};
+
+GameManager.prototype.getDeadPlayersNumber = function() {
+	var i = 0;
+	var deadPlayersNumber = 0;
+	while (i < this.playerStore.playerStoreList.length - 1) {
+		if (this.playerStore.getPlayer(i).isAlive == false) {
+			deadPlayersNumber ++;
+		}
+	i++;
+	}
+	return deadPlayersNumber;
+};
+
+GameManager.prototype.getWeaponsNumber = function() {
+	return this.weaponStore.weaponStoreList.length;
+};
+//----Setters
+GameManager.prototype.ChangeTurnToPlay = function() {
+	var i = 0;
+	while (i < this.playerStore.playerStoreList.length) {
+		if (this.playerStore.getPlayer(i).turnToPlay) {
+		this.playerStore.getPlayer(i).turnToPlay = false;
+		this.actualPlayer = this.playerStore.getPlayer(i);
+		this.displayer.changeTheme(this.actualPlayer.color);
+			if (i != this.playerStore.playerStoreList.length - 1) {
+				i++;
+			} else {
+				i = 0;
+			}
+			this.playerStore.getPlayer(i).turnToPlay = true;
+			break;
+		}
+		i++;
+	}
+}
+
+//-----Random generators
+GameManager.prototype.getRandomNumber = function(number) {
+	return Math.floor(Math.random() * (number - 1) + 1);
+};
+
+GameManager.prototype.getRandomLetter = function(number) {
+	//number is here to say : "how far must we go into the alphabet ?"
+	var letter = this.boardManager.rowLetters[this.getRandomNumber(this.boardManager.boardSize - 1)];
+	return letter;
+};
+
+GameManager.prototype.generateRandomId = function(number) {
+	var row = this.getRandomLetter(number);
+	var index = this.getRandomNumber(number);
+	var randomCellId = row + index;
+	return randomCellId;
+};
+
+//What happen when the window load :
+GameManager.prototype.launchNewGame = function() {
+	this.createDisplayer();
+	this.createBoardManager(8);
+	this.startButton.click(function() {
+		this.startGame();
+		this.playTurns();
+	}.bind(this));
+};
+
 //Creation part, before starting to play
-GameManager.prototype.createBoard = function(size) {
+GameManager.prototype.createDisplayer = function() {
+	this.displayer = new Displayer();
+};
+
+GameManager.prototype.createBoardManager = function(size) {
 	this.boardManager = new BoardManager(this.boardId);
 	this.boardManager.createBoard(size);
 	this.displayer.displayBoard(this.boardManager);
@@ -42,19 +126,16 @@ GameManager.prototype.distributeWeapons = function() {
 	}
 };
 
-GameManager.prototype.createDisplayer = function() {
-	this.displayer = new Displayer();
-};
-
 //Now that everything exist, we can put them randomly on the board
 GameManager.prototype.randomizeBoardElements = function() {
 	this.blockRandomCells();
 	this.placeWeapons();
 	this.placePlayers();
+	//everything has a place, now show it
 	this.displayer.updateBoardDisplay();
 };
 
-//And the game itself can start
+//Process of a game
 GameManager.prototype.startGame = function() {
 	this.resetGame();
 	this.createPlayers();
@@ -78,44 +159,7 @@ GameManager.prototype.endGame = function() {
 	window.location.reload();
 };
 
-GameManager.prototype.launchNewGame = function() {
-	this.createDisplayer();
-	this.createBoard(8);
-	this.startButton.click(function() {
-		this.startGame();
-		this.playTurns();
-	}.bind(this));
-};
-
-GameManager.prototype.ChangeTurnToPlay = function() {
-	var i = 0;
-	while (i < this.playerStore.playerStoreList.length) {
-		if (this.playerStore.getPlayer(i).turnToPlay) {
-		this.playerStore.getPlayer(i).turnToPlay = false;
-		this.actualPlayer = this.playerStore.getPlayer(i);
-		this.displayer.changeTheme(this.actualPlayer.color);
-			if (i != this.playerStore.playerStoreList.length - 1) {
-				i++;
-			} else {
-				i = 0;
-			}
-			this.playerStore.getPlayer(i).turnToPlay = true;
-			break;
-		}
-		i++;
-	}
-}
-
-GameManager.prototype.getPlayerAttribute = function(attribute) {
-	var i = 0;
-	var condition = this.playerStore.getPlayer(i) + attribute;
-	while (i < this.playerStore.playerStoreList.length - 1) {
-		if (condition) {
-			return this.playerStore.getPlayer(i);
-		}
-		i++;
-	}
-};
+//What happen during the game itself :
 
 GameManager.prototype.choosePlayerActions = function(requestedAction) {
 	if (this.enoughPlayersToFight()) {
@@ -145,17 +189,6 @@ GameManager.prototype.removeEvent = function(element) {
 	$(element).unbind( "click" );
 };
 
-GameManager.prototype.getDeadPlayersNumber = function() {
-	var i = 0;
-	var deadPlayersNumber = 0;
-	while (i < this.playerStore.playerStoreList.length - 1) {
-		if (this.playerStore.getPlayer(i).isAlive == false) {
-			deadPlayersNumber ++;
-		}
-	i++;
-	}
-	return deadPlayersNumber;
-};
 
 GameManager.prototype.enoughPlayersToFight = function() {
 	if (this.getDeadPlayersNumber() == this.playerStore.playerStoreList.length - 1) {
@@ -165,11 +198,10 @@ GameManager.prototype.enoughPlayersToFight = function() {
 	}
 };
 
-
 GameManager.prototype.blockRandomCells = function() {
-	var blockedCellNumber = Math.floor(Math.random() * 4) + 5;
+	var blockedCellNumber = Math.floor(Math.random() * 5) + 5;
 	for(var i = 0; i < blockedCellNumber; i ++) {
-		var randomId = this.getRandomCellId(this.boardManager.boardSize);
+		var randomId = this.attributeRandomCellId(this.boardManager.boardSize);
 		var actualCell = this.boardManager.getCellById(randomId);
 		if (actualCell.status = 'empty') {
 			actualCell.texture = 'blockedCell.png';
@@ -179,8 +211,8 @@ GameManager.prototype.blockRandomCells = function() {
 };
 
 GameManager.prototype.placeWeapons = function() {
-	for(var i = 0; i < this.getWeaponNumber(); i ++) {
-		var randomId = this.getRandomCellId(this.boardManager.boardSize);
+	for(var i = 0; i < this.getWeaponsNumber(); i ++) {
+		var randomId = this.attributeRandomCellId(this.boardManager.boardSize);
 		var actualCell = this.boardManager.getCellById(randomId);
 		if (actualCell.status = 'empty') {
 			actualCell.texture = this.weaponStore.getWeapon(i).texture;
@@ -190,8 +222,8 @@ GameManager.prototype.placeWeapons = function() {
 };
 
 GameManager.prototype.placePlayers = function() {
-	for(var i = 0; i < this.getPlayerNumber(); i ++) {
-		var randomId = this.getRandomCellId(this.boardManager.boardSize);
+	for(var i = 0; i < this.getPlayersNumber(); i ++) {
+		var randomId = this.attributeRandomCellId(this.boardManager.boardSize);
 		var actualCell = this.boardManager.getCellById(randomId);
 		if (actualCell.status = 'empty') {
 			actualCell.texture = this.playerStore.getPlayer(i).texture;
@@ -206,23 +238,8 @@ GameManager.prototype.resetGame = function() {
 	this.displayer.resetCellStatus();
 };
 
-
-
-
-//Very simple and impersonnal function, maybe for another file later
-GameManager.prototype.getRandomNumber = function(number) {
-	return Math.floor(Math.random() * (number - 1) + 1);
-};
-
-GameManager.prototype.getRandomLetter = function(number) {
-	//number is here to say : "how far must we go into the alphabet ?"
-	var letter = this.boardManager.rowLetters[this.getRandomNumber(this.boardManager.boardSize - 1)];
-	return letter;
-};
-
-
 //only unsed at board generation, not after to see if a cell is occupied
-GameManager.prototype.getRandomCellId = function(number) {
+GameManager.prototype.attributeRandomCellId = function(number) {
 	var cellId = this.generateRandomId(number);
 	//check if this cell Id is not used yet
 	for (var i = 0; i <= this.boardManager.usedCellsId.length; i++) {
@@ -236,26 +253,3 @@ GameManager.prototype.getRandomCellId = function(number) {
 	this.boardManager.addUsedCellId(cellId);
 	return cellId;
 };
-
-GameManager.prototype.generateRandomId = function(number) {
-	var row = this.getRandomLetter(number);
-	var index = this.getRandomNumber(number);
-	var randomCellId = row + index;
-	return randomCellId;
-}
-
-
-
-
-GameManager.prototype.getPlayerNumber = function() {
-	return this.playerStore.playerStoreList.length;
-};
-
-GameManager.prototype.getWeaponNumber = function() {
-	return this.weaponStore.weaponStoreList.length;
-};
-
-
-//starting the game
-var gameManager = new GameManager('#board');
-gameManager.launchNewGame();

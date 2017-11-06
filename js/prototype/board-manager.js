@@ -12,10 +12,7 @@ var BoardManager = function(place) {
 	this.rowLetters = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
 };
 
-BoardManager.prototype.addCell = function(cell) {
-	this.board.push(cell);
-};
-
+//-----Getters
 BoardManager.prototype.getCell = function(cellIndex) {
 	return this.board[cellIndex];
 };
@@ -28,6 +25,24 @@ BoardManager.prototype.getCellById = function(id) {
 	}
 };
 
+BoardManager.prototype.getUsedCellId = function(index) {
+	return this.usedCellsId[index];
+};
+
+//-----Setters
+BoardManager.prototype.resetUsedCellList = function() {
+	this.usedCellsId = [];
+}
+
+BoardManager.prototype.addUsedCellId = function(cellId) {
+	this.usedCellsId.push(cellId);
+};
+
+BoardManager.prototype.addCell = function(cell) {
+	this.board.push(cell);
+};
+
+//-----Other methods
 BoardManager.prototype.createBoard = function(boardSize) {
 	this.boardSize = boardSize;
 	for (var rowIndex = 0; rowIndex < boardSize; rowIndex++) {
@@ -40,15 +55,3 @@ BoardManager.prototype.createBoard = function(boardSize) {
 
 	}
 };
-
-BoardManager.prototype.addUsedCellId = function(cellId) {
-	this.usedCellsId.push(cellId);
-};
-
-BoardManager.prototype.getUsedCellId = function(index) {
-	return this.usedCellsId[index];
-};
-
-BoardManager.prototype.resetUsedCellList = function() {
-	this.usedCellsId = [];
-}
