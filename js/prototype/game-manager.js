@@ -13,8 +13,8 @@ GameManager.prototype.createBoard = function(size) {
 };
 
 GameManager.prototype.createPlayers = function() {
-	var playerRed = new Player('Joueur Rouge', this.getRandomCellId(this.boardManager.boardSize), 'red', true, 'red-background.png');
-	var playerBlue = new Player('Joueur Bleu', this.getRandomCellId(this.boardManager.boardSize), 'blue', false, 'blue-background.png');
+	var playerRed = new Player('Joueur Rouge', 'red', true, 'red-background.png');
+	var playerBlue = new Player('Joueur Bleu', 'blue', false, 'blue-background.png');
 
 	this.playerStore = new PlayerStore();
 	this.playerStore.addPlayer(playerRed);
@@ -22,10 +22,10 @@ GameManager.prototype.createPlayers = function() {
 };
 
 GameManager.prototype.createWeapons = function() {
-	var bat = new Weapon('Batte', 10, 'bat.png', this.getRandomCellId(this.boardManager.boardSize));
-	var knife = new Weapon('Couteau', 10, 'knife.png', this.getRandomCellId(this.boardManager.boardSize));
-	var shovel = new Weapon('Pelle', 20, 'shovel.png', this.getRandomCellId(this.boardManager.boardSize));
-	var axe = new Weapon('Hache', 25, 'axe.png', this.getRandomCellId(this.boardManager.boardSize));
+	var bat = new Weapon('Batte', 10, 'bat.png');
+	var knife = new Weapon('Couteau', 10, 'knife.png');
+	var shovel = new Weapon('Pelle', 20, 'shovel.png');
+	var axe = new Weapon('Hache', 25, 'axe.png');
 
 	this.weaponStore = new WeaponStore();
 	this.weaponStore.addWeapon(bat);
@@ -49,7 +49,9 @@ GameManager.prototype.createDisplayer = function() {
 //Now that everything exist, we can put them randomly on the board
 GameManager.prototype.randomizeBoardElements = function() {
 	this.blockRandomCells();
-	this.displayer.updateCellStatus();
+	this.placeWeapons();
+	this.placePlayers();
+	this.displayer.updateBoardDisplay();
 };
 
 //And the game itself can start
@@ -166,11 +168,8 @@ GameManager.prototype.enoughPlayersToFight = function() {
 
 GameManager.prototype.blockRandomCells = function() {
 	var blockedCellNumber = Math.floor(Math.random() * 4) + 5;
-
 	for(var i = 0; i < blockedCellNumber; i ++) {
-
 		var randomId = this.getRandomCellId(this.boardManager.boardSize);
-		console.log('Id renvoyé: ' + randomId);
 		var actualCell = this.boardManager.getCellById(randomId);
 		if (actualCell.status = 'empty') {
 			actualCell.texture = 'blockedCell.png';
@@ -179,6 +178,27 @@ GameManager.prototype.blockRandomCells = function() {
 	}
 };
 
+GameManager.prototype.placeWeapons = function() {
+	for(var i = 0; i < this.getWeaponNumber(); i ++) {
+		var randomId = this.getRandomCellId(this.boardManager.boardSize);
+		var actualCell = this.boardManager.getCellById(randomId);
+		if (actualCell.status = 'empty') {
+			actualCell.texture = this.weaponStore.getWeapon(i).texture;
+			actualCell.status = 'has-player';
+		}
+	}
+};
+
+GameManager.prototype.placePlayers = function() {
+	for(var i = 0; i < this.getPlayerNumber(); i ++) {
+		var randomId = this.getRandomCellId(this.boardManager.boardSize);
+		var actualCell = this.boardManager.getCellById(randomId);
+		if (actualCell.status = 'empty') {
+			actualCell.texture = this.playerStore.getPlayer(i).texture;
+			actualCell.status = 'has-player';
+		}
+	}
+};
 
 GameManager.prototype.resetGame = function() {
 	this.removeEvent(this.boardId);
@@ -191,8 +211,7 @@ GameManager.prototype.resetGame = function() {
 
 //Very simple and impersonnal function, maybe for another file later
 GameManager.prototype.getRandomNumber = function(number) {
-	var number = Math.floor(Math.random() * number + 1);
-	return number;
+	return Math.floor(Math.random() * (number - 1) + 1);
 };
 
 GameManager.prototype.getRandomLetter = function(number) {
@@ -210,7 +229,7 @@ GameManager.prototype.getRandomCellId = function(number) {
 		//if this id had already been given
 		if (cellId == this.boardManager.getUsedCellId(i)) {
 			//we set a new value
-			cellId = this.generateRandomId();
+			cellId = this.generateRandomId(number);
 		}
 	}
 	//we add the new id to the "used" list and we return it

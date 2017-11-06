@@ -1,6 +1,6 @@
-var Weapon = function(name, damage, texture, cell) {
+var Weapon = function(name, damage, texture) {
 	this.name = name;
 	this.damage = damage;
 	this.texture = texture;
-	this.cell = cell;
+	this.cell = '';
 };
