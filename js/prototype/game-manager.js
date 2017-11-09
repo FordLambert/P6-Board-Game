@@ -71,7 +71,7 @@ GameManager.prototype.getRandomLetter = function(number) {
 GameManager.prototype.generateRandomId = function(number) {
 	var row = this.getRandomLetter(number);
 	var index = this.getRandomNumber(number);
-	var randomCellId = row + index;
+	var randomCellId = row + '-' + index;
 	return randomCellId;
 };
 
@@ -164,7 +164,10 @@ GameManager.prototype.endGame = function() {
 GameManager.prototype.choosePlayerActions = function(requestedAction) {
 	if (this.enoughPlayersToFight()) {
 		if (requestedAction == 'move') {
-			this.actualPlayer.move();
+
+			this.displayer.displayAccessiblesCells(this.getAccessiblesCells());
+			this.actualPlayer.move(this.getAccessiblesCells());
+
 		} else if (requestedAction == 'combat') {
 
 			this.actionsButtons.click(function(e) {
@@ -228,6 +231,7 @@ GameManager.prototype.placePlayers = function() {
 		if (actualCell.status = 'empty') {
 			actualCell.texture = this.playerStore.getPlayer(i).texture;
 			actualCell.status = 'has-player';
+			this.playerStore.getPlayer(i).cell = randomId;
 		}
 	}
 };
@@ -252,4 +256,42 @@ GameManager.prototype.attributeRandomCellId = function(number) {
 	//we add the new id to the "used" list and we return it
 	this.boardManager.addUsedCellId(cellId);
 	return cellId;
+};
+
+GameManager.prototype.getAccessiblesCells = function() {
+	var actualCell = this.actualPlayer.cell;
+
+	var actualCellId = actualCell.split("-");
+	var actualRow = actualCellId[0];
+	var actualColumn = parseInt(actualCellId[1], 10);
+
+	console.log(actualRow);
+	console.log(actualColumn);
+
+	var accessiblesCellsList = [];
+
+	//next cells:
+	var nextCell = (actualRow + '-' + (actualColumn + 1));
+	console.log('Après: ' + nextCell);
+	accessiblesCellsList.push(nextCell);
+
+	//previous cells: 
+	var previousCell = (actualRow + '-' + (actualColumn - 1));
+	console.log('Avant: ' + previousCell);
+	accessiblesCellsList.push(previousCell);
+
+	//upper cells:
+	var upperRow = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) - 1];
+	var upperCell = (upperRow + '-' + actualColumn);
+	console.log('au dessus: ' + upperCell);
+	accessiblesCellsList.push(upperCell);
+
+	//down cells:
+	var downRow = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) + 1];
+	var downCell = (downRow + '-' + actualColumn);
+	console.log('En dessous: ' + downCell);
+	accessiblesCellsList.push(downCell);
+
+
+	return accessiblesCellsList;
 };

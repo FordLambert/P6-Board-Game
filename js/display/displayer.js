@@ -75,3 +75,12 @@ Displayer.prototype.resetCellStatus = function() {
 	}
 	this.updateBoardDisplay();
 };
+
+Displayer.prototype.displayAccessiblesCells = function(accessiblesCellsList) {
+	for (var i = 0; i < accessiblesCellsList.length; i++) {
+
+		var accessibleCell = $('#' + gameManager.boardManager.getCellById(accessiblesCellsList[i]));
+		accessibleCell.attr('class', 'accessible' +  ' ' + gameManager.boardManager.getCell(i).status);
+
+	}
+};

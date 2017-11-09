@@ -49,7 +49,7 @@ BoardManager.prototype.createBoard = function(boardSize) {
 		var letterIndex = this.rowLetters[rowIndex];
 
 		for (var cellIndex = 1; cellIndex <= boardSize; cellIndex++) {
-			var cell = new Cell(letterIndex + cellIndex);
+			var cell = new Cell(letterIndex + '-' + cellIndex);
 			this.addCell(cell);
 		}
 

@@ -10,7 +10,7 @@ var Player = function(name, color, turnToPlay, texture) {
 
 };
 
-Player.prototype.move = function move(direction) {
+Player.prototype.move = function move(accessiblesCellsList) {
 	$('#board').click(function() {
 		console.log('Le ' + this.name + ' se déplace');
 		gameManager.choosePlayerActions('combat');
