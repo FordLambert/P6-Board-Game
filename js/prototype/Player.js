@@ -24,6 +24,15 @@ Player.prototype.move = function move(accessiblesCellsList) {
 			gameManager.boardManager.resetCell(player.cell);
 			//we set the new one
 			player.cell = $(this).attr('id');
+			//is there a weapon on this cell ?
+			var newWeapon = gameManager.boardManager.checkAndReturnWeapon(player.cell);
+			//if yes : take it and let your's here
+			if (typeof underCell != 'undefined') {
+				player.weapon.cell = player.cell
+				player.weapon = newWeapon;
+				player.weapon.cell = '';
+			}
+
 			//then we inform the manager that we have moved
 			gameManager.organiseMovingState('has-moved', accessiblesCellsList);
 			gameManager.removeEvent('.cell');

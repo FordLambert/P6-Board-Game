@@ -41,10 +41,12 @@ GameManager.prototype.getWeaponsNumber = function() {
 GameManager.prototype.ChangeTurnToPlay = function() {
 	var i = 0;
 	while (i < this.playerStore.playerStoreList.length) {
-		if (this.playerStore.getPlayer(i).turnToPlay) {
-		this.playerStore.getPlayer(i).turnToPlay = false;
-		this.actualPlayer = this.playerStore.getPlayer(i);
-		this.displayer.changeTheme(this.actualPlayer.color);
+		var player = this.playerStore.getPlayer(i)
+		if (player.turnToPlay) {
+		console.log(player.name + player.turnToPlay);
+		player.turnToPlay = false;
+		this.actualPlayer = player;
+		this.displayer.changeTheme(player.color);
 			if (i != this.playerStore.playerStoreList.length - 1) {
 				i++;
 			} else {
@@ -331,6 +333,7 @@ GameManager.prototype.organiseMovingState = function(status, cellList) {
 		this.actualPlayer.move(cellList);
 	} else if (status == 'has-moved') {
 		this.boardManager.checkPlayerPresence();
+		this.boardManager.checkWeaponPresence();
 		this.displayer.toggleAccessiblesCells(cellList);
 		this.displayer.updateBoardDisplay();
 		this.choosePlayerActions('combat');

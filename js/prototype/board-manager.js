@@ -74,3 +74,24 @@ BoardManager.prototype.checkPlayerPresence = function() {
 		}
 	}
 };
+
+BoardManager.prototype.checkWeaponPresence = function() {
+	for (var i = 0; i < this.board.length; i++) {
+		var cell = this.getCell(i);
+		for (var p = 0; p < gameManager.getWeaponsNumber(); p ++) {
+			var weapon = gameManager.weaponStore.getWeapon(p);
+			if (cell.Id == weapon.cell) {
+			    cell.texture = weapon.texture;
+			}
+		}
+	}
+};
+
+BoardManager.prototype.checkAndReturnWeapon = function(cellId) {
+	for (var i = 0; i < gameManager.getWeaponsNumber(); i++) {
+		var weapon = gameManager.weaponStore.getWeapon(i);
+		if (cellId == weapon.cell) {
+			return weapon;
+		}
+	}
+};
