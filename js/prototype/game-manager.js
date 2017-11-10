@@ -164,9 +164,7 @@ GameManager.prototype.endGame = function() {
 GameManager.prototype.choosePlayerActions = function(requestedAction) {
 	if (this.enoughPlayersToFight()) {
 		if (requestedAction == 'move') {
-			this.displayer.toggleAccessiblesCells(this.getAccessibleCellList());
-			this.actualPlayer.move();
-
+			this.organiseMovingState('start-moving', this.getAccessibleCellList());
 		} else if (requestedAction == 'combat') {
 
 			this.actionsButtons.click(function(e) {
@@ -326,3 +324,15 @@ GameManager.prototype.getAccessibleCellList = function() {
 
 	return accessibleCells;
 };
+
+GameManager.prototype.organiseMovingState = function(status, cellList) {
+	if (status == 'start-moving') {
+		this.displayer.toggleAccessiblesCells(cellList);
+		this.actualPlayer.move(cellList);
+	} else if (status == 'has-moved') {
+		this.displayer.toggleAccessiblesCells(cellList);
+		this.choosePlayerActions('combat');
+	}
+	
+
+}
