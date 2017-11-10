@@ -1,5 +1,6 @@
 var Player = function(name, color, turnToPlay, texture) {
 	this.name = name;
+	this.movement = 3,
 	this.cell = '';
 	this.weapon = {};
 	this.life = 100;

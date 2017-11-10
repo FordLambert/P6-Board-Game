@@ -164,9 +164,8 @@ GameManager.prototype.endGame = function() {
 GameManager.prototype.choosePlayerActions = function(requestedAction) {
 	if (this.enoughPlayersToFight()) {
 		if (requestedAction == 'move') {
-
-			this.displayer.displayAccessiblesCells(this.getAccessiblesCells());
-			this.actualPlayer.move(this.getAccessiblesCells());
+			this.displayer.toggleAccessiblesCells(this.getAccessibleCellList());
+			this.actualPlayer.move();
 
 		} else if (requestedAction == 'combat') {
 
@@ -258,40 +257,72 @@ GameManager.prototype.attributeRandomCellId = function(number) {
 	return cellId;
 };
 
-GameManager.prototype.getAccessiblesCells = function() {
-	var actualCell = this.actualPlayer.cell;
 
-	var actualCellId = actualCell.split("-");
+//this part need to be shortened, I repeat myself a lot here
+GameManager.prototype.getAccessibleCellList = function() {
+
+	var accessibleCells = [];
+
+	var actualCellId = this.actualPlayer.cell.split("-");
+
 	var actualRow = actualCellId[0];
 	var actualColumn = parseInt(actualCellId[1], 10);
 
-	console.log(actualRow);
-	console.log(actualColumn);
-
-	var accessiblesCellsList = [];
-
 	//next cells:
-	var nextCell = (actualRow + '-' + (actualColumn + 1));
-	console.log('Après: ' + nextCell);
-	accessiblesCellsList.push(nextCell);
+	for (var i = 1; i <= this.actualPlayer.movement; i++) {
+		var nextCellsIds = actualRow + '-' + (actualColumn + i);
+		var nextCell = this.boardManager.getCellById(nextCellsIds);
 
-	//previous cells: 
-	var previousCell = (actualRow + '-' + (actualColumn - 1));
-	console.log('Avant: ' + previousCell);
-	accessiblesCellsList.push(previousCell);
+		if (typeof nextCell != 'undefined') {
+			if ((nextCell.status == 'empty') || (nextCell.status == 'has-weapon')) {
+				accessibleCells.push(nextCell.Id);
+			} else {
+				break;
+			}
+		}
+	}
 
+	//previous cells:
+	for (var i = 1; i <= this.actualPlayer.movement; i++) {
+		var previousCellsIds = actualRow + '-' + (actualColumn - i);
+		var previousCell = this.boardManager.getCellById(previousCellsIds);
+
+		if (typeof previousCell != 'undefined') {
+			if ((previousCell.status == 'empty') || (previousCell.status == 'has-weapon'))  {
+				accessibleCells.push(previousCell.Id);
+			} else {
+				break;
+			}
+		}
+	}
+	
 	//upper cells:
-	var upperRow = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) - 1];
-	var upperCell = (upperRow + '-' + actualColumn);
-	console.log('au dessus: ' + upperCell);
-	accessiblesCellsList.push(upperCell);
+	for (var i = 1; i <= this.actualPlayer.movement; i++) {
+		var upperCellsIds = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) - i] + '-' + actualColumn;
+		var upperCell = this.boardManager.getCellById(upperCellsIds);
 
-	//down cells:
-	var downRow = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) + 1];
-	var downCell = (downRow + '-' + actualColumn);
-	console.log('En dessous: ' + downCell);
-	accessiblesCellsList.push(downCell);
+		if (typeof upperCell != 'undefined') {
+			if ((upperCell.status == 'empty') || (upperCell.status == 'has-weapon'))  {
+				accessibleCells.push(upperCell.Id);
+			} else {
+				break;
+			}
+		}
+	}
 
+	//under cells:
+	for (var i = 1; i <= this.actualPlayer.movement; i++) {
+		var underCellsIds = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) + i] + '-' + actualColumn;
+		var underCell = this.boardManager.getCellById(underCellsIds);
 
-	return accessiblesCellsList;
+		if (typeof underCell != 'undefined') {
+			if ((underCell.status == 'empty') || (underCell.status == 'has-weapon'))  {
+				accessibleCells.push(underCell.Id);
+			} else {
+				break;
+			}
+		}
+	}
+
+	return accessibleCells;
 };

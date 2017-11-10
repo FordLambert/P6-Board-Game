@@ -85,6 +85,10 @@ button {
     background-size: cover;
 }
 
+.accessible {
+	border: 2px dashed yellow;
+}
+
 #board {
 	background-image: url(../pictures/blackboard.png);
 	background-size: contain;
