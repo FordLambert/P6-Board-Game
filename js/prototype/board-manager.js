@@ -42,6 +42,12 @@ BoardManager.prototype.addCell = function(cell) {
 	this.board.push(cell);
 };
 
+BoardManager.prototype.resetCell = function(cellId) {
+	cell = this.getCellById(cellId)
+	cell.texture = '';
+	cell.status = 'empty';
+};
+
 //-----Other methods
 BoardManager.prototype.createBoard = function(boardSize) {
 	this.boardSize = boardSize;
@@ -53,5 +59,18 @@ BoardManager.prototype.createBoard = function(boardSize) {
 			this.addCell(cell);
 		}
 
+	}
+};
+
+BoardManager.prototype.checkPlayerPresence = function() {
+	for (var i = 0; i < this.board.length; i++) {
+		var cell = this.getCell(i);
+		for (var p = 0; p < gameManager.getPlayersNumber(); p ++) {
+			var player = gameManager.playerStore.getPlayer(p);
+			if (cell.Id == player.cell) {
+			    cell.texture = player.texture;
+			    cell.status = 'has-player';
+			}
+		}
 	}
 };

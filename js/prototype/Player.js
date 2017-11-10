@@ -11,12 +11,25 @@ var Player = function(name, color, turnToPlay, texture) {
 
 };
 
+//the manager tell were the player can move (array list of Id)
 Player.prototype.move = function move(accessiblesCellsList) {
-	$('#board').click(function() {
-		console.log('Le ' + this.name + ' se déplace');
-		gameManager.organiseMovingState('has-moved', accessiblesCellsList);
-		gameManager.removeEvent('#board');
-	}.bind(this));
+
+	//just to keep the context
+	var player = this;
+
+	for (var i = 0; i < accessiblesCellsList.length; i++) {
+		//if the user choose this cell for his move
+		$('#' + accessiblesCellsList[i]).click(function() {
+			//we remove the old position information
+			gameManager.boardManager.resetCell(player.cell);
+			//we set the new one
+			player.cell = $(this).attr('id');
+			//then we inform the manager that we have moved
+			gameManager.organiseMovingState('has-moved', accessiblesCellsList);
+			gameManager.removeEvent('.cell');
+
+		});
+	}
 };
 
 Player.prototype.pickUp = function(weapon) {

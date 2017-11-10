@@ -216,7 +216,7 @@ GameManager.prototype.placeWeapons = function() {
 		var actualCell = this.boardManager.getCellById(randomId);
 		if (actualCell.status = 'empty') {
 			actualCell.texture = this.weaponStore.getWeapon(i).texture;
-			actualCell.status = 'has-player';
+			actualCell.status = 'has-weapon';
 		}
 	}
 };
@@ -330,9 +330,9 @@ GameManager.prototype.organiseMovingState = function(status, cellList) {
 		this.displayer.toggleAccessiblesCells(cellList);
 		this.actualPlayer.move(cellList);
 	} else if (status == 'has-moved') {
+		this.boardManager.checkPlayerPresence();
 		this.displayer.toggleAccessiblesCells(cellList);
+		this.displayer.updateBoardDisplay();
 		this.choosePlayerActions('combat');
 	}
-	
-
 }
