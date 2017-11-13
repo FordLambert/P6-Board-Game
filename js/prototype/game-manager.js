@@ -107,6 +107,7 @@ GameManager.prototype.createPlayers = function() {
 };
 
 GameManager.prototype.createWeapons = function() {
+
 	var bat1 = new Weapon('Batte', 10, 'bat.png');
 	var bat2 = new Weapon('Batte', 10, 'bat.png');
 	var knife = new Weapon('Couteau', 8, 'knife.png');
@@ -343,8 +344,8 @@ GameManager.prototype.organiseMovingState = function(status, cellList) {
 		this.displayer.toggleAccessiblesCells(cellList);
 		this.actualPlayer.move(cellList);
 	} else if (status == 'has-moved') {
-		this.boardManager.checkPlayerPresence();
 		this.boardManager.checkWeaponPresence();
+		this.boardManager.checkPlayerPresence();
 		this.displayer.toggleAccessiblesCells(cellList);
 		this.displayer.updateBoardDisplay();
 		this.choosePlayerActions('combat');

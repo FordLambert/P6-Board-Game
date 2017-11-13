@@ -82,6 +82,7 @@ BoardManager.prototype.checkWeaponPresence = function() {
 			var weapon = gameManager.weaponStore.getWeapon(p);
 			if (cell.Id == weapon.cell) {
 			    cell.texture = weapon.texture;
+			    cell.status = 'has-weapon';
 			}
 		}
 	}
