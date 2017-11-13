@@ -235,16 +235,36 @@ GameEngine.prototype.placeWeapons = function() {
 	}
 };
 
-GameEngine.prototype.placePlayers = function() {
+GameEngine.prototype.placePlayers = function(player) {
+
 	for(var i = 0; i < this.getPlayersNumber(); i ++) {
-		var randomid = this.attributeRandomCellid(this.boardManager.boardSize);
-		var actualCell = this.boardManager.getCellByid(randomid);
-		if (actualCell.status = 'empty') {
-			actualCell.texture = this.playerStore.getPlayer(i).texture;
-			actualCell.status = 'has-player';
-			this.playerStore.getPlayer(i).cell = randomid;
+
+		var actualPlayer = this.playerStore.getPlayer(i);
+		var cell = this.getSafeCell();
+
+		cell.texture = actualPlayer.texture;
+		cell.status = 'has-player';
+		actualPlayer.cell = cell.id;
+	}
+};
+
+GameEngine.prototype.getSafeCell = function() {
+
+	var i = 0;
+	while (i != 1) {
+
+		var randomId = this.attributeRandomCellid(this.boardManager.boardSize);
+		var safeCell = this.boardManager.getCellByid(randomId);
+		var surroundingCellsList = this.getSurroundingCells(safeCell.id);
+
+		if ((this.checkEnnemyProximity(surroundingCellsList)) || (safeCell.status != 'empty')) {
+			//do nothing
+		} else {
+			//we can get out the loop with a really safe cell
+			i++
 		}
 	}
+	return safeCell;
 };
 
 GameEngine.prototype.resetGame = function() {
@@ -351,4 +371,45 @@ GameEngine.prototype.organiseMovingState = function(status, cellList) {
 		this.gameEffectManager.updateBoardDisplay();
 		this.choosePlayerActions('combat');
 	}
+}
+
+GameEngine.prototype.checkEnnemyProximity = function(surroundingCellsList) {
+
+	for (var listIndex = 0; listIndex < surroundingCellsList.length; listIndex++) {
+
+		var cell = this.boardManager.getCellByid(surroundingCellsList[listIndex])
+
+		if ((typeof cell != 'undefined') && (cell.status == 'has-player')) {
+			return true;
+		}
+
+	}
+};
+
+GameEngine.prototype.getSurroundingCells = function(cellId) {
+
+	var splitCellId = cellId.split("-");
+
+	var actualRow = splitCellId[0];
+	var previousRow = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) - 1];
+	var nextRow = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) + 1];
+
+	var previousColumnNumber = parseInt(splitCellId[1], 10) - 1;
+	var actualColumnNumber = parseInt(splitCellId[1], 10);
+	var nextColumnNumber = parseInt(splitCellId[1], 10) + 1;
+
+	//checking the cell just on top of this one and moving around from left to right
+
+	var surroundingCellList = [
+		(previousRow + '-' + actualColumnNumber),
+		(previousRow + '-' + nextColumnNumber),
+		(actualRow + '-' + nextColumnNumber),
+		(nextRow + '-' + nextColumnNumber),
+		(nextRow + '-' + actualColumnNumber),
+		(nextRow + '-' + previousColumnNumber),
+		(actualRow + '-' + previousColumnNumber),
+		(previousRow + '-' + previousColumnNumber)
+	];
+
+	return surroundingCellList;
 }

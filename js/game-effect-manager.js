@@ -31,7 +31,7 @@ GameEffectManager.prototype.getNewBgClass = function(color) {
 
 GameEffectManager.prototype.displayBoard = function() {
 
-	for (var i = 0; i < this.boardManager.board.length; i ++) {
+	for (var i = 0; i < this.boardManager.board.length; i++) {
 		var newCell = this.boardManager.getCell(i);
 		newCell = $('<div>').addClass('cell').attr('id', newCell.id);
 		$(this.boardManager.divId).append(newCell);
@@ -39,7 +39,7 @@ GameEffectManager.prototype.displayBoard = function() {
 };
 
 GameEffectManager.prototype.updateBoardDisplay = function() {	
-	for (var i = 0; i < this.boardManager.board.length; i ++) {
+	for (var i = 0; i < this.boardManager.board.length; i++) {
 		var actualCell = $('#' + this.boardManager.getCell(i).id);
 		actualCell.css('background-image', 'url(pictures/' + this.boardManager.getCell(i).texture + ')');
 		actualCell.attr('class', 'cell' +  ' ' + this.boardManager.getCell(i).status);

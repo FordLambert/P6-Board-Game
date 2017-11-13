@@ -65,7 +65,7 @@ BoardManager.prototype.createBoard = function(boardSize) {
 BoardManager.prototype.checkPlayerPresence = function() {
 	for (var i = 0; i < this.board.length; i++) {
 		var cell = this.getCell(i);
-		for (var p = 0; p < gameEngine.getPlayersNumber(); p ++) {
+		for (var p = 0; p < gameEngine.getPlayersNumber(); p++) {
 			var player = gameEngine.playerStore.getPlayer(p);
 			if (cell.id == player.cell) {
 			    cell.texture = player.texture;
@@ -78,7 +78,7 @@ BoardManager.prototype.checkPlayerPresence = function() {
 BoardManager.prototype.checkWeaponPresence = function() {
 	for (var i = 0; i < this.board.length; i++) {
 		var cell = this.getCell(i);
-		for (var p = 0; p < gameEngine.getWeaponsNumber(); p ++) {
+		for (var p = 0; p < gameEngine.getWeaponsNumber(); p++) {
 			var weapon = gameEngine.weaponStore.getWeapon(p);
 			if (cell.id == weapon.cell) {
 			    cell.texture = weapon.texture;
