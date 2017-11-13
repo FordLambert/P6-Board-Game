@@ -122,6 +122,17 @@ button {
 	margin-bottom: 15px;
 }
 
+.display-area {
+	height: 60vh;
+	color: white;
+	font-family: 'Annie Use Your Telescope', cursive;
+	background-size: cover;
+	background-image: url(../pictures/display-background.png);
+	padding: 15px;
+	margin-right: 15px;
+	overflow: auto;
+}
+
 /*actions buttons*/
 .actions-block {
 	padding-top: 15px;

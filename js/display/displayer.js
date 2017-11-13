@@ -58,14 +58,23 @@ Displayer.prototype.toggleAccessiblesCells = function(cellIdList) {
 	}
 };
 
-Displayer.prototype.displayGameInfos = function(player) {
+Displayer.prototype.displayPlayersInfos = function(player) {
 
-	this.displayBoxId = ('#' + player.color);
-	var lifeBar = $(this.displayBoxId).find('.life');
-	var activeWeapon = $(this.displayBoxId).find('.weapon');
-	var weaponStat = $(this.displayBoxId).find('.weapon-stat');
+	this.playerDisplayBoxId = ('#' + player.color);
+	var lifeBar = $(this.playerDisplayBoxId).find('.life');
+	var activeWeapon = $(this.playerDisplayBoxId).find('.weapon');
+	var weaponStat = $(this.playerDisplayBoxId).find('.weapon-stat');
 
 	lifeBar.text(player.life + '/100 pv');
 	activeWeapon.text('Arme : ' + player.weapon.name);
 	weaponStat.text('Dégats : ' + player.weapon.damage);
+};
+
+Displayer.prototype.displayGameInfos = function(info) {
+	this.displayArea = $('.display-area');
+	this.displayArea.append('<p>' + info + '</p>');
+
+    var pos = this.displayArea.scrollTop();
+    this.displayArea.scrollTop(pos + 50);
+
 };

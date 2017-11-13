@@ -142,13 +142,14 @@ GameManager.prototype.randomizeBoardElements = function() {
 
 //Process of a game
 GameManager.prototype.startGame = function() {
+	this.displayer.displayGameInfos('Début de la partie !');
 	this.resetGame();
 	this.createPlayers();
 	this.createWeapons();
 	this.distributeWeapons();
 	this.randomizeBoardElements();
 	for (var i = 0; i < this.getPlayersNumber(); i++) {
-		this.displayer.displayGameInfos(this.playerStore.getPlayer(i));
+		this.displayer.displayPlayersInfos(this.playerStore.getPlayer(i));
 	}
 };
 
@@ -171,7 +172,7 @@ GameManager.prototype.endGame = function() {
 
 GameManager.prototype.choosePlayerActions = function(requestedAction) {
 
-	this.displayer.displayGameInfos(this.actualPlayer);
+	this.displayer.displayPlayersInfos(this.actualPlayer);
 
 	if (this.enoughPlayersToFight()) {
 		if (requestedAction == 'move') {

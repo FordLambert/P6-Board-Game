@@ -24,6 +24,8 @@ Player.prototype.move = function move(accessiblesCellsList) {
 			gameManager.boardManager.resetCell(player.cell);
 			//we set the new one
 			player.cell = $(this).attr('id');
+
+			gameManager.displayer.displayGameInfos(player.name + ' se déplace en ' + player.cell);
 			//is there a weapon on this cell ?
 
 			var newWeapon = gameManager.boardManager.checkAndReturnWeapon(player.cell);
@@ -44,7 +46,7 @@ Player.prototype.pickUp = function(weapon) {
 	this.weapon.cell = this.cell
 	this.weapon = weapon;
 	this.weapon.cell = '';
-	console.log(this.name + ' a ramassé l\'arme "' + this.weapon.name + '"');
+	gameManager.displayer.displayGameInfos(this.name + ' a ramassé l\'arme "' + this.weapon.name + '"');
 };
 
 Player.prototype.shoot = function() {
