@@ -3,6 +3,7 @@ var GameEffectManager = function(boardManager) {
 	this.boardManager = boardManager;
 	this.$actionButton = $('.action-button');
 	this.$changingBackground = $('.progress-bar');
+	this.$displayArea = $('.display-area');
 };
 
 GameEffectManager.prototype.changeTheme = function(color) {
@@ -46,6 +47,8 @@ GameEffectManager.prototype.updateBoardDisplay = function() {
 	}
 };
 
+
+//the name will need to be changed, it reset more stuff now.
 GameEffectManager.prototype.resetCellStatus = function() {
 	//to avoid conflict between the JQuery and object 'this'
 	var boardManager = this.boardManager;
@@ -54,6 +57,8 @@ GameEffectManager.prototype.resetCellStatus = function() {
 		boardManager.resetCell($(this).attr('id'))
 	});
 	this.updateBoardDisplay();
+
+	this.$displayArea.html('<h2>Déroulement de la partie:</h2>');
 };
 
 GameEffectManager.prototype.toggleAccessiblesCells = function(cellidList) {
@@ -75,7 +80,6 @@ GameEffectManager.prototype.displayPlayersInfos = function(player) {
 };
 
 GameEffectManager.prototype.displayGameInfos = function(info) {
-	this.$displayArea = $('.display-area');
 	this.$displayArea.append('<p>' + info + '</p>');
 
 	//This scroll down a little bit more each time

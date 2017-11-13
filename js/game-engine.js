@@ -142,8 +142,8 @@ GameEngine.prototype.randomizeBoardElements = function() {
 
 //Process of a game
 GameEngine.prototype.startGame = function() {
-	this.gameEffectManager.displayGameInfos('Début de la partie !');
 	this.resetGame();
+	this.gameEffectManager.displayGameInfos('Début de la partie !');
 	this.createPlayers();
 	this.createWeapons();
 	this.distributeWeapons();
