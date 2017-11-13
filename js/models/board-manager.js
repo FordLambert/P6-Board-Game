@@ -4,11 +4,11 @@ var Cell = function(id) {
 	this.status = 'empty';
 };
 
-var BoardManager = function(place) {
+var BoardManager = function(divId) {
 	this.board = [];
 	//usedCells used when the engine start a game for not using twice the same cell on random placement
 	this.usedCellsid = [];
-	this.place = place;
+	this.divId = divId;
 	this.rowLetters = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
 };
 

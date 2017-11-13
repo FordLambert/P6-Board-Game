@@ -1,15 +1,15 @@
 //if a function whatsoever had an impact on what the user see, it should be here 
 var GameEffectManager = function(boardManager) {
 	this.boardManager = boardManager;
-	this.actionButton = $('.action-button');
-	this.changingBackground = $('.progress-bar');
+	this.$actionButton = $('.action-button');
+	this.$changingBackground = $('.progress-bar');
 };
 
 GameEffectManager.prototype.changeTheme = function(color) {
-	this.changingBackground.attr('class', 'progress-bar progress-bar-striped active');
-	this.changingBackground.addClass(this.getNewBgClass(color));
-	this.actionButton.attr('class', 'col-md-4 actions-buttons');
-	this.actionButton.addClass(color);
+	this.$changingBackground.attr('class', 'progress-bar progress-bar-striped active');
+	this.$changingBackground.addClass(this.getNewBgClass(color));
+	this.$actionButton.attr('class', 'col-md-4 actions-buttons');
+	this.$actionButton.addClass(color);
 };
 
 GameEffectManager.prototype.getNewBgClass = function(color) {
@@ -28,18 +28,14 @@ GameEffectManager.prototype.getNewBgClass = function(color) {
 	return strippedColor;
 
 };
+
 GameEffectManager.prototype.displayBoard = function() {
 
 	for (var i = 0; i < this.boardManager.board.length; i ++) {
 		var newCell = this.boardManager.getCell(i);
 		newCell = $('<div>').addClass('cell').attr('id', newCell.id);
-		$(this.boardManager.place).append(newCell);
-
+		$(this.boardManager.divId).append(newCell);
 	}
-
-	//to remove
-	var h = $('.cell:last-of-type').width();
-	$('.cell').css({height: h, lineHeight: h + 'px'});
 };
 
 GameEffectManager.prototype.updateBoardDisplay = function() {	
@@ -51,7 +47,6 @@ GameEffectManager.prototype.updateBoardDisplay = function() {
 };
 
 GameEffectManager.prototype.resetCellStatus = function() {
-
 	//to avoid conflict between the JQuery and object 'this'
 	var boardManager = this.boardManager;
 
@@ -70,20 +65,21 @@ GameEffectManager.prototype.toggleAccessiblesCells = function(cellidList) {
 GameEffectManager.prototype.displayPlayersInfos = function(player) {
 
 	this.playerDisplayBoxid = ('#' + player.color);
-	var lifeBar = $(this.playerDisplayBoxid).find('.life');
-	var activeWeapon = $(this.playerDisplayBoxid).find('.weapon');
-	var weaponStat = $(this.playerDisplayBoxid).find('.weapon-stat');
+	var $lifeBar = $(this.playerDisplayBoxid).find('.life');
+	var $activeWeapon = $(this.playerDisplayBoxid).find('.weapon');
+	var $weaponStat = $(this.playerDisplayBoxid).find('.weapon-stat');
 
-	lifeBar.text(player.life + '/100 pv');
-	activeWeapon.text('Arme : ' + player.weapon.name);
-	weaponStat.text('Dégats : ' + player.weapon.damage);
+	$lifeBar.text(player.life + '/100 pv');
+	$activeWeapon.text('Arme : ' + player.weapon.name);
+	$weaponStat.text('Dégats : ' + player.weapon.damage);
 };
 
 GameEffectManager.prototype.displayGameInfos = function(info) {
-	this.displayArea = $('.display-area');
-	this.displayArea.append('<p>' + info + '</p>');
+	this.$displayArea = $('.display-area');
+	this.$displayArea.append('<p>' + info + '</p>');
 
-    var pos = this.displayArea.scrollTop();
-    this.displayArea.scrollTop(pos + 50);
+	//This scroll down a little bit more each time
+    var scrollActualPostion = this.$displayArea.scrollTop();
+    this.$displayArea.scrollTop(scrollActualPostion + 60);
 
 };

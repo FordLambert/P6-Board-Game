@@ -79,7 +79,8 @@ button {
 
 .cell{
 	border: 1px solid black;
-    width:12.5%;
+	height: 8vh;
+	width: 8vh;
     float:left;
     text-align:center;
     background-size: cover;
@@ -90,6 +91,7 @@ button {
 }
 
 #board {
+	width: 64vh;
 	background-image: url(../pictures/blackboard.png);
 	background-size: contain;
 	padding: 0px;

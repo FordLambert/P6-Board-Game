@@ -1,8 +1,8 @@
 //-----Constructor
 var GameEngine = function(boardid) {
 	this.boardid = boardid;
-	this.startButton = $('.start-button');
-	this.actionsButtons = $('.action-button');
+	this.$startButton = $('.start-button');
+	this.$actionsButtons = $('.action-button');
 	this.actualPlayer = {};
 };
 
@@ -80,7 +80,7 @@ GameEngine.prototype.generateRandomid = function(number) {
 GameEngine.prototype.launchNewGame = function() {
 	this.createBoardManager(8);
 	this.creategameEffectManager();
-	this.startButton.click(function() {
+	this.$startButton.click(function() {
 		this.startGame();
 		this.playTurns();
 	}.bind(this));
@@ -179,7 +179,7 @@ GameEngine.prototype.choosePlayerActions = function(requestedAction) {
 			this.organiseMovingState('start-moving', this.getAccessibleCellList());
 		} else if (requestedAction == 'combat') {
 
-			this.actionsButtons.click(function(e) {
+			this.$actionsButtons.click(function(e) {
 				var target = $(e.target);
 				if (target.is('#attack')) {
 					this.actualPlayer.shoot();
@@ -188,7 +188,7 @@ GameEngine.prototype.choosePlayerActions = function(requestedAction) {
 				} else {
 					console.log('Erreur: type d\'action inconnu');
 				}
-				this.removeEvent(this.actionsButtons);
+				this.removeEvent(this.$actionsButtons);
 
 			}.bind(this));
 		} 
@@ -248,7 +248,7 @@ GameEngine.prototype.placePlayers = function() {
 };
 
 GameEngine.prototype.resetGame = function() {
-	this.removeEvent(this.actionsButtons);
+	this.removeEvent(this.$actionsButtons);
 	this.removeEvent('.cell');
 	this.boardManager.resetUsedCellList();
 	this.gameEffectManager.resetCellStatus();
