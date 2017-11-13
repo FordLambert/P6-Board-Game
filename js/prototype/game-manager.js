@@ -107,13 +107,15 @@ GameManager.prototype.createPlayers = function() {
 };
 
 GameManager.prototype.createWeapons = function() {
-	var bat = new Weapon('Batte', 10, 'bat.png');
-	var knife = new Weapon('Couteau', 10, 'knife.png');
-	var shovel = new Weapon('Pelle', 20, 'shovel.png');
-	var axe = new Weapon('Hache', 25, 'axe.png');
+	var bat1 = new Weapon('Batte', 10, 'bat.png');
+	var bat2 = new Weapon('Batte', 10, 'bat.png');
+	var knife = new Weapon('Couteau', 8, 'knife.png');
+	var shovel = new Weapon('Pelle', 13, 'shovel.png');
+	var axe = new Weapon('Hache', 15, 'axe.png');
 
 	this.weaponStore = new WeaponStore();
-	this.weaponStore.addWeapon(bat);
+	this.weaponStore.addWeapon(bat1);
+	this.weaponStore.addWeapon(bat2);
 	this.weaponStore.addWeapon(knife);
 	this.weaponStore.addWeapon(shovel);
 	this.weaponStore.addWeapon(axe);
@@ -121,8 +123,9 @@ GameManager.prototype.createWeapons = function() {
 
 GameManager.prototype.distributeWeapons = function() {
 	var i = 0
-	while (i < this.playerStore.length) {
-		this.playerStore[i].weapon = this.weaponStore.getWeapon(0);
+	while (i < this.getPlayersNumber()) {
+		var player = this.playerStore.getPlayer(i);
+		player.weapon = this.weaponStore.getWeapon(i);
 		i++;
 	}
 };
@@ -166,6 +169,9 @@ GameManager.prototype.endGame = function() {
 //What happen during the game itself :
 
 GameManager.prototype.choosePlayerActions = function(requestedAction) {
+
+	this.displayer.displayGameInfos(this.actualPlayer);
+
 	if (this.enoughPlayersToFight()) {
 		if (requestedAction == 'move') {
 			this.organiseMovingState('start-moving', this.getAccessibleCellList());
@@ -215,12 +221,14 @@ GameManager.prototype.blockRandomCells = function() {
 };
 
 GameManager.prototype.placeWeapons = function() {
-	for(var i = 0; i < this.getWeaponsNumber(); i ++) {
+
+	for(var i = this.getPlayersNumber(); i < this.getWeaponsNumber(); i ++) {
 		var randomId = this.attributeRandomCellId(this.boardManager.boardSize);
 		var actualCell = this.boardManager.getCellById(randomId);
 		if (actualCell.status = 'empty') {
 			actualCell.texture = this.weaponStore.getWeapon(i).texture;
 			actualCell.status = 'has-weapon';
+			this.weaponStore.getWeapon(i).cell = randomId;
 		}
 	}
 };

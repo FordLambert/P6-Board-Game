@@ -65,7 +65,7 @@ Displayer.prototype.displayGameInfos = function(player) {
 	var activeWeapon = $(this.displayBoxId).find('.weapon');
 	var weaponStat = $(this.displayBoxId).find('.weapon-stat');
 
-	console.log(lifebar.text);
-	console.log(activeWeapon.text);
-	console.log(weaponStat.text);
+	lifeBar.text(player.life + '/100 pv');
+	activeWeapon.text('Arme : ' + player.weapon.name);
+	weaponStat.text('Dégats : ' + player.weapon.damage);
 };
