@@ -57,3 +57,15 @@ Displayer.prototype.toggleAccessiblesCells = function(cellIdList) {
 		$('#' + cellIdList[i]).toggleClass('accessible');
 	}
 };
+
+Displayer.prototype.displayGameInfos = function(player) {
+
+	this.displayBoxId = ('#' + player.color);
+	var lifeBar = $(this.displayBoxId).find('.life');
+	var activeWeapon = $(this.displayBoxId).find('.weapon');
+	var weaponStat = $(this.displayBoxId).find('.weapon-stat');
+
+	console.log(lifebar.text);
+	console.log(activeWeapon.text);
+	console.log(weaponStat.text);
+};

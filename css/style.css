@@ -96,15 +96,15 @@ button {
 }
 
 /*players info and picture zones*/
-.player-1-display {
+.player-1{
 	background-image: url(../pictures/red-background.png);
 }
 
-.player-2-display {
+.player-2 {
 	background-image: url(../pictures/blue-background.png);
 }
 
-.player-1-display, .player-2-display {
+.player-display {
 	padding: 15px;
 	background-size: 100% 100%;
 	background-repeat: no-repeat;

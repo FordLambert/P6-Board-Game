@@ -43,7 +43,6 @@ GameManager.prototype.ChangeTurnToPlay = function() {
 	while (i < this.playerStore.playerStoreList.length) {
 		var player = this.playerStore.getPlayer(i)
 		if (player.turnToPlay) {
-		console.log(player.name + player.turnToPlay);
 		player.turnToPlay = false;
 		this.actualPlayer = player;
 		this.displayer.changeTheme(player.color);
@@ -144,6 +143,9 @@ GameManager.prototype.startGame = function() {
 	this.createWeapons();
 	this.distributeWeapons();
 	this.randomizeBoardElements();
+	for (var i = 0; i < this.getPlayersNumber(); i++) {
+		this.displayer.displayGameInfos(this.playerStore.getPlayer(i));
+	}
 };
 
 GameManager.prototype.playTurns = function() {
@@ -236,7 +238,8 @@ GameManager.prototype.placePlayers = function() {
 };
 
 GameManager.prototype.resetGame = function() {
-	this.removeEvent(this.boardId);
+	this.removeEvent(this.actionsButtons);
+	this.removeEvent('.cell');
 	this.boardManager.resetUsedCellList();
 	this.displayer.resetCellStatus();
 };
