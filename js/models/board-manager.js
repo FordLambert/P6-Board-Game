@@ -1,13 +1,13 @@
-var Cell = function(Id) {
-	this.Id = Id;
+var Cell = function(id) {
+	this.id = id;
 	this.texture = '';
 	this.status = 'empty';
 };
 
 var BoardManager = function(place) {
 	this.board = [];
-	//usedCells is used when the engine start a game for not using twice the same cell
-	this.usedCellsId = [];
+	//usedCells used when the engine start a game for not using twice the same cell on random placement
+	this.usedCellsid = [];
 	this.place = place;
 	this.rowLetters = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
 };
@@ -17,33 +17,33 @@ BoardManager.prototype.getCell = function(cellIndex) {
 	return this.board[cellIndex];
 };
 
-BoardManager.prototype.getCellById = function(id) {
+BoardManager.prototype.getCellByid = function(id) {
 	for (var i = 0; i < this.board.length; i++) {
-		if (this.getCell(i).Id == id) {
+		if (this.getCell(i).id == id) {
 			return this.getCell(i);
 		}
 	}
 };
 
-BoardManager.prototype.getUsedCellId = function(index) {
-	return this.usedCellsId[index];
+BoardManager.prototype.getUsedCellid = function(index) {
+	return this.usedCellsid[index];
 };
 
 //-----Setters
 BoardManager.prototype.resetUsedCellList = function() {
-	this.usedCellsId = [];
+	this.usedCellsid = [];
 }
 
-BoardManager.prototype.addUsedCellId = function(cellId) {
-	this.usedCellsId.push(cellId);
+BoardManager.prototype.addUsedCellid = function(cellid) {
+	this.usedCellsid.push(cellid);
 };
 
 BoardManager.prototype.addCell = function(cell) {
 	this.board.push(cell);
 };
 
-BoardManager.prototype.resetCell = function(cellId) {
-	cell = this.getCellById(cellId)
+BoardManager.prototype.resetCell = function(cellid) {
+	cell = this.getCellByid(cellid)
 	cell.texture = '';
 	cell.status = 'empty';
 };
@@ -65,9 +65,9 @@ BoardManager.prototype.createBoard = function(boardSize) {
 BoardManager.prototype.checkPlayerPresence = function() {
 	for (var i = 0; i < this.board.length; i++) {
 		var cell = this.getCell(i);
-		for (var p = 0; p < gameManager.getPlayersNumber(); p ++) {
-			var player = gameManager.playerStore.getPlayer(p);
-			if (cell.Id == player.cell) {
+		for (var p = 0; p < gameEngine.getPlayersNumber(); p ++) {
+			var player = gameEngine.playerStore.getPlayer(p);
+			if (cell.id == player.cell) {
 			    cell.texture = player.texture;
 			    cell.status = 'has-player';
 			}
@@ -78,9 +78,9 @@ BoardManager.prototype.checkPlayerPresence = function() {
 BoardManager.prototype.checkWeaponPresence = function() {
 	for (var i = 0; i < this.board.length; i++) {
 		var cell = this.getCell(i);
-		for (var p = 0; p < gameManager.getWeaponsNumber(); p ++) {
-			var weapon = gameManager.weaponStore.getWeapon(p);
-			if (cell.Id == weapon.cell) {
+		for (var p = 0; p < gameEngine.getWeaponsNumber(); p ++) {
+			var weapon = gameEngine.weaponStore.getWeapon(p);
+			if (cell.id == weapon.cell) {
 			    cell.texture = weapon.texture;
 			    cell.status = 'has-weapon';
 			}
@@ -88,10 +88,10 @@ BoardManager.prototype.checkWeaponPresence = function() {
 	}
 };
 
-BoardManager.prototype.checkAndReturnWeapon = function(cellId) {
-	for (var i = 0; i < gameManager.getWeaponsNumber(); i++) {
-		var weapon = gameManager.weaponStore.getWeapon(i);
-		if (cellId == weapon.cell) {
+BoardManager.prototype.checkAndReturnWeapon = function(cellid) {
+	for (var i = 0; i < gameEngine.getWeaponsNumber(); i++) {
+		var weapon = gameEngine.weaponStore.getWeapon(i);
+		if (cellid == weapon.cell) {
 			return weapon;
 		}
 	}

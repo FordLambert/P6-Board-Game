@@ -1,13 +1,13 @@
 //-----Constructor
-var GameManager = function(boardId) {
-	this.boardId = boardId;
+var GameEngine = function(boardid) {
+	this.boardid = boardid;
 	this.startButton = $('.start-button');
 	this.actionsButtons = $('.action-button');
 	this.actualPlayer = {};
 };
 
 //-----Getters
-GameManager.prototype.getPlayerAttribute = function(attribute) {
+GameEngine.prototype.getPlayerAttribute = function(attribute) {
 	var i = 0;
 	var condition = this.playerStore.getPlayer(i) + attribute;
 	while (i < this.playerStore.playerStoreList.length - 1) {
@@ -18,11 +18,11 @@ GameManager.prototype.getPlayerAttribute = function(attribute) {
 	}
 };
 
-GameManager.prototype.getPlayersNumber = function() {
+GameEngine.prototype.getPlayersNumber = function() {
 	return this.playerStore.playerStoreList.length;
 };
 
-GameManager.prototype.getDeadPlayersNumber = function() {
+GameEngine.prototype.getDeadPlayersNumber = function() {
 	var i = 0;
 	var deadPlayersNumber = 0;
 	while (i < this.playerStore.playerStoreList.length - 1) {
@@ -34,18 +34,18 @@ GameManager.prototype.getDeadPlayersNumber = function() {
 	return deadPlayersNumber;
 };
 
-GameManager.prototype.getWeaponsNumber = function() {
+GameEngine.prototype.getWeaponsNumber = function() {
 	return this.weaponStore.weaponStoreList.length;
 };
 //----Setters
-GameManager.prototype.ChangeTurnToPlay = function() {
+GameEngine.prototype.ChangeTurnToPlay = function() {
 	var i = 0;
 	while (i < this.playerStore.playerStoreList.length) {
 		var player = this.playerStore.getPlayer(i)
 		if (player.turnToPlay) {
 		player.turnToPlay = false;
 		this.actualPlayer = player;
-		this.displayer.changeTheme(player.color);
+		this.gameEffectManager.changeTheme(player.color);
 			if (i != this.playerStore.playerStoreList.length - 1) {
 				i++;
 			} else {
@@ -59,27 +59,27 @@ GameManager.prototype.ChangeTurnToPlay = function() {
 }
 
 //-----Random generators
-GameManager.prototype.getRandomNumber = function(number) {
+GameEngine.prototype.getRandomNumber = function(number) {
 	return Math.floor(Math.random() * (number - 1) + 1);
 };
 
-GameManager.prototype.getRandomLetter = function(number) {
+GameEngine.prototype.getRandomLetter = function(number) {
 	//number is here to say : "how far must we go into the alphabet ?"
 	var letter = this.boardManager.rowLetters[this.getRandomNumber(this.boardManager.boardSize - 1)];
 	return letter;
 };
 
-GameManager.prototype.generateRandomId = function(number) {
+GameEngine.prototype.generateRandomid = function(number) {
 	var row = this.getRandomLetter(number);
 	var index = this.getRandomNumber(number);
-	var randomCellId = row + '-' + index;
-	return randomCellId;
+	var randomCellid = row + '-' + index;
+	return randomCellid;
 };
 
 //What happen when the window load :
-GameManager.prototype.launchNewGame = function() {
-	this.createDisplayer();
+GameEngine.prototype.launchNewGame = function() {
 	this.createBoardManager(8);
+	this.creategameEffectManager();
 	this.startButton.click(function() {
 		this.startGame();
 		this.playTurns();
@@ -87,17 +87,17 @@ GameManager.prototype.launchNewGame = function() {
 };
 
 //Creation part, before starting to play
-GameManager.prototype.createDisplayer = function() {
-	this.displayer = new Displayer();
-};
-
-GameManager.prototype.createBoardManager = function(size) {
-	this.boardManager = new BoardManager(this.boardId);
+GameEngine.prototype.createBoardManager = function(size) {
+	this.boardManager = new BoardManager(this.boardid);
 	this.boardManager.createBoard(size);
-	this.displayer.displayBoard(this.boardManager);
 };
 
-GameManager.prototype.createPlayers = function() {
+GameEngine.prototype.creategameEffectManager = function() {
+	this.gameEffectManager = new GameEffectManager(this.boardManager);
+	this.gameEffectManager.displayBoard();
+};
+
+GameEngine.prototype.createPlayers = function() {
 	var playerRed = new Player('Joueur Rouge', 'red', true, 'red-background.png');
 	var playerBlue = new Player('Joueur Bleu', 'blue', false, 'blue-background.png');
 
@@ -106,7 +106,7 @@ GameManager.prototype.createPlayers = function() {
 	this.playerStore.addPlayer(playerBlue);
 };
 
-GameManager.prototype.createWeapons = function() {
+GameEngine.prototype.createWeapons = function() {
 
 	var bat1 = new Weapon('Batte', 10, 'bat.png');
 	var bat2 = new Weapon('Batte', 10, 'bat.png');
@@ -122,7 +122,7 @@ GameManager.prototype.createWeapons = function() {
 	this.weaponStore.addWeapon(axe);
 };
 
-GameManager.prototype.distributeWeapons = function() {
+GameEngine.prototype.distributeWeapons = function() {
 	var i = 0
 	while (i < this.getPlayersNumber()) {
 		var player = this.playerStore.getPlayer(i);
@@ -132,28 +132,28 @@ GameManager.prototype.distributeWeapons = function() {
 };
 
 //Now that everything exist, we can put them randomly on the board
-GameManager.prototype.randomizeBoardElements = function() {
+GameEngine.prototype.randomizeBoardElements = function() {
 	this.blockRandomCells();
 	this.placeWeapons();
 	this.placePlayers();
 	//everything has a place, now show it
-	this.displayer.updateBoardDisplay();
+	this.gameEffectManager.updateBoardDisplay();
 };
 
 //Process of a game
-GameManager.prototype.startGame = function() {
-	this.displayer.displayGameInfos('Début de la partie !');
+GameEngine.prototype.startGame = function() {
+	this.gameEffectManager.displayGameInfos('Début de la partie !');
 	this.resetGame();
 	this.createPlayers();
 	this.createWeapons();
 	this.distributeWeapons();
 	this.randomizeBoardElements();
 	for (var i = 0; i < this.getPlayersNumber(); i++) {
-		this.displayer.displayPlayersInfos(this.playerStore.getPlayer(i));
+		this.gameEffectManager.displayPlayersInfos(this.playerStore.getPlayer(i));
 	}
 };
 
-GameManager.prototype.playTurns = function() {
+GameEngine.prototype.playTurns = function() {
 	if (this.enoughPlayersToFight()) {
 		this.ChangeTurnToPlay();
 		this.choosePlayerActions('move');
@@ -162,7 +162,7 @@ GameManager.prototype.playTurns = function() {
 	}
 };
 
-GameManager.prototype.endGame = function() {
+GameEngine.prototype.endGame = function() {
 	var winner = this.getPlayerAttribute('.isAlive()');
 	alert(winner + ' a gagné ! Un nouvel essai ?');
 	window.location.reload();
@@ -170,9 +170,9 @@ GameManager.prototype.endGame = function() {
 
 //What happen during the game itself :
 
-GameManager.prototype.choosePlayerActions = function(requestedAction) {
+GameEngine.prototype.choosePlayerActions = function(requestedAction) {
 
-	this.displayer.displayPlayersInfos(this.actualPlayer);
+	this.gameEffectManager.displayPlayersInfos(this.actualPlayer);
 
 	if (this.enoughPlayersToFight()) {
 		if (requestedAction == 'move') {
@@ -197,12 +197,12 @@ GameManager.prototype.choosePlayerActions = function(requestedAction) {
 	}
 };
 
-GameManager.prototype.removeEvent = function(element) {
+GameEngine.prototype.removeEvent = function(element) {
 	$(element).unbind( "click" );
 };
 
 
-GameManager.prototype.enoughPlayersToFight = function() {
+GameEngine.prototype.enoughPlayersToFight = function() {
 	if (this.getDeadPlayersNumber() == this.playerStore.playerStoreList.length - 1) {
 		return false;
 	} else {
@@ -210,11 +210,11 @@ GameManager.prototype.enoughPlayersToFight = function() {
 	}
 };
 
-GameManager.prototype.blockRandomCells = function() {
+GameEngine.prototype.blockRandomCells = function() {
 	var blockedCellNumber = Math.floor(Math.random() * 5) + 5;
 	for(var i = 0; i < blockedCellNumber; i ++) {
-		var randomId = this.attributeRandomCellId(this.boardManager.boardSize);
-		var actualCell = this.boardManager.getCellById(randomId);
+		var randomid = this.attributeRandomCellid(this.boardManager.boardSize);
+		var actualCell = this.boardManager.getCellByid(randomid);
 		if (actualCell.status = 'empty') {
 			actualCell.texture = 'blockedCell.png';
 			actualCell.status = 'is-blocked';
@@ -222,73 +222,73 @@ GameManager.prototype.blockRandomCells = function() {
 	}
 };
 
-GameManager.prototype.placeWeapons = function() {
+GameEngine.prototype.placeWeapons = function() {
 
 	for(var i = this.getPlayersNumber(); i < this.getWeaponsNumber(); i ++) {
-		var randomId = this.attributeRandomCellId(this.boardManager.boardSize);
-		var actualCell = this.boardManager.getCellById(randomId);
+		var randomid = this.attributeRandomCellid(this.boardManager.boardSize);
+		var actualCell = this.boardManager.getCellByid(randomid);
 		if (actualCell.status = 'empty') {
 			actualCell.texture = this.weaponStore.getWeapon(i).texture;
 			actualCell.status = 'has-weapon';
-			this.weaponStore.getWeapon(i).cell = randomId;
+			this.weaponStore.getWeapon(i).cell = randomid;
 		}
 	}
 };
 
-GameManager.prototype.placePlayers = function() {
+GameEngine.prototype.placePlayers = function() {
 	for(var i = 0; i < this.getPlayersNumber(); i ++) {
-		var randomId = this.attributeRandomCellId(this.boardManager.boardSize);
-		var actualCell = this.boardManager.getCellById(randomId);
+		var randomid = this.attributeRandomCellid(this.boardManager.boardSize);
+		var actualCell = this.boardManager.getCellByid(randomid);
 		if (actualCell.status = 'empty') {
 			actualCell.texture = this.playerStore.getPlayer(i).texture;
 			actualCell.status = 'has-player';
-			this.playerStore.getPlayer(i).cell = randomId;
+			this.playerStore.getPlayer(i).cell = randomid;
 		}
 	}
 };
 
-GameManager.prototype.resetGame = function() {
+GameEngine.prototype.resetGame = function() {
 	this.removeEvent(this.actionsButtons);
 	this.removeEvent('.cell');
 	this.boardManager.resetUsedCellList();
-	this.displayer.resetCellStatus();
+	this.gameEffectManager.resetCellStatus();
 };
 
 //only unsed at board generation, not after to see if a cell is occupied
-GameManager.prototype.attributeRandomCellId = function(number) {
-	var cellId = this.generateRandomId(number);
-	//check if this cell Id is not used yet
-	for (var i = 0; i <= this.boardManager.usedCellsId.length; i++) {
+GameEngine.prototype.attributeRandomCellid = function(number) {
+	var cellid = this.generateRandomid(number);
+	//check if this cell id is not used yet
+	for (var i = 0; i <= this.boardManager.usedCellsid.length; i++) {
 		//if this id had already been given
-		if (cellId == this.boardManager.getUsedCellId(i)) {
+		if (cellid == this.boardManager.getUsedCellid(i)) {
 			//we set a new value
-			cellId = this.generateRandomId(number);
+			cellid = this.generateRandomid(number);
 		}
 	}
 	//we add the new id to the "used" list and we return it
-	this.boardManager.addUsedCellId(cellId);
-	return cellId;
+	this.boardManager.addUsedCellid(cellid);
+	return cellid;
 };
 
 
 //this part need to be shortened, I repeat myself a lot here
-GameManager.prototype.getAccessibleCellList = function() {
+GameEngine.prototype.getAccessibleCellList = function() {
 
 	var accessibleCells = [];
 
-	var actualCellId = this.actualPlayer.cell.split("-");
+	var actualCellid = this.actualPlayer.cell.split("-");
 
-	var actualRow = actualCellId[0];
-	var actualColumn = parseInt(actualCellId[1], 10);
+	var actualRow = actualCellid[0];
+	var actualColumn = parseInt(actualCellid[1], 10);
 
 	//next cells:
 	for (var i = 1; i <= this.actualPlayer.movement; i++) {
-		var nextCellsIds = actualRow + '-' + (actualColumn + i);
-		var nextCell = this.boardManager.getCellById(nextCellsIds);
+		var nextCellsids = actualRow + '-' + (actualColumn + i);
+		var nextCell = this.boardManager.getCellByid(nextCellsids);
 
 		if (typeof nextCell != 'undefined') {
 			if ((nextCell.status == 'empty') || (nextCell.status == 'has-weapon')) {
-				accessibleCells.push(nextCell.Id);
+				accessibleCells.push(nextCell.id);
 			} else {
 				break;
 			}
@@ -297,12 +297,12 @@ GameManager.prototype.getAccessibleCellList = function() {
 
 	//previous cells:
 	for (var i = 1; i <= this.actualPlayer.movement; i++) {
-		var previousCellsIds = actualRow + '-' + (actualColumn - i);
-		var previousCell = this.boardManager.getCellById(previousCellsIds);
+		var previousCellsids = actualRow + '-' + (actualColumn - i);
+		var previousCell = this.boardManager.getCellByid(previousCellsids);
 
 		if (typeof previousCell != 'undefined') {
 			if ((previousCell.status == 'empty') || (previousCell.status == 'has-weapon'))  {
-				accessibleCells.push(previousCell.Id);
+				accessibleCells.push(previousCell.id);
 			} else {
 				break;
 			}
@@ -311,12 +311,12 @@ GameManager.prototype.getAccessibleCellList = function() {
 	
 	//upper cells:
 	for (var i = 1; i <= this.actualPlayer.movement; i++) {
-		var upperCellsIds = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) - i] + '-' + actualColumn;
-		var upperCell = this.boardManager.getCellById(upperCellsIds);
+		var upperCellsids = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) - i] + '-' + actualColumn;
+		var upperCell = this.boardManager.getCellByid(upperCellsids);
 
 		if (typeof upperCell != 'undefined') {
 			if ((upperCell.status == 'empty') || (upperCell.status == 'has-weapon'))  {
-				accessibleCells.push(upperCell.Id);
+				accessibleCells.push(upperCell.id);
 			} else {
 				break;
 			}
@@ -325,12 +325,12 @@ GameManager.prototype.getAccessibleCellList = function() {
 
 	//under cells:
 	for (var i = 1; i <= this.actualPlayer.movement; i++) {
-		var underCellsIds = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) + i] + '-' + actualColumn;
-		var underCell = this.boardManager.getCellById(underCellsIds);
+		var underCellsids = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) + i] + '-' + actualColumn;
+		var underCell = this.boardManager.getCellByid(underCellsids);
 
 		if (typeof underCell != 'undefined') {
 			if ((underCell.status == 'empty') || (underCell.status == 'has-weapon'))  {
-				accessibleCells.push(underCell.Id);
+				accessibleCells.push(underCell.id);
 			} else {
 				break;
 			}
@@ -340,15 +340,15 @@ GameManager.prototype.getAccessibleCellList = function() {
 	return accessibleCells;
 };
 
-GameManager.prototype.organiseMovingState = function(status, cellList) {
+GameEngine.prototype.organiseMovingState = function(status, cellList) {
 	if (status == 'start-moving') {
-		this.displayer.toggleAccessiblesCells(cellList);
+		this.gameEffectManager.toggleAccessiblesCells(cellList);
 		this.actualPlayer.move(cellList);
 	} else if (status == 'has-moved') {
 		this.boardManager.checkWeaponPresence();
 		this.boardManager.checkPlayerPresence();
-		this.displayer.toggleAccessiblesCells(cellList);
-		this.displayer.updateBoardDisplay();
+		this.gameEffectManager.toggleAccessiblesCells(cellList);
+		this.gameEffectManager.updateBoardDisplay();
 		this.choosePlayerActions('combat');
 	}
 }

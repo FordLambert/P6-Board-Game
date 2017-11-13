@@ -11,7 +11,7 @@ var Player = function(name, color, turnToPlay, texture) {
 
 };
 
-//the manager tell were the player can move (array list of Id)
+//the manager tell were the player can move (array list of id)
 Player.prototype.move = function move(accessiblesCellsList) {
 
 	//just to keep the context
@@ -21,22 +21,22 @@ Player.prototype.move = function move(accessiblesCellsList) {
 		//if the user choose this cell for his move
 		$('#' + accessiblesCellsList[i]).click(function() {
 			//we remove the old position information
-			gameManager.boardManager.resetCell(player.cell);
+			gameEngine.boardManager.resetCell(player.cell);
 			//we set the new one
 			player.cell = $(this).attr('id');
 
-			gameManager.displayer.displayGameInfos(player.name + ' se déplace en ' + player.cell);
+			gameEngine.gameEffectManager.displayGameInfos(player.name + ' se déplace en ' + player.cell);
 			//is there a weapon on this cell ?
 
-			var newWeapon = gameManager.boardManager.checkAndReturnWeapon(player.cell);
+			var newWeapon = gameEngine.boardManager.checkAndReturnWeapon(player.cell);
 			//if yes : take it and let your's here
 			if (typeof newWeapon != 'undefined') {
 				player.pickUp(newWeapon);
 			}
 
 			//then we inform the manager that we have moved
-			gameManager.organiseMovingState('has-moved', accessiblesCellsList);
-			gameManager.removeEvent('.cell');
+			gameEngine.organiseMovingState('has-moved', accessiblesCellsList);
+			gameEngine.removeEvent('.cell');
 
 		});
 	}
@@ -46,7 +46,7 @@ Player.prototype.pickUp = function(weapon) {
 	this.weapon.cell = this.cell
 	this.weapon = weapon;
 	this.weapon.cell = '';
-	gameManager.displayer.displayGameInfos(this.name + ' a ramassé l\'arme "' + this.weapon.name + '"');
+	gameEngine.gameEffectManager.displayGameInfos(this.name + ' a ramassé l\'arme "' + this.weapon.name + '"');
 };
 
 Player.prototype.shoot = function() {
@@ -63,19 +63,19 @@ Player.prototype.shoot = function() {
 	}
 	enemy.life -= hitPoints;*/
 
-	gameManager.playTurns();
+	gameEngine.playTurns();
 };
 
 Player.prototype.defend = function() {
 	this.protected = true;
 	console.log(this.name + ' se prépare à prendre un coup.');
-	gameManager.playTurns();
+	gameEngine.playTurns();
 };
 
 
 //we'll see if this stay here or if it's a manager job
 Player.prototype.canShoot = function() {
-	if (gameManager.getDistance() == 0) {
+	if (gameEngine.getDistance() == 0) {
 		return true;
 	} else {
 		return false;
