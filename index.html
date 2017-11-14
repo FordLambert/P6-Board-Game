@@ -12,17 +12,32 @@
 	</head>
 	<body>
 		<div class="container text-center"><!--Bootstrap container, contain all the page-->
-			<div class="row">
-				<div class="col-xs-offset-4 col-xs-4 col-sm-2 col-sm-offset-2">
-					<button class="start-button">Nouvelle partie</button>
+
+
+			<div class="row header-box">
+
+				<div class="col-xs-12">
+					<div class="title-block col-xs-offset-2 col-xs-8 col-md-offset-4 col-md-4">
+						<h1 class="col-xs-12 main-title">Board Game</h1>
+					</div>
 				</div>
-				<div class="title-block col-xs-offset-2 col-xs-8 col-sm-offset-0 col-sm-4">
-					<h1 class="col-xs-12 main-title">Board Game</h1>
+				
+
+				<div class="col-xs-12">
+					<div class="col-xs-offset-2 col-xs-4 col-md-offset-2 col-md-2 ">
+						<button class="start-button">Nouvelle partie</button>
+					</div>
+					
+					<div class="col-xs-4 col-md-offset-4 col-md-2">
+						<button type="button" class="rules-button" data-toggle="modal" data-target="#myModal">Règles du jeu</button>
+					</div>
 				</div>
-				<div class="col-xs-offset-4 col-xs-4 col-sm-offset-0 col-sm-2">
-					<button type="button" class="rules-button" data-toggle="modal" data-target="#myModal">Règles du jeu</button>
-				</div>
+
 			</div>
+
+
+
+
 
 			<!-- Modal -->
 			<div class="modal fade" id="myModal" role="dialog">
@@ -57,7 +72,7 @@
 						<div class="player-display player-1" id="red">
 							<h2>Joueur 1</h2>
 							<div class="row">
-								<img src="pictures/player-red.png" alt="player-1-red" class="player-picture hidden-xs">
+								<img src="pictures/player-red.png" alt="player-1-red" class="col-sm-offset-4 col-sm-4 col-md-offset-1 col-md-5 player-picture hidden-xs img-responsive">
 								<div class="player-infos col-xs-12 col-md-6">
 									<p class="life">-/100 pv</p>
 									<p class="weapon">Arme : -</p>
@@ -70,7 +85,7 @@
 						<div class="player-display player-2" id="blue">
 							<h2>Joueur 2</h2>
 							<div class="row">
-								<img src="pictures/player-blue.png" alt="player-2-blue" class="player-picture hidden-xs">
+								<img src="pictures/player-blue.png" alt="player-2-blue" class="col-sm-offset-4 col-sm-4 col-md-offset-1 col-md-5 player-picture hidden-xs img-responsive">
 								<div class="player-infos col-xs-12 col-md-6">
 									<p class="life">-/100 pv</p>
 									<p class="weapon">Arme : -</p>
@@ -100,7 +115,7 @@
 					</div>
 				</div>
 
-				<div class="hidden-xs hidden-sm col-md-offset-1 col-md-10 col-lg-offset-0 col-lg-3">
+				<div class="col-xs-offset-1 col-xs-10 col-lg-offset-0 col-lg-3">
 					<div class="col-xs-offset-1 col-xs-10">
 						<div class="display-area">
 							<h2>Déroulement de la partie:</h2>

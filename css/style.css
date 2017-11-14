@@ -19,7 +19,7 @@ button {
 }
 
 .start-button, .rules-button {
-	margin-top: 100px;
+	margin-top: 10px;
 }
 
 /*This concern the parts that will be change by Js */
@@ -41,9 +41,12 @@ button {
 	width: 100vw;
 }
 
-.title-block {
+.header-box {
 	margin-top: 20px;
 	margin-bottom: 35px;
+}
+
+.title-block {
 	height: 160px;
 	background-image: url(../pictures/main-sign.png);
 	background-size: 100% 100%;
@@ -114,7 +117,7 @@ button {
 	border-radius: 10px;
 	box-shadow: 2px 2px 2px black;
 	background-color: white;
-	margin-top: 70vh;
+	margin-top: 72vh;
 	margin-bottom: 15px;
 }
 
@@ -139,6 +142,7 @@ button {
 .player-picture {
 	border: 1px solid black;
 	box-shadow: 1px 1px 1px black;
+	padding: 0px;
 }
 
 .player-infos {
@@ -155,13 +159,4 @@ button {
 	padding: 15px;
 	overflow: auto;
 	box-shadow: 2px 2px 2px black;
-}
-
-
-
-//Media Queries
-@media screen and (min-width: 768px) {
-	.player-picture {
-		height: 7vw;
-	}
 }
