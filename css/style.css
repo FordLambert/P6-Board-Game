@@ -82,10 +82,34 @@ header {
     float:left;
     text-align:center;
     background-size: 100% 100%;
+    /*thanks to free logo maker for the weapons png*/
 }
 
 .accessible {
-	border: 2px dashed yellow;
+	border: 2px dashed #e0c341;
+}
+
+.accessible:hover {
+	animation: colorchange 2s;
+    -webkit-animation: colorchange 2s; /* Chrome and Safari */
+    animation-iteration-count: infinite;
+    }
+
+    @keyframes colorchange {
+    	0%   {background: #efd14c;}
+    	//25%  {background: yellow;}
+    	50%  {background: #8e7c2c;}
+    	//75%  {background: green;}
+    	100% {background: #e0c341;}
+    }
+
+    @-webkit-keyframes colorchange {
+		0%   {background: #efd14c;}
+		//25%  {background: yellow;}
+		50%  {background: #8e7c2c;}
+		//75%  {background: green;}
+		100% {background: #e0c341;}
+    }
 }
 
 .board-wrapper {
