@@ -81,7 +81,7 @@ header {
 	width: 12.5%;
     float:left;
     text-align:center;
-    background-size: cover;
+    background-size: 100% 100%;
 }
 
 .accessible {
