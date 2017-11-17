@@ -11,34 +11,13 @@ var Player = function(name, color, turnToPlay, texture) {
 
 };
 
-//the manager tell were the player can move (array list of id)
-Player.prototype.move = function move(accessiblesCellsList) {
+Player.prototype.move = function move(newCell, weaponOnCell) {
 
-	//just to keep the context
-	var player = this;
-
-	for (var i = 0; i < accessiblesCellsList.length; i++) {
-		//if the user choose this cell for his move
-		$('#' + accessiblesCellsList[i]).click(function() {
-			//we remove the old position information
-			gameEngine.boardManager.resetCell(player.cell);
-			//we set the new one
-			player.cell = $(this).attr('id');
-
-			gameEngine.gameEffectManager.displayGameInfos(player.name + ' se déplace en ' + player.cell);
-			//is there a weapon on this cell ?
-
-			var newWeapon = gameEngine.boardManager.checkAndReturnWeapon(player.cell);
-			//if yes : take it and let your's here
-			if (typeof newWeapon != 'undefined') {
-				player.pickUp(newWeapon);
-			}
-
-			//then we inform the manager that we have moved
-			gameEngine.organiseMovingState('has-moved', accessiblesCellsList);
-			gameEngine.removeEvent('.cell');
-
-		});
+	var newCell = newCell;
+	this.cell = newCell.id;
+	
+	if (typeof weaponOnCell != 'undefined') {
+		this.pickUp(weaponOnCell);
 	}
 };
 

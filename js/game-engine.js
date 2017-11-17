@@ -154,9 +154,11 @@ GameEngine.prototype.startGame = function() {
 };
 
 GameEngine.prototype.playTurns = function() {
+	//a while is more suitable here I think
 	if (this.enoughPlayersToFight()) {
 		this.ChangeTurnToPlay();
-		this.choosePlayerActions('move');
+		this.organiseMovingPhase();
+		this.organiseFightingPhase();
 	} else {
 		this.endGame();
 	}
@@ -170,32 +172,7 @@ GameEngine.prototype.endGame = function() {
 
 //What happen during the game itself :
 
-GameEngine.prototype.choosePlayerActions = function(requestedAction) {
 
-	this.gameEffectManager.displayPlayersInfos(this.actualPlayer);
-
-	if (this.enoughPlayersToFight()) {
-		if (requestedAction == 'move') {
-			this.organiseMovingState('start-moving', this.getAccessibleCellList());
-		} else if (requestedAction == 'combat') {
-
-			this.$actionsButtons.click(function(e) {
-				var target = $(e.target);
-				if (target.is('#attack')) {
-					this.actualPlayer.shoot();
-				} else if (target.is('#defend')) {
-					this.actualPlayer.defend();
-				} else {
-					console.log('Erreur: type d\'action inconnu');
-				}
-				this.removeEvent(this.$actionsButtons);
-
-			}.bind(this));
-		} 
-	} else {
-		this.endGame();
-	}
-};
 
 GameEngine.prototype.removeEvent = function(element) {
 	$(element).unbind( "click" );
@@ -360,19 +337,6 @@ GameEngine.prototype.getAccessibleCellList = function() {
 	return accessibleCells;
 };
 
-GameEngine.prototype.organiseMovingState = function(status, cellList) {
-	if (status == 'start-moving') {
-		this.gameEffectManager.toggleAccessiblesCells(cellList);
-		this.actualPlayer.move(cellList);
-	} else if (status == 'has-moved') {
-		this.boardManager.checkWeaponPresence();
-		this.boardManager.checkPlayerPresence();
-		this.gameEffectManager.toggleAccessiblesCells(cellList);
-		this.gameEffectManager.updateBoardDisplay();
-		this.choosePlayerActions('combat');
-	}
-}
-
 GameEngine.prototype.checkEnnemyProximity = function(surroundingCellsList) {
 
 	for (var listIndex = 0; listIndex < surroundingCellsList.length; listIndex++) {
@@ -413,3 +377,88 @@ GameEngine.prototype.getSurroundingCells = function(cellId) {
 
 	return surroundingCellList;
 }
+
+
+
+
+
+GameEngine.prototype.organiseMovingState = function(status, cellList) {
+	if (status == 'start-moving') {
+		//this.gameEffectManager.toggleAccessiblesCells(cellList);
+		//this.actualPlayer.move(cellList);
+	} else if (status == 'has-moved') {
+		this.boardManager.checkWeaponPresence();
+		this.boardManager.checkPlayerPresence();
+		//this.gameEffectManager.toggleAccessiblesCells(cellList);
+		//this.gameEffectManager.updateBoardDisplay();
+		//this.choosePlayerActions('combat');
+	}
+}
+
+GameEngine.prototype.organiseMovingPhase = function() {
+	this.gameEffectManager.displayPlayersInfos(this.actualPlayer);
+	//only if players arent figthing
+	if (true) {
+		var accessiblesCellsList = this.getAccessibleCellList();
+		this.gameEffectManager.toggleClassAccessible(accessiblesCellsList);
+
+		this.setAccessiblesCellsEvent(accessiblesCellsList);
+	}
+}
+
+GameEngine.prototype.setAccessiblesCellsEvent = function(accessiblesCellsList) {
+
+	//I don't like that but this is the only way i found (yet) to keep both the jquery and object context
+	var self = this;
+
+	$('.accessible').on("click", function() {
+
+		var clickedCellId = $(this).attr('id');
+
+		console.log(clickedCellId);
+
+		var clickedCell = self.boardManager.getCellByid(clickedCellId);
+		console.log(clickedCell);
+
+		self.boardManager.resetCell(self.actualPlayer.cell);
+		//remove 'accessible' class, they are not anymore
+		self.gameEffectManager.toggleClassAccessible(accessiblesCellsList);
+
+		var weaponOnCell = self.boardManager.checkAndReturnWeapon(clickedCellId);
+		self.actualPlayer.move(clickedCell, weaponOnCell);
+
+		self.gameEffectManager.displayGameInfos(self.actualPlayer.name + ' se déplace en ' + self.actualPlayer.cell);
+
+		self.removeEvent('.accessible');
+
+		self.gameEffectManager.updateBoardDisplay();
+	});
+}
+
+
+GameEngine.prototype.organiseFightingPhase = function() {
+	this.gameEffectManager.displayPlayersInfos(this.actualPlayer);
+	console.log('rien ici pour le moment');
+}
+
+GameEngine.prototype.setActionsButtonsEvent = function() {
+
+}
+
+/*
+} else if (requestedAction == 'combat') {
+
+			this.$actionsButtons.click(function(e) {
+				var target = $(e.target);
+				if (target.is('#attack')) {
+					this.actualPlayer.shoot();
+				} else if (target.is('#defend')) {
+					this.actualPlayer.defend();
+				} else {
+					console.log('Erreur: type d\'action inconnu');
+				}
+				this.removeEvent(this.$actionsButtons);
+
+			}.bind(this));
+		} 
+*/

@@ -61,7 +61,8 @@ GameEffectManager.prototype.resetCellStatus = function() {
 	this.$displayArea.html('<h2>Déroulement de la partie:</h2>');
 };
 
-GameEffectManager.prototype.toggleAccessiblesCells = function(cellidList) {
+GameEffectManager.prototype.toggleClassAccessible = function(cellidList) {
+	//$.each(accessibleCells, function (index, value) {
 	for (var i = 0; i < cellidList.length; i++) {
 		$('#' + cellidList[i]).toggleClass('accessible');
 	}
