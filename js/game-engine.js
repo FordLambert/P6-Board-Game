@@ -24,18 +24,6 @@ GameEngine.prototype.getPlayersNumber = function() {
 	return this.playerStore.playerStoreList.length;
 };
 
-GameEngine.prototype.getDeadPlayersNumber = function() {
-	var i = 0;
-	var deadPlayersNumber = 0;
-	while (i < this.playerStore.playerStoreList.length - 1) {
-		if (this.playerStore.getPlayer(i).isAlive == false) {
-			deadPlayersNumber ++;
-		}
-	i++;
-	}
-	return deadPlayersNumber;
-};
-
 GameEngine.prototype.getWeaponsNumber = function() {
 	return this.weaponStore.weaponStoreList.length;
 };
@@ -113,8 +101,8 @@ GameEngine.prototype.createWeapons = function() {
 	var bat1 = new Weapon('Batte', 10, 'bat.png');
 	var bat2 = new Weapon('Batte', 10, 'bat.png');
 	var knife = new Weapon('Couteau', 8, 'knife.png');
-	var shovel = new Weapon('Pelle', 13, 'shovel.png');
-	var axe = new Weapon('Hache', 15, 'axe.png');
+	var shovel = new Weapon('Pelle', 14, 'shovel.png');
+	var axe = new Weapon('Hache', 16, 'axe.png');
 
 	this.weaponStore = new WeaponStore();
 	this.weaponStore.addWeapon(bat1);
@@ -165,14 +153,11 @@ GameEngine.prototype.playTurns = function() {
 };
 
 GameEngine.prototype.endGame = function() {
+	console.log('fin du jeu');
 	var winner = this.getPlayerAttribute('.isAlive()');
-	alert(winner + ' a gagné ! Un nouvel essai ?');
+	alert(winner.name + ' a gagné ! Un nouvel essai ?');
 	window.location.reload();
 };
-
-//What happen during the game itself :
-
-
 
 GameEngine.prototype.removeEvent = function(element) {
 	$(element).unbind( "click" );
@@ -180,11 +165,18 @@ GameEngine.prototype.removeEvent = function(element) {
 
 
 GameEngine.prototype.enoughPlayersToFight = function() {
-	if (this.getDeadPlayersNumber() == this.playerStore.playerStoreList.length - 1) {
-		return false;
-	} else {
-		return true;
+
+	this.deadPlayers = [];
+
+	for (var i = 0; i < this.getPlayersNumber(); i++) {
+		var actualPlayer = this.playerStore.getPlayer(i);
+		if (!actualPlayer.isAlive()) {
+			this.deadPlayers.push(actualPlayer);
+		}
 	}
+
+	enoughPlayer = this.getPlayersNumber() - this.deadPlayers.length == 1 ? false : true;
+	return enoughPlayer;
 };
 
 GameEngine.prototype.blockRandomCells = function() {
@@ -249,6 +241,8 @@ GameEngine.prototype.resetGame = function() {
 	this.removeEvent('.cell');
 	this.boardManager.resetUsedCellList();
 	this.gameEffectManager.resetCellStatus();
+	this.deathmatch = false;
+	this.$attackButton.prop('disabled', true);
 };
 
 //only unsed at board generation, not after to see if a cell is occupied
@@ -343,7 +337,7 @@ GameEngine.prototype.checkEnnemyProximity = function(surroundingCellsList) {
 
 	for (var listIndex = 0; listIndex < surroundingCellsList.length; listIndex++) {
 
-		var cell = this.boardManager.getCellByid(surroundingCellsList[listIndex])
+		var cell = this.boardManager.getCellByid(surroundingCellsList[listIndex]);
 		if ((typeof cell != 'undefined') && (cell.status == 'has-player')) {
 			ennemyNumber ++;
 		} 
@@ -383,13 +377,6 @@ GameEngine.prototype.getSurroundingCells = function(cellId) {
 };
 
 GameEngine.prototype.organisePlayerTurn = function() {
-
-	if (this.deathmatchEngaged()) {
-		this.$attackButton.prop('disabled', false)
-	} else {
-		this.$attackButton.prop('disabled', true)
-	}
-
 	this.gameEffectManager.displayPlayersInfos(this.actualPlayer);
 	this.organiseMovingPhase();
 	this.organiseActionPhase();
@@ -398,7 +385,7 @@ GameEngine.prototype.organisePlayerTurn = function() {
 
 GameEngine.prototype.organiseMovingPhase = function() {
 	//move only if players arent figthing
-	if (!this.deathmatchEngaged()) {
+	if (!this.deathmatch) {
 
 		var accessiblesCellsList = this.getAccessibleCellList();
 		this.gameEffectManager.addClassAccessible(accessiblesCellsList);
@@ -429,8 +416,9 @@ GameEngine.prototype.setAccessiblesCellsEvent = function(accessiblesCellsList) {
 		//Changes on the board and visuals effects related
 		self.gameEffectManager.displayGameInfos(self.actualPlayer.name + ' se déplace en ' + self.actualPlayer.cell);
 		self.boardManager.updateBoard(self.weaponStore, self.playerStore);
-		
 		self.gameEffectManager.displayPlayersInfos(self.actualPlayer);
+
+		self.checkDeathmatchCondition();
 		//job is done, remove accessibles cells
 		self.removeAccessiblesCellsEvent(accessiblesCellsList);
 	});
@@ -451,7 +439,7 @@ GameEngine.prototype.organiseActionPhase = function() {
 		//just in case the player choose not to move
 		this.removeAccessiblesCellsEvent(this.getAccessibleCellList());
 		
-		this.actualPlayer.attack();
+		this.actualPlayer.attack(this.definePlayerEnemy());
 		this.removeEvent(this.$actionsButtons);
 		this.playTurns();
 
@@ -470,6 +458,29 @@ GameEngine.prototype.organiseActionPhase = function() {
 
 };
 
-GameEngine.prototype.deathmatchEngaged = function() {
-	return this.checkEnnemyProximity(this.getSurroundingCells(this.actualPlayer.cell));
+GameEngine.prototype.checkDeathmatchCondition = function() {
+
+	var closeToEnemy = this.checkEnnemyProximity(this.getSurroundingCells(this.actualPlayer.cell));
+
+	if (closeToEnemy) {
+		this.deathmatch = true;
+		this.$attackButton.prop('disabled', false);
+	}
 };
+
+GameEngine.prototype.definePlayerEnemy = function() {
+
+	var surroundingCells = this.getSurroundingCells(this.actualPlayer.cell);
+	var players = this.playerStore.playerStoreList;
+	var enemy = 'unknow';
+
+	$.each(surroundingCells, function (cellIndex, value) {
+		$.each(players, function (playerIndex, value) {
+
+			if (players[playerIndex].cell == surroundingCells[cellIndex]) {
+				enemy = players[playerIndex];
+			}
+		});
+	});
+	return enemy;
+}
