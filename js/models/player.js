@@ -25,7 +25,10 @@ Player.prototype.pickUp = function(weapon) {
 	this.weapon.cell = this.cell
 	this.weapon = weapon;
 	this.weapon.cell = '';
+
+	//I need to set a personnal event here to say that, then the engine display the message
 	gameEngine.gameEffectManager.displayGameInfos(this.name + ' a ramassé l\'arme "' + this.weapon.name + '"');
+
 };
 
 Player.prototype.shoot = function() {
@@ -41,14 +44,11 @@ Player.prototype.shoot = function() {
 		console.log(enemy.name + ' a paré la moitié des dégats et n\'en reçoit que ' + weapon.damage + ' !');
 	}
 	enemy.life -= hitPoints;*/
-
-	gameEngine.playTurns();
 };
 
 Player.prototype.defend = function() {
 	this.protected = true;
 	console.log(this.name + ' se prépare à prendre un coup.');
-	gameEngine.playTurns();
 };
 
 

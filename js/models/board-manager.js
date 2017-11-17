@@ -62,11 +62,26 @@ BoardManager.prototype.createBoard = function(boardSize) {
 	}
 };
 
-BoardManager.prototype.checkPlayerPresence = function() {
+//if there is a weapon on this cell, return it
+BoardManager.prototype.checkAndReturnWeapon = function(cellid) {
+	for (var i = 0; i < gameEngine.getWeaponsNumber(); i++) {
+		var weapon = gameEngine.weaponStore.getWeapon(i);
+		if (cellid == weapon.cell) {
+			return weapon;
+		}
+	}
+};
+
+BoardManager.prototype.updateBoard = function(weaponStore, playerStore) {
+	this.checkWeaponPresence(weaponStore);
+	this.checkPlayerPresence(playerStore);
+}
+
+BoardManager.prototype.checkPlayerPresence = function(playerStore) {
 	for (var i = 0; i < this.board.length; i++) {
 		var cell = this.getCell(i);
-		for (var p = 0; p < gameEngine.getPlayersNumber(); p++) {
-			var player = gameEngine.playerStore.getPlayer(p);
+		for (var p = 0; p < playerStore.playerStoreList.length; p++) {
+			var player = playerStore.getPlayer(p);
 			if (cell.id == player.cell) {
 			    cell.texture = player.texture;
 			    cell.status = 'has-player';
@@ -75,24 +90,15 @@ BoardManager.prototype.checkPlayerPresence = function() {
 	}
 };
 
-BoardManager.prototype.checkWeaponPresence = function() {
+BoardManager.prototype.checkWeaponPresence = function(weaponStore) {
 	for (var i = 0; i < this.board.length; i++) {
 		var cell = this.getCell(i);
-		for (var p = 0; p < gameEngine.getWeaponsNumber(); p++) {
-			var weapon = gameEngine.weaponStore.getWeapon(p);
+		for (var p = 0; p < weaponStore.weaponStoreList.length; p++) {
+			var weapon = weaponStore.getWeapon(p);
 			if (cell.id == weapon.cell) {
 			    cell.texture = weapon.texture;
 			    cell.status = 'has-weapon';
 			}
-		}
-	}
-};
-
-BoardManager.prototype.checkAndReturnWeapon = function(cellid) {
-	for (var i = 0; i < gameEngine.getWeaponsNumber(); i++) {
-		var weapon = gameEngine.weaponStore.getWeapon(i);
-		if (cellid == weapon.cell) {
-			return weapon;
 		}
 	}
 };

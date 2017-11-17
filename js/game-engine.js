@@ -3,6 +3,8 @@ var GameEngine = function(boardid) {
 	this.boardid = boardid;
 	this.$startButton = $('.start-button');
 	this.$actionsButtons = $('.action-button');
+	this.$attackButton = $('#attack');
+	this.$defendButton =	$('#defend');
 	this.actualPlayer = {};
 };
 
@@ -154,11 +156,9 @@ GameEngine.prototype.startGame = function() {
 };
 
 GameEngine.prototype.playTurns = function() {
-	//a while is more suitable here I think
 	if (this.enoughPlayersToFight()) {
 		this.ChangeTurnToPlay();
-		this.organiseMovingPhase();
-		this.organiseFightingPhase();
+		this.organisePlayerTurn();
 	} else {
 		this.endGame();
 	}
@@ -366,34 +366,30 @@ GameEngine.prototype.getSurroundingCells = function(cellId) {
 
 	var surroundingCellList = [
 		(previousRow + '-' + actualColumnNumber),
-		(previousRow + '-' + nextColumnNumber),
+		//(previousRow + '-' + nextColumnNumber),
 		(actualRow + '-' + nextColumnNumber),
-		(nextRow + '-' + nextColumnNumber),
+		//(nextRow + '-' + nextColumnNumber),
 		(nextRow + '-' + actualColumnNumber),
-		(nextRow + '-' + previousColumnNumber),
+		//(nextRow + '-' + previousColumnNumber),
 		(actualRow + '-' + previousColumnNumber),
-		(previousRow + '-' + previousColumnNumber)
+		//(previousRow + '-' + previousColumnNumber)
 	];
 
 	return surroundingCellList;
 }
 
+GameEngine.prototype.organisePlayerTurn = function() {
 
-
-
-
-GameEngine.prototype.organiseMovingState = function(status, cellList) {
-	if (status == 'start-moving') {
-		//this.gameEffectManager.toggleAccessiblesCells(cellList);
-		//this.actualPlayer.move(cellList);
-	} else if (status == 'has-moved') {
-		this.boardManager.checkWeaponPresence();
-		this.boardManager.checkPlayerPresence();
-		//this.gameEffectManager.toggleAccessiblesCells(cellList);
-		//this.gameEffectManager.updateBoardDisplay();
-		//this.choosePlayerActions('combat');
+	if (this.deathmatchEngaged()) {
+		this.$attackButton.disabled = false;
+	} else {
+		this.$attackButton.disabled = true;
 	}
+
+	this.organiseMovingPhase();
+	this.organiseActionPhase();
 }
+
 
 GameEngine.prototype.organiseMovingPhase = function() {
 	this.gameEffectManager.displayPlayersInfos(this.actualPlayer);
@@ -413,52 +409,56 @@ GameEngine.prototype.setAccessiblesCellsEvent = function(accessiblesCellsList) {
 
 	$('.accessible').on("click", function() {
 
+		//on what did the user clicked ?
 		var clickedCellId = $(this).attr('id');
-
-		console.log(clickedCellId);
-
 		var clickedCell = self.boardManager.getCellByid(clickedCellId);
-		console.log(clickedCell);
 
+		//reset the old player's cell
 		self.boardManager.resetCell(self.actualPlayer.cell);
 		//remove 'accessible' class, they are not anymore
 		self.gameEffectManager.toggleClassAccessible(accessiblesCellsList);
 
+		//check weapon presence on this cell
 		var weaponOnCell = self.boardManager.checkAndReturnWeapon(clickedCellId);
+		//send place to move and weapon that might be on cell to player
 		self.actualPlayer.move(clickedCell, weaponOnCell);
 
+		//Changes on the board and visuals effects related
 		self.gameEffectManager.displayGameInfos(self.actualPlayer.name + ' se déplace en ' + self.actualPlayer.cell);
-
-		self.removeEvent('.accessible');
-
+		self.boardManager.updateBoard(self.weaponStore, self.playerStore);
 		self.gameEffectManager.updateBoardDisplay();
+
+		//job is done, remove event
+		self.removeEvent('.accessible');
 	});
 }
 
 
-GameEngine.prototype.organiseFightingPhase = function() {
+GameEngine.prototype.organiseActionPhase = function() {
+
 	this.gameEffectManager.displayPlayersInfos(this.actualPlayer);
-	console.log('rien ici pour le moment');
+
+	//attack
+	this.$attackButton.on("click", function() {
+
+		this.actualPlayer.attack();
+		this.removeEvent(this.$actionsButtons);
+		this.playTurns();
+
+	}.bind(this));
+
+	//defend
+	this.$defendButton.on("click", function() {
+
+		this.actualPlayer.defend();
+		this.removeEvent(this.$actionsButtons);
+		this.playTurns();
+
+	}.bind(this));
+
 }
 
-GameEngine.prototype.setActionsButtonsEvent = function() {
-
+GameEngine.prototype.deathmatchEngaged = function() {
+	//false for now
+	return false;
 }
-
-/*
-} else if (requestedAction == 'combat') {
-
-			this.$actionsButtons.click(function(e) {
-				var target = $(e.target);
-				if (target.is('#attack')) {
-					this.actualPlayer.shoot();
-				} else if (target.is('#defend')) {
-					this.actualPlayer.defend();
-				} else {
-					console.log('Erreur: type d\'action inconnu');
-				}
-				this.removeEvent(this.$actionsButtons);
-
-			}.bind(this));
-		} 
-*/
