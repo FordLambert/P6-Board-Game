@@ -339,15 +339,19 @@ GameEngine.prototype.getAccessibleCellList = function() {
 
 GameEngine.prototype.checkEnnemyProximity = function(surroundingCellsList) {
 
+	var ennemyNumber = 0;
+
 	for (var listIndex = 0; listIndex < surroundingCellsList.length; listIndex++) {
 
 		var cell = this.boardManager.getCellByid(surroundingCellsList[listIndex])
-
 		if ((typeof cell != 'undefined') && (cell.status == 'has-player')) {
-			return true;
-		}
-
+			ennemyNumber ++;
+		} 
 	}
+
+	var isThereEnnemy = ennemyNumber > 0 ? true : false;
+	return isThereEnnemy;
+
 };
 
 GameEngine.prototype.getSurroundingCells = function(cellId) {
@@ -376,31 +380,32 @@ GameEngine.prototype.getSurroundingCells = function(cellId) {
 	];
 
 	return surroundingCellList;
-}
+};
 
 GameEngine.prototype.organisePlayerTurn = function() {
 
 	if (this.deathmatchEngaged()) {
-		this.$attackButton.disabled = false;
+		this.$attackButton.prop('disabled', false)
 	} else {
-		this.$attackButton.disabled = true;
+		this.$attackButton.prop('disabled', true)
 	}
 
+	this.gameEffectManager.displayPlayersInfos(this.actualPlayer);
 	this.organiseMovingPhase();
 	this.organiseActionPhase();
-}
+};
 
 
 GameEngine.prototype.organiseMovingPhase = function() {
-	this.gameEffectManager.displayPlayersInfos(this.actualPlayer);
-	//only if players arent figthing
-	if (true) {
+	//move only if players arent figthing
+	if (!this.deathmatchEngaged()) {
+
 		var accessiblesCellsList = this.getAccessibleCellList();
-		this.gameEffectManager.toggleClassAccessible(accessiblesCellsList);
+		this.gameEffectManager.addClassAccessible(accessiblesCellsList);
 
 		this.setAccessiblesCellsEvent(accessiblesCellsList);
 	}
-}
+};
 
 GameEngine.prototype.setAccessiblesCellsEvent = function(accessiblesCellsList) {
 
@@ -415,8 +420,6 @@ GameEngine.prototype.setAccessiblesCellsEvent = function(accessiblesCellsList) {
 
 		//reset the old player's cell
 		self.boardManager.resetCell(self.actualPlayer.cell);
-		//remove 'accessible' class, they are not anymore
-		self.gameEffectManager.toggleClassAccessible(accessiblesCellsList);
 
 		//check weapon presence on this cell
 		var weaponOnCell = self.boardManager.checkAndReturnWeapon(clickedCellId);
@@ -426,12 +429,17 @@ GameEngine.prototype.setAccessiblesCellsEvent = function(accessiblesCellsList) {
 		//Changes on the board and visuals effects related
 		self.gameEffectManager.displayGameInfos(self.actualPlayer.name + ' se déplace en ' + self.actualPlayer.cell);
 		self.boardManager.updateBoard(self.weaponStore, self.playerStore);
-		self.gameEffectManager.updateBoardDisplay();
-
-		//job is done, remove event
-		self.removeEvent('.accessible');
+		
+		self.gameEffectManager.displayPlayersInfos(self.actualPlayer);
+		//job is done, remove accessibles cells
+		self.removeAccessiblesCellsEvent(accessiblesCellsList);
 	});
-}
+};
+
+GameEngine.prototype.removeAccessiblesCellsEvent = function(accessiblesCellsList) {
+	this.removeEvent('.cell');
+	this.gameEffectManager.updateBoardDisplay();
+};
 
 
 GameEngine.prototype.organiseActionPhase = function() {
@@ -440,7 +448,9 @@ GameEngine.prototype.organiseActionPhase = function() {
 
 	//attack
 	this.$attackButton.on("click", function() {
-
+		//just in case the player choose not to move
+		this.removeAccessiblesCellsEvent(this.getAccessibleCellList());
+		
 		this.actualPlayer.attack();
 		this.removeEvent(this.$actionsButtons);
 		this.playTurns();
@@ -449,6 +459,8 @@ GameEngine.prototype.organiseActionPhase = function() {
 
 	//defend
 	this.$defendButton.on("click", function() {
+		//just in case the player choose not to move
+		this.removeAccessiblesCellsEvent(this.getAccessibleCellList());
 
 		this.actualPlayer.defend();
 		this.removeEvent(this.$actionsButtons);
@@ -456,9 +468,8 @@ GameEngine.prototype.organiseActionPhase = function() {
 
 	}.bind(this));
 
-}
+};
 
 GameEngine.prototype.deathmatchEngaged = function() {
-	//false for now
-	return false;
-}
+	return this.checkEnnemyProximity(this.getSurroundingCells(this.actualPlayer.cell));
+};
