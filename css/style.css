@@ -1,3 +1,5 @@
+/*-----All page is concerned*/
+
 @font-face {
 	font-family: "TF2";
 	src: url('fonts/TF2.ttf');
@@ -18,23 +20,90 @@ button {
 	padding: 10px;
 }
 
-.start-button, .rules-button {
-	margin-top: 10px;
+/*Board and all inside it*/
+.board-wrapper {
+	position: relative;
 }
 
-/*This concern the parts that will be change by Js */
+#board {
+	position: absolute;
+	width: 80%;
+	background-image: url(../pictures/blackboard.png);
+	background-size: cover;
+	padding: 0px;
+	margin-bottom: 25px;
+	margin-top: 25px;
+}
+
+.progress {
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+}
+
+.progress-bar {
+	position: absolute;
+	z-index: -1;
+	height: 105%;
+	right: -2.5%;
+	top: -2.5%;
+}
+
+.cell{
+	border: 1px solid black;
+	height: 8vh;
+	width: 12.5%;
+    float:left;
+    text-align:center;
+    background-size: 100% 100%;
+    /*thanks to free logo maker for the weapons png*/
+}
+
+/*-----Used by Js game-effect-manager*/
+
 .red {
 	background-color: #D34245;
 	border-color: #BC6352;
 }
+
 .blue {
 	background-color: #5289B3;
 	border-color: #3F3834;
 }
-/**/
+
+.accessible {
+	border: 2px dashed #e0c341;
+}
+
+.accessible:hover {
+	cursor: pointer;
+	
+	animation: colorchange 2s;
+    -webkit-animation: colorchange 2s; /* Chrome and Safari */
+    animation-iteration-count: infinite;
+    }
+
+    @keyframes colorchange {
+    	0%   {background-color: #efd14c;}
+    	50%  {background-color: #8e7c2c;}
+    	100% {background-color: #e0c341;}
+    }
+
+    @-webkit-keyframes colorchange {
+		0%   {background-color: #efd14c;}
+
+		50%  {background-color: #8e7c2c;}
+		100% {background-color: #e0c341;}
+    }
+}
+
+.start-button, .rules-button {
+	margin-top: 10px;
+}
+
+/*-----classic CSS rules*/
 
 .container {
-	
 	margin-bottom: 35px;
 	margin-left: 0px;
 	margin-right: 0px;
@@ -64,77 +133,7 @@ header {
 	margin-bottom: 5px;
 }
 
-.game-infos-block {
-	margin-top: 10px;
-	margin-bottom: 30px;
-}
-
-.progress {
-	height: 100%;
-	width: 100%;
-	margin: 0px;
-}
-
-.cell{
-	border: 1px solid black;
-	height: 8vh;
-	width: 12.5%;
-    float:left;
-    text-align:center;
-    background-size: 100% 100%;
-    /*thanks to free logo maker for the weapons png*/
-}
-
-.accessible {
-	border: 2px dashed #e0c341;
-}
-
-.accessible:hover {
-	animation: colorchange 2s;
-    -webkit-animation: colorchange 2s; /* Chrome and Safari */
-    animation-iteration-count: infinite;
-    }
-
-    @keyframes colorchange {
-    	0%   {background: #efd14c;}
-    	//25%  {background: yellow;}
-    	50%  {background: #8e7c2c;}
-    	//75%  {background: green;}
-    	100% {background: #e0c341;}
-    }
-
-    @-webkit-keyframes colorchange {
-		0%   {background: #efd14c;}
-		//25%  {background: yellow;}
-		50%  {background: #8e7c2c;}
-		//75%  {background: green;}
-		100% {background: #e0c341;}
-    }
-}
-
-.board-wrapper {
-	position: relative;
-}
-
-#board {
-	position: absolute;
-	width: 80%;
-	background-image: url(../pictures/blackboard.png);
-	background-size: cover;
-	padding: 0px;
-	margin-bottom: 25px;
-	margin-top: 25px;
-}
-
-.progress-bar {
-	position: absolute;
-	z-index: -1;
-	height: 105%;
-	right: -2.5%;
-	top: -2.5%;
-}
-
-/*actions buttons*/
+/*-----Actions buttons*/
 .actions-block {
 	padding-top: 15px;
 	padding-bottom: 10px;
@@ -145,7 +144,7 @@ header {
 	margin-bottom: 15px;
 }
 
-/*players info and picture zones*/
+/*-----Players infos and picture zones*/
 .player-1{
 	background-image: url(../pictures/red-background.png);
 }
@@ -172,6 +171,12 @@ header {
 .player-infos {
 	margin-top: 15px;
 	margin-bottom: 15px;
+}
+
+/*-----Game infos zone*/
+.game-infos-block {
+	margin-top: 10px;
+	margin-bottom: 30px;
 }
 
 .display-area {

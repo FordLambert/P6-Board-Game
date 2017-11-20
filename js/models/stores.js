@@ -1,3 +1,4 @@
+//-----WeaponStore
 var WeaponStore = function() {
 	this.weaponStoreList = [];
 };
@@ -10,6 +11,7 @@ WeaponStore.prototype.getWeapon = function(weaponIndex) {
 	return this.weaponStoreList[weaponIndex];
 };
 
+//-----PlayerStore
 var PlayerStore = function() {
 	this.playerStoreList = [];
 };

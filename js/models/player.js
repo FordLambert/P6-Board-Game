@@ -8,7 +8,11 @@ var Player = function(name, color, turnToPlay, texture) {
 	this.color = color;
 	this.texture = texture;
 	this.turnToPlay = turnToPlay;
+};
 
+Player.prototype.isAlive = function() {
+	alive = this.life <= 0 ? true : false;
+	return alive;
 };
 
 Player.prototype.move = function move(newCell, weaponOnCell) {
@@ -22,6 +26,7 @@ Player.prototype.move = function move(newCell, weaponOnCell) {
 };
 
 Player.prototype.pickUp = function(weapon) {
+
 	this.weapon.cell = this.cell
 	this.weapon = weapon;
 	this.weapon.cell = '';
@@ -31,28 +36,33 @@ Player.prototype.pickUp = function(weapon) {
 
 };
 
+Player.prototype.defend = function() {
+	this.protected = true;
+
+	//replace this with personnal event -> observer
+	console.log(this.name + ' est sur ses gardes.');
+};
+
 Player.prototype.attack = function(enemy) {
 
 	this.protected = false;
+
+	//replace this with personnal event -> observer
 	console.log('Le ' + this.name + ' tire !');
 
 	var hitPoints = 0;
 	if (enemy.protected = false) {
 		hitPoints = this.weapon.damage;
+
+		//replace this with personnal event -> observer
 		console.log(enemy.name + ' a reçu ' + hitPoints + ' points de dégats !');
+
 	} else if (enemy.protected = true) {
 		hitPoints = this.weapon.damage / 2;
+
+		//replace this with personnal event -> observer
 		console.log(enemy.name + ' a paré la moitié des dégats et n\'en reçoit que ' + hitPoints + ' !');
+		
 	}
 	enemy.life -= hitPoints;
 };
-
-Player.prototype.defend = function() {
-	this.protected = true;
-	console.log(this.name + ' est sur ses gardes.');
-};
-
-Player.prototype.isAlive = function() {
-	alive = this.life <= 0 ? true : false;
-	return alive;
-}
