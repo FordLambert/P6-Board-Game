@@ -1,4 +1,3 @@
-//if a function whatsoever had an impact on what the user see, it should be here 
 var GameEffectManager = function(boardManager) {
 	this.boardManager = boardManager;
 	this.$actionButton = $('.action-button');
@@ -23,41 +22,42 @@ GameEffectManager.prototype.getNewBgClass = function(color) {
 	       	strippedColor = ''; //the default color is blue
 	        break;
 	    default:
-	        console.log('Erreur: Couleur Inconnue');
+	        console.log('Error: unknown color');
 	}
 
 	return strippedColor;
 
 };
 
-GameEffectManager.prototype.displayBoard = function() {
+GameEffectManager.prototype.createVisualFromBoardObject = function() {
 
-	for (var i = 0; i < this.boardManager.board.length; i++) {
-		var newCell = this.boardManager.getCell(i);
+	for (var cellIndex = 0; cellIndex < this.boardManager.board.length; cellIndex++) {
+		var newCell = this.boardManager.getCell(cellIndex);
+
 		newCell = $('<div>').addClass('cell').attr('id', newCell.id);
 		$(this.boardManager.divId).append(newCell);
 	}
 };
 
-GameEffectManager.prototype.updateBoardDisplay = function() {	
-	for (var i = 0; i < this.boardManager.board.length; i++) {
-		var actualCell = $('#' + this.boardManager.getCell(i).id);
-		actualCell.css('background-image', 'url(pictures/' + this.boardManager.getCell(i).texture + ')');
-		actualCell.attr('class', 'cell' +  ' ' + this.boardManager.getCell(i).status);
+GameEffectManager.prototype.updateVisualFromBoardObject = function() {	
+	for (var cellIndex = 0; cellIndex < this.boardManager.board.length; cellIndex++) {
+
+		var actualCell = $('#' + this.boardManager.getCell(cellIndex).id);
+
+		actualCell.css('background-image', 'url(pictures/' + this.boardManager.getCell(cellIndex).texture + ')');
+		actualCell.attr('class', 'cell' +  ' ' + this.boardManager.getCell(cellIndex).status);
 	}
 };
 
-
-//the name will need to be changed, it reset more stuff now.
-GameEffectManager.prototype.resetCellStatus = function() {
+GameEffectManager.prototype.resetBoardVisualAndGameInfos = function() {
 	//to avoid conflict between the JQuery and object 'this'
 	var boardManager = this.boardManager;
 
 	$('.cell').each(function() {
 		boardManager.resetCell($(this).attr('id'))
 	});
-	this.updateBoardDisplay();
 
+	this.updateVisualFromBoardObject();
 	this.$displayArea.html('<h2>Déroulement de la partie:</h2>');
 };
 
@@ -71,6 +71,7 @@ GameEffectManager.prototype.addClassAccessible = function(cellidList) {
 GameEffectManager.prototype.displayPlayersInfos = function(player) {
 
 	this.playerDisplayBoxid = ('#' + player.color);
+
 	var $lifeBar = $(this.playerDisplayBoxid).find('.life');
 	var $activeWeapon = $(this.playerDisplayBoxid).find('.weapon');
 	var $weaponStat = $(this.playerDisplayBoxid).find('.weapon-stat');
@@ -83,8 +84,7 @@ GameEffectManager.prototype.displayPlayersInfos = function(player) {
 GameEffectManager.prototype.displayGameInfos = function(info) {
 	this.$displayArea.append('<p>' + info + '</p>');
 
-	//This scroll down a little bit more each time
+	//This scroll down (in px) a little bit more each time the method is called
     var scrollActualPostion = this.$displayArea.scrollTop();
     this.$displayArea.scrollTop(scrollActualPostion + 60);
-
 };
