@@ -282,14 +282,14 @@ GameEngine.prototype.organiseMovingPhase = function() {
 	//move only if players arent figthing
 	if (!this.deathmatch) {
 
-		var accessiblesCellsList = this.getAccessibleCellList();
-		this.gameEffectManager.addClassAccessible(accessiblesCellsList);
+		this.configAccessibleCellList();
+		this.gameEffectManager.addClassAccessible(this.accessibleCellList);
 
-		this.setAccessiblesCellsEvent(accessiblesCellsList);
+		this.setAccessiblesCellsEvent();
 	}
 };
 
-GameEngine.prototype.setAccessiblesCellsEvent = function(accessiblesCellsList) {
+GameEngine.prototype.setAccessiblesCellsEvent = function() {
 
 	//I don't like that but this is the only way i found (yet) to keep both the jquery and object context
 	var self = this;
@@ -315,11 +315,11 @@ GameEngine.prototype.setAccessiblesCellsEvent = function(accessiblesCellsList) {
 
 		self.checkAndActiveDeathmatch();
 		//job is done, remove accessibles cells
-		self.removeAccessiblesCellsEvent(accessiblesCellsList);
+		self.removeAccessiblesCellsEvent();
 	});
 };
 
-GameEngine.prototype.removeAccessiblesCellsEvent = function(accessiblesCellsList) {
+GameEngine.prototype.removeAccessiblesCellsEvent = function() {
 	this.removeEvent('.cell');
 	this.gameEffectManager.updateVisualFromBoardObject();
 };
@@ -332,7 +332,7 @@ GameEngine.prototype.organiseActionPhase = function() {
 	//attack
 	this.$attackButton.on("click", function() {
 		//just in case the player choose not to move
-		this.removeAccessiblesCellsEvent(this.getAccessibleCellList());
+		this.removeAccessiblesCellsEvent(this.accessibleCellList);
 		
 		this.actualPlayer.attack(this.definePlayerEnemy());
 		this.removeEvent(this.$actionsButtons);
@@ -343,7 +343,7 @@ GameEngine.prototype.organiseActionPhase = function() {
 	//defend
 	this.$defendButton.on("click", function() {
 		//just in case the player choose not to move
-		this.removeAccessiblesCellsEvent(this.getAccessibleCellList());
+		this.removeAccessiblesCellsEvent(this.accessibleCellList);
 
 		this.actualPlayer.defend();
 		this.removeEvent(this.$actionsButtons);
@@ -400,6 +400,16 @@ GameEngine.prototype.checkAndActiveDeathmatch = function() {
 	}
 };
 
+GameEngine.prototype.isAccessible = function(cell) {
+	if (typeof cell != 'undefined') {
+		if ((cell.status == 'empty') || (cell.status == 'has-weapon')) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+};
+
 //-----Others methods
 GameEngine.prototype.resetGame = function() {
 	this.removeEvent(this.$actionsButtons);
@@ -428,73 +438,66 @@ GameEngine.prototype.attributeRandomCellid = function(number) {
 	return cellid;
 };
 
+GameEngine.prototype.configAccessibleCellList = function() {
 
-//-------------this part need to be shortened, I repeat myself a lot here
-//-------------It will be in "getters" after but it's still a wip
-GameEngine.prototype.getAccessibleCellList = function() {
-
-	var accessibleCells = [];
+	this.accessibleCellList = [];
 
 	var actualCellid = this.actualPlayer.cell.split("-");
 
 	var actualRow = actualCellid[0];
 	var actualColumn = parseInt(actualCellid[1], 10);
 
-	//next cells:
-	for (var i = 1; i <= this.actualPlayer.movement; i++) {
-		var nextCellsids = actualRow + '-' + (actualColumn + i);
-		var nextCell = this.boardManager.getCellByid(nextCellsids);
+	//the following reapeat itself a bit but I want a loop in each direction that will stop if the way is blocked
 
-		if (typeof nextCell != 'undefined') {
-			if ((nextCell.status == 'empty') || (nextCell.status == 'has-weapon')) {
-				accessibleCells.push(nextCell.id);
-			} else {
-				break;
-			}
+	//cells to the right
+	for (var i = 1; i <= this.actualPlayer.movement; i++) {
+
+		var nextCellId = actualRow + '-' + (actualColumn + i);
+		var nextCell = this.boardManager.getCellByid(nextCellId);
+
+		if (this.isAccessible(nextCell)) {
+			this.accessibleCellList.push(nextCellId);
+		} else {
+			break;
 		}
 	}
 
-	//previous cells:
+	//cells to the left
 	for (var i = 1; i <= this.actualPlayer.movement; i++) {
-		var previousCellsids = actualRow + '-' + (actualColumn - i);
-		var previousCell = this.boardManager.getCellByid(previousCellsids);
 
-		if (typeof previousCell != 'undefined') {
-			if ((previousCell.status == 'empty') || (previousCell.status == 'has-weapon'))  {
-				accessibleCells.push(previousCell.id);
-			} else {
-				break;
-			}
-		}
-	}
-	
-	//upper cells:
-	for (var i = 1; i <= this.actualPlayer.movement; i++) {
-		var upperCellsids = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) - i] + '-' + actualColumn;
-		var upperCell = this.boardManager.getCellByid(upperCellsids);
+		var previousCellId = actualRow + '-' + (actualColumn - i);
+		var previousCell = this.boardManager.getCellByid(previousCellId);
 
-		if (typeof upperCell != 'undefined') {
-			if ((upperCell.status == 'empty') || (upperCell.status == 'has-weapon'))  {
-				accessibleCells.push(upperCell.id);
-			} else {
-				break;
-			}
+		if (this.isAccessible(previousCell)) {
+			this.accessibleCellList.push(previousCellId);
+		} else {
+			break;
 		}
 	}
 
-	//under cells:
+	//cells on top of the player's
 	for (var i = 1; i <= this.actualPlayer.movement; i++) {
-		var underCellsids = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) + i] + '-' + actualColumn;
-		var underCell = this.boardManager.getCellByid(underCellsids);
 
-		if (typeof underCell != 'undefined') {
-			if ((underCell.status == 'empty') || (underCell.status == 'has-weapon'))  {
-				accessibleCells.push(underCell.id);
-			} else {
-				break;
-			}
+		var upperCellId = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) - i] + '-' + actualColumn;
+		var upperCell = this.boardManager.getCellByid(upperCellId);
+
+		if (this.isAccessible(upperCell)) {
+			this.accessibleCellList.push(upperCellId);
+		} else {
+			break;
 		}
 	}
 
-	return accessibleCells;
+	//cells beside the player's
+	for (var i = 1; i <= this.actualPlayer.movement; i++) {
+
+		var underCellId = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) + i] + '-' + actualColumn;
+		var underCell = this.boardManager.getCellByid(underCellId);
+
+		if (this.isAccessible(underCell)) {
+			this.accessibleCellList.push(underCellId);
+		} else {
+			break;
+		}
+	}
 };
