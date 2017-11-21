@@ -1,8 +1,13 @@
 var GameEffectManager = function(boardManager) {
+	this._selectors = {
+		'actionButton': '.action-button',
+		'changingBackground': '.progress-bar',
+		'displayArea': '.display-area'
+	}
 	this.boardManager = boardManager;
-	this.$actionButton = $('.action-button');
-	this.$changingBackground = $('.progress-bar');
-	this.$displayArea = $('.display-area');
+	this.$actionButton = $(this._selectors.actionButton);
+	this.$changingBackground = $(this._selectors.changingBackground);
+	this.$displayArea = $(this._selectors.displayArea);
 };
 
 GameEffectManager.prototype.changeTheme = function(color) {
@@ -81,6 +86,7 @@ GameEffectManager.prototype.displayPlayersInfos = function(player) {
 	$weaponStat.text('Dégats : ' + player.weapon.damage);
 };
 
+//All infos on movement, combat and so made by players
 GameEffectManager.prototype.displayGameInfos = function(info) {
 	this.$displayArea.append('<p>' + info + '</p>');
 

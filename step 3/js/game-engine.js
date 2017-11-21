@@ -1,10 +1,16 @@
 //-----Constructor
 var GameEngine = function(boardid) {
+	this._selectors = {
+		'startButton': '.start-button',
+		'actionButton': '.action-button',
+		'attackButton': '#attack',
+		'defendButton': '#defend'
+	}
 	this.boardid = boardid;
-	this.$startButton = $('.start-button');
-	this.$actionsButtons = $('.action-button');
-	this.$attackButton = $('#attack');
-	this.$defendButton =	$('#defend');
+	this.$startButton = $(this._selectors.startButton);
+	this.$actionsButtons = $(this._selectors.actionButton);
+	this.$attackButton = $(this._selectors.attackButton);
+	this.$defendButton =	$(this._selectors.defendButton);
 	this.actualPlayer = {};
 };
 

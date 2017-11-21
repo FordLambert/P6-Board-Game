@@ -1,6 +1,9 @@
 var GameEffectManager = function(boardManager) {
+	this._selectors = {
+		'displayArea': '.display-area'
+	}
 	this.boardManager = boardManager;
-	this.$displayArea = $('.display-area');
+	this.$displayArea = $(this._selectors.displayArea);
 };
 
 GameEffectManager.prototype.createVisualFromBoardObject = function() {
@@ -48,6 +51,7 @@ GameEffectManager.prototype.displayPlayersInfos = function(player) {
 	$weaponStat.text('Dégats : ' + player.weapon.damage);
 };
 
+//All infos on movement, combat and so made by players
 GameEffectManager.prototype.displayGameInfos = function(info) {
 	this.$displayArea.append('<p>' + info + '</p>');
 

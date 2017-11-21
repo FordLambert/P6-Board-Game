@@ -1,7 +1,10 @@
 //-----Constructor
 var GameEngine = function(boardid) {
+	this._selectors = {
+		'startButton': '.start-button'
+	}
 	this.boardid = boardid;
-	this.$startButton = $('.start-button');
+	this.$startButton = $(this._selectors.startButton);
 	this.actualPlayer = {};
 };
 
