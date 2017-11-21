@@ -86,5 +86,5 @@ GameEffectManager.prototype.displayGameInfos = function(info) {
 
 	//This scroll down (in px) a little bit more each time the method is called
     var scrollActualPostion = this.$displayArea.scrollTop();
-    this.$displayArea.scrollTop(scrollActualPostion + 60);
+    this.$displayArea.scrollTop(scrollActualPostion + 80);
 };

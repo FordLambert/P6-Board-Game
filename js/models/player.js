@@ -31,38 +31,37 @@ Player.prototype.pickUp = function(weapon) {
 	this.weapon = weapon;
 	this.weapon.cell = '';
 
-	//I need to set a personnal event here to say that, then the engine display the message
-	gameEngine.gameEffectManager.displayGameInfos(this.name + ' a ramassé l\'arme "' + this.weapon.name + '"');
+	this.speak(this.name + ' a ramassé l\'arme "' + this.weapon.name + '"');
 
 };
 
 Player.prototype.defend = function() {
 	this.protected = true;
 
-	//replace this with personnal event -> observer
-	console.log(this.name + ' est sur ses gardes.');
+	this.speak(this.name + ' est sur ses gardes.');
 };
 
 Player.prototype.attack = function(enemy) {
 
 	this.protected = false;
 
-	//replace this with personnal event -> observer
-	console.log('Le ' + this.name + ' tire !');
+	this.speak('Le ' + this.name + ' tire !');
 
 	var hitPoints = 0;
-	if (enemy.protected = false) {
-		hitPoints = this.weapon.damage;
+	if (enemy.protected) {
 
-		//replace this with personnal event -> observer
-		console.log(enemy.name + ' a reçu ' + hitPoints + ' points de dégats !');
-
-	} else if (enemy.protected = true) {
 		hitPoints = this.weapon.damage / 2;
+		this.speak(enemy.name + ' a paré la moitié des dégats et n\'en reçoit que ' + hitPoints + ' !');
 
-		//replace this with personnal event -> observer
-		console.log(enemy.name + ' a paré la moitié des dégats et n\'en reçoit que ' + hitPoints + ' !');
-		
+	} else {
+
+		hitPoints = this.weapon.damage;
+		this.speak(enemy.name + ' a reçu ' + hitPoints + ' points de dégats !');
 	}
 	enemy.life -= hitPoints;
+};
+
+//I need to find a nice way ro remove the call to gameEngine, inject gameEffectManager ?
+Player.prototype.speak = function(sentence) {
+	gameEngine.gameEffectManager.displayGameInfos(sentence);
 };
