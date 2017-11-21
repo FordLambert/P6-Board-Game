@@ -40,7 +40,7 @@ GameEngine.prototype.getSafeCell = function() {
 	while (i != 1) {
 
 		var randomId = this.attributeRandomCellid(this.boardManager.boardSize);
-		var safeCell = this.boardManager.getCellByid(randomId);
+		var safeCell = this.boardManager.getCellById(randomId);
 		var surroundingCellsList = this.getSurroundingCells(safeCell.id);
 
 		if ((this.checkEnnemyProximity(surroundingCellsList)) || (safeCell.status != 'empty')) {
@@ -136,8 +136,8 @@ GameEngine.prototype.getRandomLetter = function(number) {
 GameEngine.prototype.generateRandomid = function(number) {
 	var row = this.getRandomLetter(number);
 	var index = this.getRandomNumber(number);
-	var randomCellid = row + '-' + index;
-	return randomCellid;
+	var randomCellId = row + '-' + index;
+	return randomCellId;
 };
 
 //-----How a complete game work
@@ -208,8 +208,10 @@ GameEngine.prototype.randomizeBoardElements = function() {
 GameEngine.prototype.blockRandomCells = function() {
 	var blockedCellNumber = Math.floor(Math.random() * 5) + 5;
 	for(var i = 0; i < blockedCellNumber; i ++) {
+
 		var randomid = this.attributeRandomCellid(this.boardManager.boardSize);
-		var actualCell = this.boardManager.getCellByid(randomid);
+		var actualCell = this.boardManager.getCellById(randomid);
+
 		if (actualCell.status = 'empty') {
 			actualCell.texture = 'blockedCell.png';
 			actualCell.status = 'is-blocked';
@@ -222,7 +224,7 @@ GameEngine.prototype.placeWeapons = function() {
 	for(var weaponIndex = this.getPlayersNumber(); weaponIndex < this.getWeaponsNumber(); weaponIndex ++) {
 
 		var randomId = this.attributeRandomCellid(this.boardManager.boardSize);
-		var actualCell = this.boardManager.getCellByid(randomId);
+		var actualCell = this.boardManager.getCellById(randomId);
 
 		if (actualCell.status = 'empty') {
 
@@ -298,14 +300,14 @@ GameEngine.prototype.organiseMovingPhase = function() {
 
 GameEngine.prototype.setAccessiblesCellsEvent = function() {
 
-	//I don't like that but this is the only way i found (yet) to keep both the jquery and object context
+	//To keep both the jquery and object context
 	var self = this;
 
 	$('.accessible').on("click", function() {
 
 		//on what did the user clicked ?
 		var clickedCellId = $(this).attr('id');
-		var clickedCell = self.boardManager.getCellByid(clickedCellId);
+		var clickedCell = self.boardManager.getCellById(clickedCellId);
 
 		//reset the old player's cell
 		self.boardManager.resetCell(self.actualPlayer.cell);
@@ -382,7 +384,7 @@ GameEngine.prototype.checkEnnemyProximity = function(surroundingCellsList) {
 
 	for (var listIndex = 0; listIndex < surroundingCellsList.length; listIndex++) {
 
-		var cell = this.boardManager.getCellByid(surroundingCellsList[listIndex]);
+		var cell = this.boardManager.getCellById(surroundingCellsList[listIndex]);
 		if ((typeof cell != 'undefined') && (cell.status == 'has-player')) {
 			ennemyNumber ++;
 		} 
@@ -431,7 +433,7 @@ GameEngine.prototype.attributeRandomCellid = function(number) {
 	var cellid = this.generateRandomid(number);
 
 	//check if this cell id is not used yet
-	for (var cellIndex = 0; cellIndex <= this.boardManager.usedCellsid.length; cellIndex++) {
+	for (var cellIndex = 0; cellIndex <= this.boardManager.usedCellsId.length; cellIndex++) {
 
 		//if this id had already been given
 		if (cellid == this.boardManager.getUsedCellid(cellIndex)) {
@@ -449,10 +451,10 @@ GameEngine.prototype.configAccessibleCellList = function() {
 
 	this.accessibleCellList = [];
 
-	var actualCellid = this.actualPlayer.cell.split("-");
+	var actualCellId = this.actualPlayer.cell.split("-");
 
-	var actualRow = actualCellid[0];
-	var actualColumn = parseInt(actualCellid[1], 10);
+	var actualRow = actualCellId[0];
+	var actualColumn = parseInt(actualCellId[1], 10);
 
 	//the following reapeat itself a bit but I want a loop in each direction that will stop if the way is blocked
 
@@ -460,7 +462,7 @@ GameEngine.prototype.configAccessibleCellList = function() {
 	for (var i = 1; i <= this.actualPlayer.movement; i++) {
 
 		var nextCellId = actualRow + '-' + (actualColumn + i);
-		var nextCell = this.boardManager.getCellByid(nextCellId);
+		var nextCell = this.boardManager.getCellById(nextCellId);
 
 		if (this.isAccessible(nextCell)) {
 			this.accessibleCellList.push(nextCellId);
@@ -473,7 +475,7 @@ GameEngine.prototype.configAccessibleCellList = function() {
 	for (var i = 1; i <= this.actualPlayer.movement; i++) {
 
 		var previousCellId = actualRow + '-' + (actualColumn - i);
-		var previousCell = this.boardManager.getCellByid(previousCellId);
+		var previousCell = this.boardManager.getCellById(previousCellId);
 
 		if (this.isAccessible(previousCell)) {
 			this.accessibleCellList.push(previousCellId);
@@ -486,7 +488,7 @@ GameEngine.prototype.configAccessibleCellList = function() {
 	for (var i = 1; i <= this.actualPlayer.movement; i++) {
 
 		var upperCellId = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) - i] + '-' + actualColumn;
-		var upperCell = this.boardManager.getCellByid(upperCellId);
+		var upperCell = this.boardManager.getCellById(upperCellId);
 
 		if (this.isAccessible(upperCell)) {
 			this.accessibleCellList.push(upperCellId);
@@ -499,7 +501,7 @@ GameEngine.prototype.configAccessibleCellList = function() {
 	for (var i = 1; i <= this.actualPlayer.movement; i++) {
 
 		var underCellId = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) + i] + '-' + actualColumn;
-		var underCell = this.boardManager.getCellByid(underCellId);
+		var underCell = this.boardManager.getCellById(underCellId);
 
 		if (this.isAccessible(underCell)) {
 			this.accessibleCellList.push(underCellId);

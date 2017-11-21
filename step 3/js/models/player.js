@@ -6,13 +6,13 @@ var Player = function(name, color, turnToPlay, texture) {
 	this.life = 100;
 	this.protected = false;
 	this.color = color;
-	this.texture = texture;
 	this.turnToPlay = turnToPlay;
+	this.texture = texture;
 };
 
 Player.prototype.isAlive = function() {
-	alive = this.life <= 0 ? true : false;
-	return alive;
+	aliveStatus = this.life <= 0 ? true : false;
+	return aliveStatus;
 };
 
 Player.prototype.move = function move(newCell, weaponOnCell) {

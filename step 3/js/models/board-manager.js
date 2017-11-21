@@ -11,7 +11,7 @@ var BoardManager = function(divId) {
 	this.divId = divId;
 	this.rowLetters = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
 	//usedCells used when the engine start a game for not using twice the same cell on random placement
-	this.usedCellsid = [];
+	this.usedCellsId = [];
 };
 
 //-----Getters
@@ -19,7 +19,7 @@ BoardManager.prototype.getCell = function(cellIndex) {
 	return this.board[cellIndex];
 };
 
-BoardManager.prototype.getCellByid = function(id) {
+BoardManager.prototype.getCellById = function(id) {
 	for (var cellIndex = 0; cellIndex < this.board.length; cellIndex++) {
 		if (this.getCell(cellIndex).id == id) {
 			return this.getCell(cellIndex);
@@ -28,24 +28,24 @@ BoardManager.prototype.getCellByid = function(id) {
 };
 
 BoardManager.prototype.getUsedCellid = function(index) {
-	return this.usedCellsid[index];
+	return this.usedCellsId[index];
 };
 
 //-----Setters
 BoardManager.prototype.resetUsedCellList = function() {
-	this.usedCellsid = [];
+	this.usedCellsId = [];
 };
 
 BoardManager.prototype.addUsedCellid = function(cellid) {
-	this.usedCellsid.push(cellid);
+	this.usedCellsId.push(cellid);
 };
 
 BoardManager.prototype.addCell = function(cell) {
 	this.board.push(cell);
 };
 
-BoardManager.prototype.resetCell = function(cellid) {
-	cell = this.getCellByid(cellid)
+BoardManager.prototype.resetCell = function(cellId) {
+	cell = this.getCellById(cellId)
 	cell.texture = '';
 	cell.status = 'empty';
 };
