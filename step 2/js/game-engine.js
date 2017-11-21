@@ -2,24 +2,10 @@
 var GameEngine = function(boardid) {
 	this.boardid = boardid;
 	this.$startButton = $('.start-button');
-	this.$actionsButtons = $('.action-button');
-	this.$attackButton = $('#attack');
-	this.$defendButton =	$('#defend');
 	this.actualPlayer = {};
 };
 
 //-----Getters
-GameEngine.prototype.getPlayerAttribute = function(attribute) {
-	var playerIndex = 0;
-	var condition = this.playerStore.getPlayer(playerIndex) + attribute;
-	while (playerIndex < this.playerStore.playerStoreList.length - 1) {
-		if (condition) {
-			return this.playerStore.getPlayer(playerIndex);
-		}
-		playerIndex++;
-	}
-};
-
 GameEngine.prototype.getPlayersNumber = function() {
 	return this.playerStore.playerStoreList.length;
 };
@@ -96,24 +82,6 @@ GameEngine.prototype.ChangeTurnToPlay = function() {
 		}
 		playerIndex++;
 	}
-};
-
-GameEngine.prototype.definePlayerEnemy = function() {
-
-	var surroundingCells = this.getSurroundingCells(this.actualPlayer.cell);
-	var players = this.playerStore.playerStoreList;
-	var enemy = 'unknow';
-
-	$.each(surroundingCells, function (cellIndex, value) {
-		$.each(players, function (playerIndex, value) {
-
-			if (players[playerIndex].cell == surroundingCells[cellIndex]) {
-				enemy = players[playerIndex];
-			}
-		});
-	});
-
-	return enemy;
 };
 
 //-----Random generators
@@ -249,44 +217,32 @@ GameEngine.prototype.startGame = function() {
 	this.createWeapons();
 	this.distributeWeapons();
 	this.randomizeBoardElements();
-
+	
+	//Displaying players infos (life, weapon...)
 	for (var playerIndex = 0; playerIndex < this.getPlayersNumber(); playerIndex++) {
 		this.gameEffectManager.displayPlayersInfos(this.playerStore.getPlayer(playerIndex));
 	}
 };
 
 GameEngine.prototype.playTurns = function() {
-	if (this.enoughPlayersToFight()) {
 		this.ChangeTurnToPlay();
 		this.organisePlayerTurn();
-	} else {
-		this.endGame();
-	}
 };
 
-GameEngine.prototype.endGame = function() {
-	var winner = this.getPlayerAttribute('.isAlive()');
-	alert(winner.name + ' a gagné ! Un nouvel essai ?');
-	window.location.reload();
-};
 
 //-----What happen during a player turn
 GameEngine.prototype.organisePlayerTurn = function() {
 	this.gameEffectManager.displayPlayersInfos(this.actualPlayer);
 	this.organiseMovingPhase();
-	this.organiseActionPhase();
 };
 
 
 GameEngine.prototype.organiseMovingPhase = function() {
-	//move only if players arent figthing
-	if (!this.deathmatch) {
 
 		this.configAccessibleCellList();
 		this.gameEffectManager.addClassAccessible(this.accessibleCellList);
 
 		this.setAccessiblesCellsEvent();
-	}
 };
 
 GameEngine.prototype.setAccessiblesCellsEvent = function() {
@@ -313,9 +269,9 @@ GameEngine.prototype.setAccessiblesCellsEvent = function() {
 		self.boardManager.updateBoard(self.weaponStore, self.playerStore);
 		self.gameEffectManager.displayPlayersInfos(self.actualPlayer);
 
-		self.checkAndActiveDeathmatch();
 		//job is done, remove accessibles cells
 		self.removeAccessiblesCellsEvent();
+		self.playTurns();
 	});
 };
 
@@ -324,55 +280,7 @@ GameEngine.prototype.removeAccessiblesCellsEvent = function() {
 	this.gameEffectManager.updateVisualFromBoardObject();
 };
 
-
-GameEngine.prototype.organiseActionPhase = function() {
-
-	this.gameEffectManager.displayPlayersInfos(this.actualPlayer);
-
-	//attack
-	this.$attackButton.on("click", function() {
-		//just in case the player choose not to move
-		this.removeAccessiblesCellsEvent(this.accessibleCellList);
-		
-		this.actualPlayer.attack(this.definePlayerEnemy());
-		this.removeEvent(this.$actionsButtons);
-		this.playTurns();
-
-	}.bind(this));
-
-	//defend
-	this.$defendButton.on("click", function() {
-		//just in case the player choose not to move
-		this.removeAccessiblesCellsEvent(this.accessibleCellList);
-
-		this.actualPlayer.defend();
-		this.removeEvent(this.$actionsButtons);
-		this.playTurns();
-
-	}.bind(this));
-
-};
-
 //----Conditions methods
-GameEngine.prototype.enoughPlayersToFight = function() {
-
-	this.deadPlayers = [];
-
-	for (var playerIndex = 0; playerIndex < this.getPlayersNumber(); playerIndex++) {
-		var actualPlayer = this.playerStore.getPlayer(playerIndex);
-		if (!actualPlayer.isAlive()) {
-			this.deadPlayers.push(actualPlayer);
-		}
-	}
-
-	enoughPlayer = this.getPlayersNumber() - this.deadPlayers.length == 1 ? false : true;
-	return enoughPlayer;
-};
-
-GameEngine.prototype.removeEvent = function(element) {
-	$(element).unbind( "click" );
-};
-
 GameEngine.prototype.checkEnnemyProximity = function(surroundingCellsList) {
 
 	var ennemyNumber = 0;
@@ -390,16 +298,6 @@ GameEngine.prototype.checkEnnemyProximity = function(surroundingCellsList) {
 
 };
 
-GameEngine.prototype.checkAndActiveDeathmatch = function() {
-
-	var closeToEnemy = this.checkEnnemyProximity(this.getSurroundingCells(this.actualPlayer.cell));
-
-	if (closeToEnemy) {
-		this.deathmatch = true;
-		this.$attackButton.prop('disabled', false);
-	}
-};
-
 GameEngine.prototype.isAccessible = function(cell) {
 	if (typeof cell != 'undefined') {
 		if ((cell.status == 'empty') || (cell.status == 'has-weapon')) {
@@ -411,13 +309,14 @@ GameEngine.prototype.isAccessible = function(cell) {
 };
 
 //-----Others methods
+GameEngine.prototype.removeEvent = function(element) {
+	$(element).unbind( "click" );
+};
+
 GameEngine.prototype.resetGame = function() {
-	this.removeEvent(this.$actionsButtons);
 	this.removeEvent('.cell');
 	this.boardManager.resetUsedCellList();
 	this.gameEffectManager.resetBoardVisualAndGameInfos();
-	this.deathmatch = false;
-	this.$attackButton.prop('disabled', true);
 };
 
 GameEngine.prototype.attributeRandomCellid = function(number) {
