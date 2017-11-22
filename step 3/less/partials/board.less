@@ -1,0 +1,62 @@
+/*-----Board and everything inside it-----*/
+.board-wrapper {
+	position: relative;
+}
+
+#board {
+	position: absolute;
+	width: 80%;
+	background-image: url(../pictures/blackboard.png);
+	background-size: cover;
+	padding: 0px;
+	margin-bottom: 25px;
+	margin-top: 25px;
+}
+
+.progress {
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+}
+
+.progress-bar {
+	position: absolute;
+	z-index: -1;
+	height: 105%;
+	right: -2.5%;
+	top: -2.5%;
+}
+
+.cell{
+	border: 1px solid @black;
+	height: 8vh;
+	width: 12.5%;
+    float:left;
+    text-align:center;
+    background-size: 100% 100%;
+    /*thanks to free logo maker for the weapons png*/
+}
+
+.accessible {
+	animation: borderchange 2s;
+    animation-iteration-count: infinite;
+    
+    @keyframes borderchange {
+    	0%   {border: 2px dashed @notification-lighter;}
+    	50%  {border: 2px dashed @notification-medium;}
+    	100% {border: 2px dashed @notification-darker;}
+    }
+}
+
+.accessible:hover {
+	cursor: pointer;
+	animation: backgroundchange 1s;
+    animation-iteration-count: infinite;
+    
+    @keyframes backgroundchange {
+    	0%   {background-color: @notification-lighter;}
+    	50%  {background-color: @notification-medium;}
+    	100% {background-color: @notification-darker;}
+    }
+
+}

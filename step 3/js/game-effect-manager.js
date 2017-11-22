@@ -62,9 +62,9 @@ GameEffectManager.prototype.updateVisualFromBoardObject = function() {
 	}
 };
 
-GameEffectManager.prototype.addClassAccessible = function(cellidList) {
-	for (var i = 0; i < cellidList.length; i++) {
-		$('#' + cellidList[i]).addClass('accessible');
+GameEffectManager.prototype.addClassAccessible = function(cellIdList) {
+	for (var i = 0; i < cellIdList.length; i++) {
+		$('#' + cellIdList[i]).addClass('accessible');
 	}
 };
 

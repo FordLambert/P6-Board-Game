@@ -1,24 +1,24 @@
 var Player = function(name, color, turnToPlay, texture, logsDetailsManager) {
 	this.name = name;
 	this.movement = 3; //how far can he move
-	this.cell = {}; //where he is, nowhere at first
+	getCellById = {}; //where he is, nowhere at first
 	this.weapon = {};
 	this.life = 100;
 	this.protected = false; //defense mode
 	this.color = color;
 	this.turnToPlay = turnToPlay; //true or false
 	this.texture = texture;
+	this.position = {};
 	this.logsDetailsManager = logsDetailsManager; //used in speak()
 };
 
 Player.prototype.isAlive = function() {
-	aliveStatus = this.life <= 0 ? false : true;
-	return aliveStatus;
+	return this.life <= 0 ? false : true;
 };
 
 Player.prototype.move = function move(newCell, weaponOnCell) {
 
-	this.cell = newCell;
+	this.position = newCell;
 	
 	if (typeof weaponOnCell != 'undefined') {
 		this.pickUp(weaponOnCell);
@@ -27,9 +27,9 @@ Player.prototype.move = function move(newCell, weaponOnCell) {
 
 Player.prototype.pickUp = function(weapon) {
 
-	this.weapon.cell = this.cell;
+	this.weapon.position = this.position;
 	this.weapon = weapon;
-	this.weapon.cell = {};
+	this.weapon.position = {};
 
 	this.speak(this.name + ' a ramassé l\'arme "' + this.weapon.name + '"');
 

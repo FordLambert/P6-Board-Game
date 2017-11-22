@@ -34,7 +34,7 @@ BoardManager.prototype.createBoard = function(boardSize) {
 	}
 };
 
-BoardManager.prototype.getUsedCellid = function(index) {
+BoardManager.prototype.getUsedCellId = function(index) {
 	return this.usedCellsId[index];
 };
 
@@ -42,8 +42,8 @@ BoardManager.prototype.resetUsedCellList = function() {
 	this.usedCellsId = [];
 };
 
-BoardManager.prototype.addUsedCellid = function(cellid) {
-	this.usedCellsId.push(cellid);
+BoardManager.prototype.addUsedCellId = function(cellId) {
+	this.usedCellsId.push(cellId);
 };
 
 BoardManager.prototype.resetCell = function(cell) {
@@ -55,7 +55,7 @@ BoardManager.prototype.resetCell = function(cell) {
 BoardManager.prototype.checkAndReturnWeapon = function(cell) {
 	for (var weaponIndex = 0; weaponIndex < gameEngine.getWeaponsNumber(); weaponIndex++) {
 		var weapon = gameEngine.weaponStore.getWeapon(weaponIndex);
-		if (cell.id == weapon.cell.id) {
+		if (cell == weapon.position) {
 			return weapon;
 		}
 	}
@@ -78,7 +78,7 @@ BoardManager.prototype.updatePlayerPresence = function(playerStore) {
 
 			var player = playerStore.getPlayer(playerIndex);
 
-			if (cell.id == player.cell.id) {
+			if (cell == player.position) {
 			    cell.texture = player.texture;
 			    cell.status = CELL_STATUS_PLAYER;
 			}
@@ -95,7 +95,7 @@ BoardManager.prototype.updateWeaponPresence = function(weaponStore) {
 
 			var weapon = weaponStore.getWeapon(weaponIndex);
 
-			if (cell.id == weapon.cell.id) {
+			if (cell == weapon.position) {
 			    cell.texture = weapon.texture;
 			    cell.status = CELL_STATUS_WEAPON;
 			}
