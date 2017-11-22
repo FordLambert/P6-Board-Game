@@ -6895,6 +6895,11 @@ header {
   background-repeat: no-repeat;
   box-shadow: 2px 2px 2px black;
 }
+@media only screen and (max-device-width: 600px) {
+  .title-block h1 {
+    font-size: 1.5em;
+  }
+}
 .main-title {
   padding-top: 60px;
 }

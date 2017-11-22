@@ -9,6 +9,11 @@ header {
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
 	box-shadow: 2px 2px 2px @black;
+	h1 {
+		@media only screen and (max-device-width : 600px) {
+			font-size: @smaller-title;
+		}
+	}
 }
 
 .main-title {
