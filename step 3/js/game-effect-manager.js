@@ -70,7 +70,7 @@ GameEffectManager.prototype.addClassAccessible = function(cellIdList) {
 
 
 //engine job, to move
-GameEffectManager.prototype.resetBoardVisualAndGameInfos = function() {
+GameEffectManager.prototype.resetBoardVisual = function() {
 
 	for(var key in this.boardManager.board) {
 

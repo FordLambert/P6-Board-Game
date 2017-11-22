@@ -434,7 +434,8 @@ GameEngine.prototype.resetGame = function() {
 	this.removeEvent(this.$actionsButtons);
 	this.removeEvent('.cell');
 	this.boardManager.resetUsedCellList();
-	this.gameEffectManager.resetBoardVisualAndGameInfos();
+	this.gameEffectManager.resetBoardVisual();
+	this.logsDetailsManager.resetLogs();
 	this.deathmatch = false;
 	this.$attackButton.prop('disabled', true);
 };
