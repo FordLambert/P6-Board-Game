@@ -6745,7 +6745,7 @@ button {
   padding: 10px;
 }
 .container {
-  margin-bottom: 35px;
+  margin-bottom: 20vh;
   margin-left: 0px;
   margin-right: 0px;
   width: 100vw;
@@ -6753,15 +6753,30 @@ button {
 /*-----Board and everything inside it-----*/
 .board-wrapper {
   position: relative;
+  padding: 0px;
+  height: 40vw;
+  width: 40vw;
+  margin-left: 5%;
+  margin-bottom: 2vh;
+}
+@media only screen and (max-device-width: 1200px) {
+  .board-wrapper {
+    margin-left: 10%;
+    margin-top: 5vh;
+    margin-bottom: 25vh;
+    height: 80vw;
+    width: 80vw;
+  }
 }
 #board {
   position: absolute;
-  width: 80%;
+  width: 100%;
   background-image: url(../pictures/blackboard.png);
   background-size: cover;
   padding: 0px;
-  margin-bottom: 25px;
-  margin-top: 25px;
+  margin-left: 0px;
+  /*margin-bottom: 25px;
+	margin-top: 25px;*/
 }
 .progress {
   height: 100%;
@@ -6777,12 +6792,18 @@ button {
 }
 .cell {
   border: 1px solid black;
-  height: 8vh;
-  width: 12.5%;
+  height: 5vw;
+  width: 5vw;
   float: left;
   text-align: center;
   background-size: 100% 100%;
   /*thanks to free logo maker for the weapons png*/
+}
+@media only screen and (max-device-width: 1200px) {
+  .cell {
+    height: 10vw;
+    width: 10vw;
+  }
 }
 .accessible {
   animation: borderchange 2s;
@@ -6814,6 +6835,15 @@ button {
   100% {
     background-color: #e0c341;
   }
+}
+/*-----Actions buttons*/
+.actions-block {
+  position: absolute;
+  padding-top: 15px;
+  padding-bottom: 10px;
+  margin-top: 110%;
+  box-shadow: 2px 2px 2px black;
+  background-color: white;
 }
 /*-----Game infos zone-----*/
 .game-infos-block {
@@ -6871,15 +6901,6 @@ header {
 .icon {
   margin-top: 5px;
   margin-bottom: 5px;
-}
-/*-----Actions buttons*/
-.actions-block {
-  padding-top: 15px;
-  padding-bottom: 10px;
-  box-shadow: 2px 2px 2px black;
-  background-color: white;
-  margin-top: 72vh;
-  margin-bottom: 15px;
 }
 /*-----Used by Js game-effect-manager*/
 .red {
