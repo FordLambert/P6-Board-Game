@@ -45,7 +45,7 @@
 			          		<p>- Un joueur peut choisir de se déplacer jusqu'à trois case de distance si aucun
 			          		obstacle n'est présent sur le chemin.<br>
 			          		- Si un joueur passe sur une case contenant une arme, il s'en équipera automatiquement.<br>
-			          		- Après la phase de mouvement, un joueur peut choisir d'attaquer ou de défendre : l'attaque n'est possible
+			          		- Après la phase de mouvement, un joueur doit choisir d'attaquer ou de défendre : l'attaque n'est possible
 			          		que si l'adversaire est sur une case adjacent horizontalement ou verticalement.<br>
 			          		La défense permet de ne recevoir que la moitié des dégats au tour suivant seulement.</p>
 			        	</div>
@@ -123,11 +123,14 @@
 
 		</div><!--End of page container-->
 
+		<script type="text/javascript" src="js/models/cell.js"></script>
 		<script type="text/javascript" src="js/models/board-manager.js"></script>
 		<script type="text/javascript" src="js/models/player.js"></script>
 		<script type="text/javascript" src="js/models/weapon.js"></script>
 		<script type="text/javascript" src="js/models/stores.js"></script>
 		<script type="text/javascript" src="js/game-effect-manager.js"></script>
+		<script type="text/javascript" src="js/logs-details-manager.js"></script>
+		<script type="text/javascript" src="js/player-details-manager.js"></script>
 		<script type="text/javascript" src="js/game-engine.js"></script>
 		<script type="text/javascript">
 			var gameEngine = new GameEngine('#board');

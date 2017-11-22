@@ -1,20 +1,11 @@
-//-----Cell
-var Cell = function(id) {
-	this.id = id;
-	this.texture = '';
-	this.status = 'empty';
-};
-
-//-----BoardManager
 var BoardManager = function(divId) {
-	this.board = [];
-	this.divId = divId;
+	this.board = []; //contain a list of cells
+	this.divId = divId; //rename boardContainer
 	this.rowLetters = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
 	//usedCells used when the engine start a game for not using twice the same cell on random placement
 	this.usedCellsid = [];
 };
 
-//-----Getters
 BoardManager.prototype.getCell = function(cellIndex) {
 	return this.board[cellIndex];
 };
@@ -31,7 +22,6 @@ BoardManager.prototype.getUsedCellid = function(index) {
 	return this.usedCellsid[index];
 };
 
-//-----Setters
 BoardManager.prototype.resetUsedCellList = function() {
 	this.usedCellsid = [];
 };
@@ -44,16 +34,15 @@ BoardManager.prototype.addCell = function(cell) {
 	this.board.push(cell);
 };
 
-BoardManager.prototype.resetCell = function(cellid) {
+BoardManager.prototype.resetCell = function(cellid) { //inject cell not cellId
 	cell = this.getCellByid(cellid)
 	cell.texture = '';
 	cell.status = 'empty';
 };
 
-//-----Other methods
 BoardManager.prototype.createBoard = function(boardSize) {
 	//where boardsize represent the number of row/columns (square)
-	this.boardSize = boardSize;
+	this.boardSize = boardSize;//useless ?
 
 	for (var rowIndex = 0; rowIndex < boardSize; rowIndex++) {
 		var letterIndex = this.rowLetters[rowIndex];

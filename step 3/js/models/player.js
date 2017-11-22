@@ -1,24 +1,24 @@
-var Player = function(name, color, turnToPlay, texture) {
+var Player = function(name, color, turnToPlay, texture, logsDetailsManager) {
 	this.name = name;
-	this.movement = 3;
-	this.cell = '';
+	this.movement = 3; //how far can he move
+	this.cell = {}; //where he is, nowhere at first
 	this.weapon = {};
 	this.life = 100;
-	this.protected = false;
+	this.protected = false; //defense mode
 	this.color = color;
-	this.turnToPlay = turnToPlay;
+	this.turnToPlay = turnToPlay; //true or false
 	this.texture = texture;
+	this.logsDetailsManager = logsDetailsManager; //used in speak()
 };
 
 Player.prototype.isAlive = function() {
-	aliveStatus = this.life <= 0 ? true : false;
+	aliveStatus = this.life <= 0 ? false : true;
 	return aliveStatus;
 };
 
 Player.prototype.move = function move(newCell, weaponOnCell) {
 
-	var newCell = newCell;
-	this.cell = newCell.id;
+	this.cell = newCell;
 	
 	if (typeof weaponOnCell != 'undefined') {
 		this.pickUp(weaponOnCell);
@@ -27,9 +27,9 @@ Player.prototype.move = function move(newCell, weaponOnCell) {
 
 Player.prototype.pickUp = function(weapon) {
 
-	this.weapon.cell = this.cell
+	this.weapon.cell = this.cell;
 	this.weapon = weapon;
-	this.weapon.cell = '';
+	this.weapon.cell = {};
 
 	this.speak(this.name + ' a ramassé l\'arme "' + this.weapon.name + '"');
 
@@ -61,7 +61,6 @@ Player.prototype.attack = function(enemy) {
 	enemy.life -= hitPoints;
 };
 
-//I need to find a nice way ro remove the call to gameEngine, inject gameEffectManager ?
 Player.prototype.speak = function(sentence) {
-	gameEngine.gameEffectManager.displayGameInfos(sentence);
+	this.logsDetailsManager.displayGameInfos(sentence);
 };

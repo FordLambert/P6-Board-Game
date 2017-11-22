@@ -1,4 +1,4 @@
-var Player = function(name, color, turnToPlay, texture) {
+var Player = function(name, color, texture) {
 	this.name = name;
 	this.cell = '';
 	this.weapon = {};
