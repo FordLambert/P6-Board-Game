@@ -1,10 +1,8 @@
-var BoardManager = function(divId) {
+var BoardManager = function(domDivId) {
 	this.boardSize = 0; //board created will be a square of boardsize * boardsize
 	this.board = {}; //associative array, will contain cells
-	this.divId = divId;
+	this.domDivId = domDivId;
 	this.rowLetters = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
-	//usedCells used only when the engine start a game for not using twice the same cell on random placement
-	this.usedCellsId = [];
 };
 
 BoardManager.prototype.getCell = function(cellId) {
@@ -27,23 +25,10 @@ BoardManager.prototype.createBoard = function(boardSize) {
 				var cell = new Cell(newId);
 				this.board[newId] = cell;
 			}
-
 		}
 	} else {
 		console.log('Error: board size must be at least 4 and maximum 26');
 	}
-};
-
-BoardManager.prototype.getUsedCellId = function(index) {
-	return this.usedCellsId[index];
-};
-
-BoardManager.prototype.resetUsedCellList = function() {
-	this.usedCellsId = [];
-};
-
-BoardManager.prototype.addUsedCellId = function(cellId) {
-	this.usedCellsId.push(cellId);
 };
 
 BoardManager.prototype.resetCell = function(cell) {
@@ -61,44 +46,41 @@ BoardManager.prototype.checkAndReturnWeapon = function(cell) {
 	}
 };
 
-//compare weapon and player cells with board's cells
-//this can maybe be removed and shortened in the engine
-BoardManager.prototype.updateBoard = function(weaponStore, playerStore) {
-	this.updateWeaponPresence(weaponStore);
-	this.updatePlayerPresence(playerStore);
-};
-
-BoardManager.prototype.updatePlayerPresence = function(playerStore) {
+//compare weapons and players position with board's cells
+BoardManager.prototype.updateCellsAttributes = function(weaponStore, playerStore) {
 
 	for(var key in this.board) {
-
 		var cell = this.board[key];
 
-		for (var playerIndex = 0; playerIndex < playerStore.playerStoreList.length; playerIndex++) {
+		for(var key in weaponStore.weaponStoreList) {
+			var weapon = weaponStore.weaponStoreList[key]
 
-			var player = playerStore.getPlayer(playerIndex);
+			if (cell == weapon.position) {
+			    this.attributeCellTo(weapon, cell);
+			}
+		}
+
+		for(var key in playerStore.playerStoreList) {
+			var player = playerStore.playerStoreList[key];
 
 			if (cell == player.position) {
-			    cell.texture = player.texture;
-			    cell.status = CELL_STATUS_PLAYER;
+			    this.attributeCellTo(player, cell);
 			}
 		}
 	}
 };
 
-BoardManager.prototype.updateWeaponPresence = function(weaponStore) {
-	for(var key in this.board) {
+BoardManager.prototype.attributeCellTo = function(object, cell) {
 
-		var cell = this.board[key];
+	cell.texture = object.texture;
 
-		for (var weaponIndex = 0; weaponIndex < weaponStore.weaponStoreList.length; weaponIndex++) {
-
-			var weapon = weaponStore.getWeapon(weaponIndex);
-
-			if (cell == weapon.position) {
-			    cell.texture = weapon.texture;
-			    cell.status = CELL_STATUS_WEAPON;
-			}
-		}
+	if (Player.prototype.isPrototypeOf(object)) {
+		cell.status = CELL_STATUS_PLAYER;
+	} else if (Weapon.prototype.isPrototypeOf(object)) {
+		cell.status = CELL_STATUS_WEAPON;
+	} else if (Obstacle.prototype.isPrototypeOf(object)) {
+		cell.status = CELL_STATUS_BLOCKED;
+	} else {
+		console.log('Error: object type unknow');
 	}
 };

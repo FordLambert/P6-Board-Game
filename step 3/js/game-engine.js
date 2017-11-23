@@ -1,11 +1,11 @@
-var GameEngine = function(boardId) {
+var GameEngine = function(domDivId) {
 	this._selectors = {
 		'startButton': '.start-button',
 		'actionButton': '.action-button',
 		'attackButton': '#attack',
 		'defendButton': '#defend'
 	}
-	this.boardId = boardId;
+	this.domDivId = domDivId;
 	this.$startButton = $(this._selectors.startButton);
 	this.$actionsButtons = $(this._selectors.actionButton);
 	this.$attackButton = $(this._selectors.attackButton);
@@ -44,7 +44,7 @@ GameEngine.prototype.getSafeCell = function() {
 	var i = 0;
 	while (i != 1) {
 
-		var randomId = this.attributeRandomCellId(this.boardManager.boardSize);
+		var randomId = this.generateRandomId(this.boardManager.boardSize);
 		var safeCell = this.boardManager.getCell(randomId);
 		var surroundingCellsList = this.getSurroundingCells(safeCell);
 
@@ -145,6 +145,8 @@ GameEngine.prototype.generateRandomId = function(number) {
 	var index = this.getRandomNumber(number);
 	var randomCellId = row + '-' + index;
 	return randomCellId;
+
+	var cell = this.board.getCell(randomCellId);
 };
 
 //-----How a complete game work
@@ -158,7 +160,7 @@ GameEngine.prototype.launchNewGame = function() {
 
 //Creation part, before starting to play
 GameEngine.prototype.createAndStartManagers = function() {
-	this.boardManager = new BoardManager(this.boardId);
+	this.boardManager = new BoardManager(this.domDivId);
 	this.boardManager.createBoard(8);
 
 	this.gameEffectManager = new GameEffectManager(this.boardManager);
@@ -203,9 +205,8 @@ GameEngine.prototype.distributeWeapons = function() {
 	}
 };
 
-//Now that everything exist, we can put them randomly on the board
-GameEngine.prototype.randomizeBoardElements = function() {
-	this.blockRandomCells();
+GameEngine.prototype.installElementsOnBoard = function() {
+	this.placeObstacles();
 	this.placeWeapons();
 	this.placePlayers();
 
@@ -213,33 +214,29 @@ GameEngine.prototype.randomizeBoardElements = function() {
 	this.gameEffectManager.updateVisualFromBoardObject();
 };
 
-GameEngine.prototype.blockRandomCells = function() {
-	var blockedCellNumber = Math.floor(Math.random() * 5) + 5;
-	for(var i = 0; i < blockedCellNumber; i ++) {
+GameEngine.prototype.placeObstacles = function() {
+	var obstaclesNumber = Math.floor(Math.random() * 5) + 5;
 
-		var randomId = this.attributeRandomCellId(this.boardManager.boardSize);
-		var actualCell = this.boardManager.getCell(randomId);
+	for(var i = 0; i < obstaclesNumber; i ++) {
 
-		if (actualCell.status = CELL_STATUS_EMPTY) {
-			actualCell.texture = 'blockedCell.png';
-			actualCell.status = CELL_STATUS_BLOCKED;
-		}
+		var cell = this.getSafeCell();
+		var obstacle = new Obstacle();
+
+		obstacle.position = cell;
+		this.boardManager.attributeCellTo(obstacle, cell);
 	}
 };
 
 GameEngine.prototype.placeWeapons = function() {
 
+	//first weapons are for players, the rest goes on the board
 	for(var weaponIndex = this.getPlayersNumber(); weaponIndex < this.getWeaponsNumber(); weaponIndex ++) {
 
-		var randomId = this.attributeRandomCellId(this.boardManager.boardSize);
-		var cell = this.boardManager.getCell(randomId);
+		var weapon = this.weaponStore.getWeapon(weaponIndex);
+		var cell = this.getSafeCell();
 
-		if (cell.status = CELL_STATUS_EMPTY) {
-
-			cell.texture = this.weaponStore.getWeapon(weaponIndex).texture;
-			cell.status = CELL_STATUS_WEAPON;
-			this.weaponStore.getWeapon(weaponIndex).position = cell;
-		}
+		weapon.position = cell;
+		this.boardManager.attributeCellTo(weapon, cell);
 	}
 };
 
@@ -247,12 +244,11 @@ GameEngine.prototype.placePlayers = function(player) {
 
 	for(var playerIndex = 0; playerIndex < this.getPlayersNumber(); playerIndex ++) {
 
-		var actualPlayer = this.playerStore.getPlayer(playerIndex);
+		var player = this.playerStore.getPlayer(playerIndex);
 		var cell = this.getSafeCell();
 
-		cell.texture = actualPlayer.texture;
-		cell.status = CELL_STATUS_PLAYER;
-		actualPlayer.position = cell;
+		player.position = cell;
+		this.boardManager.attributeCellTo(player, cell);
 	}
 };
 
@@ -264,7 +260,7 @@ GameEngine.prototype.startGame = function() {
 	this.createPlayers();
 	this.createWeapons();
 	this.distributeWeapons();
-	this.randomizeBoardElements();
+	this.installElementsOnBoard();
 
 	//Displaying players infos (life, weapon...)
 	for (var playerIndex = 0; playerIndex < this.getPlayersNumber(); playerIndex++) {
@@ -320,14 +316,14 @@ GameEngine.prototype.setAccessiblesCellsEvent = function() {
 		//reset the old player's cell
 		self.boardManager.resetCell(self.actualPlayer.position);
 
-		//check weapon presence on this cell
-		var weaponOnCell = self.boardManager.checkAndReturnWeapon(clickedCell);
 		//send place to move and weapon that might be on cell to player
+		var weaponOnCell = self.boardManager.checkAndReturnWeapon(clickedCell);
 		self.actualPlayer.move(clickedCell, weaponOnCell);
 
 		//Changes on the board and visuals effects related
 		self.logsDetailsManager.displayGameInfos(self.actualPlayer.name + ' se déplace en ' + self.actualPlayer.position.id);
-		self.boardManager.updateBoard(self.weaponStore, self.playerStore);
+
+		self.boardManager.updateCellsAttributes(self.weaponStore, self.playerStore);
 		self.playersDetailsManager.displayPlayersInfos(self.actualPlayer);
 
 		self.checkAndActiveDeathmatch();
@@ -433,29 +429,21 @@ GameEngine.prototype.removeEvent = function(element) {
 GameEngine.prototype.resetGame = function() {
 	this.removeEvent(this.$actionsButtons);
 	this.removeEvent('.cell');
-	this.boardManager.resetUsedCellList();
-	this.gameEffectManager.resetBoardVisual();
+	this.resetBoardVisual();
 	this.logsDetailsManager.resetLogs();
 	this.deathmatch = false;
 	this.$attackButton.prop('disabled', true);
 };
 
-GameEngine.prototype.attributeRandomCellId = function(number) {
-	var cellId = this.generateRandomId(number);
+GameEngine.prototype.resetBoardVisual = function() {
 
-	//check if this cell id is not used yet
-	for (var cellIndex = 0; cellIndex <= this.boardManager.usedCellsId.length; cellIndex++) {
+	for(var key in this.boardManager.board) {
 
-		//if this id had already been given
-		if (cellId == this.boardManager.getUsedCellId(cellIndex)) {
-
-			//we set a new value
-			cellId = this.generateRandomId(number);
-		}
+		var cell = this.boardManager.board[key];
+		this.boardManager.resetCell(cell);
 	}
-	//we add the new id to the "used" list and we return it
-	this.boardManager.addUsedCellId(cellId);
-	return cellId;
+
+	this.gameEffectManager.updateVisualFromBoardObject();
 };
 
 GameEngine.prototype.configAccessibleCellList = function() {

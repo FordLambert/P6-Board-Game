@@ -16,7 +16,7 @@
 			<header class="row">
 				<div class="col-xs-12">
 					<div class="title-block col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-4 col-md-4">
-						<h1 class="col-xs-12 main-title">Board Game 2.5</h1>
+						<h1 class="col-xs-12 main-title">Board Game 2.6</h1>
 					</div>
 				</div>
 				<div class="col-xs-12">
@@ -125,14 +125,18 @@
 		</div><!--End of page container-->
 
 		<script type="text/javascript" src="js/models/cell.js"></script>
-		<script type="text/javascript" src="js/models/board-manager.js"></script>
 		<script type="text/javascript" src="js/models/player.js"></script>
 		<script type="text/javascript" src="js/models/weapon.js"></script>
+		<script type="text/javascript" src="js/models/obstacle.js"></script>
 		<script type="text/javascript" src="js/models/stores.js"></script>
-		<script type="text/javascript" src="js/game-effect-manager.js"></script>
-		<script type="text/javascript" src="js/logs-details-manager.js"></script>
-		<script type="text/javascript" src="js/player-details-manager.js"></script>
+
+		<script type="text/javascript" src="js/managers/board-manager.js"></script>
+		<script type="text/javascript" src="js/managers/game-effect-manager.js"></script>
+		<script type="text/javascript" src="js/managers/logs-details-manager.js"></script>
+		<script type="text/javascript" src="js/managers/player-details-manager.js"></script>
+
 		<script type="text/javascript" src="js/game-engine.js"></script>
+		
 		<script type="text/javascript">
 			var gameEngine = new GameEngine('#board');
 			gameEngine.launchNewGame();

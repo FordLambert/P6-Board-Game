@@ -18,6 +18,7 @@ GameEffectManager.prototype.changeTheme = function(color) {
 
 GameEffectManager.prototype.colorActionButtons = function(color) {
 	this.$actionButtons.each(function() {
+
 		if (!$(this).prop('disabled')) {
 			$(this).addClass(color);
 		}
@@ -38,7 +39,6 @@ GameEffectManager.prototype.getNewBgClass = function(color) {
 	}
 
 	return strippedColor;
-
 };
 
 GameEffectManager.prototype.createVisualFromBoardObject = function() {
@@ -47,7 +47,7 @@ GameEffectManager.prototype.createVisualFromBoardObject = function() {
 		var newCell = this.boardManager.board[key];
 
 		newCell = $('<div>').addClass('cell').attr('id', newCell.id);
-		$(this.boardManager.divId).append(newCell);
+		$(this.boardManager.domDivId).append(newCell);
 	}
 };
 
@@ -66,17 +66,4 @@ GameEffectManager.prototype.addClassAccessible = function(cellIdList) {
 	for (var i = 0; i < cellIdList.length; i++) {
 		$('#' + cellIdList[i]).addClass('accessible');
 	}
-};
-
-
-//engine job, to move
-GameEffectManager.prototype.resetBoardVisual = function() {
-
-	for(var key in this.boardManager.board) {
-
-		var cell = this.boardManager.board[key];
-		this.boardManager.resetCell(cell);
-	}
-
-	this.updateVisualFromBoardObject();
 };

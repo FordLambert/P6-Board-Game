@@ -1,14 +1,13 @@
 var Player = function(name, color, turnToPlay, texture, logsDetailsManager) {
 	this.name = name;
 	this.movement = 3; //how far can he move
-	getCellById = {}; //where he is, nowhere at first
 	this.weapon = {};
 	this.life = 100;
 	this.protected = false; //defense mode
 	this.color = color;
 	this.turnToPlay = turnToPlay; //true or false
 	this.texture = texture;
-	this.position = {};
+	this.position = {}; //where he is, nowhere at first
 	this.logsDetailsManager = logsDetailsManager; //used in speak()
 };
 
@@ -32,7 +31,6 @@ Player.prototype.pickUp = function(weapon) {
 	this.weapon.position = {};
 
 	this.speak(this.name + ' a ramassé l\'arme "' + this.weapon.name + '"');
-
 };
 
 Player.prototype.defend = function() {
@@ -42,7 +40,6 @@ Player.prototype.defend = function() {
 };
 
 Player.prototype.attack = function(enemy) {
-
 	this.protected = false;
 
 	this.speak('Le ' + this.name + ' tire !');
