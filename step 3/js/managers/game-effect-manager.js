@@ -1,11 +1,15 @@
 var GameEffectManager = function(boardManager) {
 	this._selectors = {
 		'actionButtons': '.action-button',
-		'changingBackground': '.progress-bar'
+		'changingBackground': '.progress-bar',
+		'columnDivDisplay': '.column-display',
+		'rowDivDisplay': '.row-display'
 	}
 	this.boardManager = boardManager;
 	this.$actionButtons = $(this._selectors.actionButtons);
 	this.$changingBackground = $(this._selectors.changingBackground);
+	this.$columnDivDisplay = $(this._selectors.columnDivDisplay);
+	this.$rowDivDisplay = $(this._selectors.rowDivDisplay);
 };
 
 GameEffectManager.prototype.changeTheme = function(color) {
@@ -48,6 +52,13 @@ GameEffectManager.prototype.createVisualFromBoardObject = function() {
 
 		newCell = $('<div>').addClass('cell').attr('id', newCell.id);
 		$(this.boardManager.domDivId).append(newCell);
+	}
+
+	for (var i = 0; i < this.boardManager.boardSize; i++) {
+		var columnIndex = this.boardManager.rowLetters[i]
+
+		this.$columnDivDisplay.append('<p>' + columnIndex + '</p>');
+		this.$rowDivDisplay.append('<p>' + (i+ 1) + '</p>');
 	}
 };
 
