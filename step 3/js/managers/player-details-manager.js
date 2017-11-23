@@ -1,8 +1,7 @@
 var PlayersDetailsManager = function() {
-	this.htmlDisplayBoxId = ''; //target the dom element for actual player's infos
+	this.htmlDisplayBoxId = ''; //Target the dom element for actual player's infos
 };
 
-//Display player's life, weapon and weapon damage
 PlayersDetailsManager.prototype.displayPlayersInfos = function(player) {
 
 	this.htmlDisplayBoxId = ('#' + player.color);

@@ -10,13 +10,13 @@ var GameEngine = function(domDivId) {
 	this.$actionsButtons = $(this._selectors.actionButton);
 	this.$attackButton = $(this._selectors.attackButton);
 	this.$defendButton =	$(this._selectors.defendButton);
+
 	this.actualPlayer = {};
 	this.accessibleCellList = [];
-	this.deathmatch = false;
+	this.deathmatch = false; //Change to true if two players are on adjacent cell
 	this.cemetery = [];
 };
 
-//-----Getters
 GameEngine.prototype.getLastPlayerAlive = function() { //not very clear
 	var playerIndex = 0;
 	while (playerIndex <= this.playerStore.playerStoreList.length - 1) {
@@ -39,7 +39,7 @@ GameEngine.prototype.getWeaponsNumber = function() {
 	return this.weaponStore.weaponStoreList.length;
 };
 
-GameEngine.prototype.getSafeCell = function() {
+GameEngine.prototype.getAppropriateSpawnPosition = function() {
 
 	var i = 0;
 	while (i != 1) {
@@ -49,9 +49,9 @@ GameEngine.prototype.getSafeCell = function() {
 		var surroundingCellsList = this.getSurroundingCells(safeCell);
 
 		if ((this.checkEnnemyProximity(surroundingCellsList)) || (safeCell.status != CELL_STATUS_EMPTY )) {
-			//do nothing
+			//Do nothing
 		} else {
-			//we can get out the loop with a really safe cell
+			//We can get out the loop with a really safe cell
 			i++
 		}
 	}
@@ -70,8 +70,7 @@ GameEngine.prototype.getSurroundingCells = function(cell) {
 	var actualColumnNumber = parseInt(splitCellId[1], 10);
 	var nextColumnNumber = parseInt(splitCellId[1], 10) + 1;
 
-	//checking the cell just on top of this one and moving around from left to right (vertical and horizontal)
-
+	//Checking the cell on top of this one and moving around from left to right (vertical and horizontal)
 	var surroundingCellList = [
 		(previousRow + '-' + actualColumnNumber),
 		(actualRow + '-' + nextColumnNumber),
@@ -82,20 +81,19 @@ GameEngine.prototype.getSurroundingCells = function(cell) {
 	return surroundingCellList;
 };
 
-//----Setters
 GameEngine.prototype.ChangeTurnToPlay = function() {
 
 	var playerIndex = 0;
-	while (playerIndex < this.playerStore.playerStoreList.length) {
+	while (playerIndex < this.getPlayersNumber()) {
+		var player = this.playerStore.getPlayer(playerIndex);
 
-		var player = this.playerStore.getPlayer(playerIndex)
 		if (player.turnToPlay) {
 
-		player.turnToPlay = false;
-		this.actualPlayer = player;
-		this.gameEffectManager.changeTheme(player.color);
+			player.turnToPlay = false;
+			this.actualPlayer = player;
+			this.gameEffectManager.changeTheme(this.actualPlayer.color);
 
-			//if we are not at the end of the list
+			//If we are not at the end of the players list
 			if (playerIndex != this.playerStore.playerStoreList.length - 1) {
 				playerIndex++;
 			} else {
@@ -129,13 +127,12 @@ GameEngine.prototype.definePlayerEnemy = function() {
 	return enemy;
 };
 
-//-----Random generators
 GameEngine.prototype.getRandomNumber = function(number) {
 	return Math.floor(Math.random() * (number - 1) + 1);
 };
 
 GameEngine.prototype.getRandomLetter = function(number) {
-	//number is here to say : "how far must we go into the alphabet ?"
+	//Number is here to say : "how far must we go into the alphabet ?"
 	var letter = this.boardManager.rowLetters[this.getRandomNumber(this.boardManager.boardSize - 1)];
 	return letter;
 };
@@ -149,7 +146,6 @@ GameEngine.prototype.generateRandomId = function(number) {
 	var cell = this.board.getCell(randomCellId);
 };
 
-//-----How a complete game work
 GameEngine.prototype.launchNewGame = function() {
 	this.createAndStartManagers();
 	this.$startButton.click(function() {
@@ -158,7 +154,6 @@ GameEngine.prototype.launchNewGame = function() {
 	}.bind(this));
 };
 
-//Creation part, before starting to play
 GameEngine.prototype.createAndStartManagers = function() {
 	this.boardManager = new BoardManager(this.domDivId);
 	this.boardManager.createBoard(8);
@@ -205,21 +200,12 @@ GameEngine.prototype.distributeWeapons = function() {
 	}
 };
 
-GameEngine.prototype.installElementsOnBoard = function() {
-	this.placeObstacles();
-	this.placeWeapons();
-	this.placePlayers();
-
-	//everything has a place, now show it
-	this.gameEffectManager.updateVisualFromBoardObject();
-};
-
 GameEngine.prototype.placeObstacles = function() {
 	var obstaclesNumber = Math.floor(Math.random() * 5) + 5;
 
 	for(var i = 0; i < obstaclesNumber; i ++) {
 
-		var cell = this.getSafeCell();
+		var cell = this.getAppropriateSpawnPosition();
 		var obstacle = new Obstacle();
 
 		obstacle.position = cell;
@@ -229,11 +215,11 @@ GameEngine.prototype.placeObstacles = function() {
 
 GameEngine.prototype.placeWeapons = function() {
 
-	//first weapons are for players, the rest goes on the board
+	//First weapons are for players, the rest goes on the board
 	for(var weaponIndex = this.getPlayersNumber(); weaponIndex < this.getWeaponsNumber(); weaponIndex ++) {
 
 		var weapon = this.weaponStore.getWeapon(weaponIndex);
-		var cell = this.getSafeCell();
+		var cell = this.getAppropriateSpawnPosition();
 
 		weapon.position = cell;
 		this.boardManager.attributeCellTo(weapon, cell);
@@ -245,14 +231,22 @@ GameEngine.prototype.placePlayers = function(player) {
 	for(var playerIndex = 0; playerIndex < this.getPlayersNumber(); playerIndex ++) {
 
 		var player = this.playerStore.getPlayer(playerIndex);
-		var cell = this.getSafeCell();
+		var cell = this.getAppropriateSpawnPosition();
 
 		player.position = cell;
 		this.boardManager.attributeCellTo(player, cell);
 	}
 };
 
-//-----Process of a game
+GameEngine.prototype.installElementsOnBoard = function() {
+	this.placeObstacles();
+	this.placeWeapons();
+	this.placePlayers();
+
+	//Everything has a place, now show it
+	this.gameEffectManager.updateVisualFromBoardObject();
+};
+
 GameEngine.prototype.startGame = function() {
 
 	this.resetGame();
@@ -283,21 +277,26 @@ GameEngine.prototype.endGame = function() {
 	window.location.reload();
 };
 
-//-----What happen during a player turn
+GameEngine.prototype.resetGame = function() {
+	this.removeEvent(this.$actionsButtons);
+	this.removeEvent('.cell');
+	this.resetBoardVisual();
+	this.logsDetailsManager.resetLogs();
+	this.deathmatch = false;
+	this.$attackButton.prop('disabled', true);
+};
+
 GameEngine.prototype.organisePlayerTurn = function() {
 	this.playersDetailsManager.displayPlayersInfos(this.actualPlayer);
 	this.organiseMovingPhase();
 	this.organiseActionPhase();
 };
 
-
 GameEngine.prototype.organiseMovingPhase = function() {
-	//move only if players arent figthing
-	if (!this.deathmatch) {
+	if (!this.deathmatch) { //Move only if players arent figthing
 
 		this.configAccessibleCellList();
 		this.gameEffectManager.addClassAccessible(this.accessibleCellList);
-
 		this.setAccessiblesCellsEvent();
 	}
 };
@@ -309,14 +308,14 @@ GameEngine.prototype.setAccessiblesCellsEvent = function() {
 
 	$('.accessible').on("click", function() {
 
-		//on what did the user clicked ?
+		//On what did the user clicked ?
 		var clickedCellId = $(this).attr('id');
 		var clickedCell = self.boardManager.getCell(clickedCellId);
 
-		//reset the old player's cell
+		//Reset the old player's cell
 		self.boardManager.resetCell(self.actualPlayer.position);
 
-		//send place to move and weapon that might be on cell to player
+		//Send place to move and weapon that might be on cell to player
 		var weaponOnCell = self.boardManager.checkAndReturnWeapon(clickedCell);
 		self.actualPlayer.move(clickedCell, weaponOnCell);
 
@@ -327,7 +326,6 @@ GameEngine.prototype.setAccessiblesCellsEvent = function() {
 		self.playersDetailsManager.displayPlayersInfos(self.actualPlayer);
 
 		self.checkAndActiveDeathmatch();
-		//job is done, remove accessibles cells
 		self.removeAccessiblesCellsEvent();
 	});
 };
@@ -342,10 +340,10 @@ GameEngine.prototype.organiseActionPhase = function() {
 
 	this.playersDetailsManager.displayPlayersInfos(this.actualPlayer);
 
-	//attack
 	this.$attackButton.on("click", function() {
 		var enemy = this.definePlayerEnemy();
-		//just in case the player choose not to move
+
+		//Just in case the player choose not to move
 		this.removeAccessiblesCellsEvent(this.accessibleCellList);
 		
 		this.actualPlayer.attack(enemy);
@@ -356,9 +354,9 @@ GameEngine.prototype.organiseActionPhase = function() {
 
 	}.bind(this));
 
-	//defend
 	this.$defendButton.on("click", function() {
-		//just in case the player choose not to move
+
+		//Just in case the player choose not to move
 		this.removeAccessiblesCellsEvent(this.accessibleCellList);
 
 		this.actualPlayer.defend();
@@ -366,17 +364,17 @@ GameEngine.prototype.organiseActionPhase = function() {
 		this.playTurns();
 
 	}.bind(this));
-
 };
 
-//----Conditions methods
 GameEngine.prototype.enoughPlayersToFight = function() {
 	enoughPlayer = this.getPlayersNumber() - this.cemetery.length == 1 ? false : true;
 	return enoughPlayer;
 };
 
 GameEngine.prototype.killPlayerIfNecessary = function(player) {
+
 	if (!player.isAlive()) {
+
 		player.life = 0;
 		this.cemetery.push(player);
 		console.log('He\'s dead Jim.');
@@ -395,9 +393,7 @@ GameEngine.prototype.checkEnnemyProximity = function(surroundingCellsList) {
 		} 
 	}
 
-	var isThereEnnemy = ennemyNumber > 0 ? true : false;
-	return isThereEnnemy;
-
+	return ennemyNumber > 0 ? true : false;
 };
 
 GameEngine.prototype.checkAndActiveDeathmatch = function() {
@@ -421,18 +417,8 @@ GameEngine.prototype.isAccessible = function(cell) {
 	}
 };
 
-//-----Others methods
 GameEngine.prototype.removeEvent = function(element) {
 	$(element).unbind( "click" );
-};
-
-GameEngine.prototype.resetGame = function() {
-	this.removeEvent(this.$actionsButtons);
-	this.removeEvent('.cell');
-	this.resetBoardVisual();
-	this.logsDetailsManager.resetLogs();
-	this.deathmatch = false;
-	this.$attackButton.prop('disabled', true);
 };
 
 GameEngine.prototype.resetBoardVisual = function() {
@@ -446,6 +432,11 @@ GameEngine.prototype.resetBoardVisual = function() {
 	this.gameEffectManager.updateVisualFromBoardObject();
 };
 
+
+/*
+*Not really satisfied with the following
+*It reapeat itself a bit but I want a loop in each direction that will stop if the way is blocked
+*/
 GameEngine.prototype.configAccessibleCellList = function() {
 
 	this.accessibleCellList = [];
@@ -455,9 +446,7 @@ GameEngine.prototype.configAccessibleCellList = function() {
 	var actualRow = actualCellId[0];
 	var actualColumn = parseInt(actualCellId[1], 10);
 
-	//the following reapeat itself a bit but I want a loop in each direction that will stop if the way is blocked
-
-	//cells to the right
+	/*Cells to the right*/
 	for (var i = 1; i <= this.actualPlayer.movement; i++) {
 
 		var nextCellId = actualRow + '-' + (actualColumn + i);
@@ -470,7 +459,7 @@ GameEngine.prototype.configAccessibleCellList = function() {
 		}
 	}
 
-	//cells to the left
+	/*Cells to the left*/
 	for (var i = 1; i <= this.actualPlayer.movement; i++) {
 
 		var previousCellId = actualRow + '-' + (actualColumn - i);
@@ -483,7 +472,7 @@ GameEngine.prototype.configAccessibleCellList = function() {
 		}
 	}
 
-	//cells on top of the player's
+	/*Cells on top of the player's*/
 	for (var i = 1; i <= this.actualPlayer.movement; i++) {
 
 		var upperCellId = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) - i] + '-' + actualColumn;
@@ -496,7 +485,7 @@ GameEngine.prototype.configAccessibleCellList = function() {
 		}
 	}
 
-	//cells beside the player's
+	/*Cells beside the player's*/
 	for (var i = 1; i <= this.actualPlayer.movement; i++) {
 
 		var underCellId = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) + i] + '-' + actualColumn;

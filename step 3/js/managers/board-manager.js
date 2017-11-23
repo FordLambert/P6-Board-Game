@@ -1,6 +1,6 @@
 var BoardManager = function(domDivId) {
-	this.boardSize = 0; //board created will be a square of boardsize * boardsize
-	this.board = {}; //associative array, will contain cells
+	this.boardSize = 0; //Board created will be a square of boardsize * boardsize
+	this.board = {}; //Associative array, will contain cells
 	this.domDivId = domDivId;
 	this.rowLetters = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
 };
@@ -14,11 +14,11 @@ BoardManager.prototype.createBoard = function(boardSize) {
 	if (!(boardSize > 26) && !(boardSize <= 4)) {
 		this.boardSize = boardSize;
 
-		// 'boardsize' (number) row to create
+		//'boardsize' (number) of row to create
 		for (var rowIndex = 0; rowIndex < boardSize; rowIndex++) {
 			var letterIndex = this.rowLetters[rowIndex];
 
-			// 'boardsize' (number) columns to create
+			//'boardsize' (number) of columns to create
 			for (var cellIndex = 1; cellIndex <= boardSize; cellIndex++) {
 
 				var newId = letterIndex + '-' + cellIndex
@@ -36,7 +36,6 @@ BoardManager.prototype.resetCell = function(cell) {
 	cell.status = CELL_STATUS_EMPTY;
 };
 
-//if there is a weapon on this cell, return it
 BoardManager.prototype.checkAndReturnWeapon = function(cell) {
 	for (var weaponIndex = 0; weaponIndex < gameEngine.getWeaponsNumber(); weaponIndex++) {
 		var weapon = gameEngine.weaponStore.getWeapon(weaponIndex);
@@ -46,7 +45,7 @@ BoardManager.prototype.checkAndReturnWeapon = function(cell) {
 	}
 };
 
-//compare weapons and players position with board's cells
+//Compare weapons and players position with board's cells
 BoardManager.prototype.updateCellsAttributes = function(weaponStore, playerStore) {
 
 	for(var key in this.board) {

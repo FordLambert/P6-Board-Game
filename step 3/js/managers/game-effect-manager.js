@@ -32,7 +32,7 @@ GameEffectManager.prototype.getNewBgClass = function(color) {
 	        strippedColor = 'progress-bar-danger';
 	        break;
 	    case 'blue':
-	       	strippedColor = ''; //the default color is blue
+	       	strippedColor = ''; //Default color is blue
 	        break;
 	    default:
 	        console.log('Error: unknown color');

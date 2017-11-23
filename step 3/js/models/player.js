@@ -1,14 +1,14 @@
 var Player = function(name, color, turnToPlay, texture, logsDetailsManager) {
 	this.name = name;
-	this.movement = 3; //how far can he move
+	this.movement = 3; //How far he can move
 	this.weapon = {};
 	this.life = 100;
-	this.protected = false; //defense mode
+	this.protected = false; //Defense mode
 	this.color = color;
 	this.turnToPlay = turnToPlay; //true or false
 	this.texture = texture;
-	this.position = {}; //where he is, nowhere at first
-	this.logsDetailsManager = logsDetailsManager; //used in speak()
+	this.position = {}; //Where he is, nowhere at first
+	this.logsDetailsManager = logsDetailsManager; //Used in speak()
 };
 
 Player.prototype.isAlive = function() {

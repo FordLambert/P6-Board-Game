@@ -5,6 +5,6 @@ const CELL_STATUS_BLOCKED = 'is-blocked';
 
 var Cell = function(id) {
 	this.id = id;
-	this.texture = ''; //can change to player or weapon picture's path
+	this.texture = ''; //Can change to player or weapon picture's path
 	this.status = CELL_STATUS_EMPTY;
 };
