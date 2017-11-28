@@ -9,11 +9,10 @@ var LogsDetailsManager = function() {
 
 //All infos on movement, combat and so made by players
 LogsDetailsManager.prototype.displayGameInfos = function(info) {
-	this.$logsDisplayArea.append('<p>' + info + '</p>');
-
-	//This scroll down (in px) a little bit more each time the method is called
-    var scrollActualPostion = this.$gameInfosArea.scrollTop();
-    this.$gameInfosArea.scrollTop(scrollActualPostion + 80);
+	var now = new Date();
+	var hours = now.getHours();
+	var minutes = now.getMinutes();
+	this.$logsDisplayArea.prepend('<p>' + hours + 'h ' + minutes + 'mn : ' + info + '</p>');
 };
 
 LogsDetailsManager.prototype.resetLogs = function() {

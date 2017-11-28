@@ -15,8 +15,7 @@ var GameEffectManager = function(boardManager) {
 GameEffectManager.prototype.changeTheme = function(color) {
 	this.$changingBackground.attr('class', 'progress-bar progress-bar-striped active');
 	this.$changingBackground.addClass(this.getNewBgClass(color));
-	this.$actionButtons.attr('class', 'col-md-4 actions-buttons');
-
+	this.$actionButtons.attr('class', 'col-xs-12 action-button btn');
 	this.colorActionButtons(color);
 };
 
@@ -32,12 +31,15 @@ GameEffectManager.prototype.colorActionButtons = function(color) {
 GameEffectManager.prototype.getNewBgClass = function(color) {
 	var strippedColor = '';
 	switch (color) {
+
 	    case 'red':
 	        strippedColor = 'progress-bar-danger';
 	        break;
+
 	    case 'blue':
 	       	strippedColor = ''; //Default color is blue
 	        break;
+
 	    default:
 	        console.log('Error: unknown color');
 	}
@@ -46,10 +48,9 @@ GameEffectManager.prototype.getNewBgClass = function(color) {
 };
 
 GameEffectManager.prototype.createVisualFromBoardObject = function() {
+
 	for(var key in this.boardManager.board) {
-
 		var newCell = this.boardManager.board[key];
-
 		newCell = $('<div>').addClass('cell').attr('id', newCell.id);
 		$(this.boardManager.domDivId).append(newCell);
 	}
@@ -63,17 +64,17 @@ GameEffectManager.prototype.createVisualFromBoardObject = function() {
 };
 
 GameEffectManager.prototype.updateVisualFromBoardObject = function() {	
-	for(var key in this.boardManager.board) {
 
+	for(var key in this.boardManager.board) {
 		var cell = this.boardManager.board[key];
 		var div = $('#' + cell.id)
-
 		div.css('background-image', 'url(pictures/' + cell.texture + ')');
 		div.attr('class', 'cell' +  ' ' + cell.status);
 	}
 };
 
 GameEffectManager.prototype.addClassAccessible = function(cellIdList) {
+	
 	for (var i = 0; i < cellIdList.length; i++) {
 		$('#' + cellIdList[i]).addClass('accessible');
 	}

@@ -20,7 +20,6 @@ BoardManager.prototype.createBoard = function(boardSize) {
 
 			//'boardsize' (number) of columns to create
 			for (var cellIndex = 1; cellIndex <= boardSize; cellIndex++) {
-
 				var newId = letterIndex + '-' + cellIndex
 				var cell = new Cell(newId);
 				this.board[newId] = cell;
@@ -37,8 +36,10 @@ BoardManager.prototype.resetCell = function(cell) {
 };
 
 BoardManager.prototype.checkAndReturnWeapon = function(cell) {
+
 	for (var weaponIndex = 0; weaponIndex < gameEngine.getWeaponsNumber(); weaponIndex++) {
 		var weapon = gameEngine.weaponStore.getWeapon(weaponIndex);
+
 		if (cell == weapon.position) {
 			return weapon;
 		}
@@ -75,10 +76,13 @@ BoardManager.prototype.attributeCellTo = function(object, cell) {
 
 	if (Player.prototype.isPrototypeOf(object)) {
 		cell.status = CELL_STATUS_PLAYER;
+
 	} else if (Weapon.prototype.isPrototypeOf(object)) {
 		cell.status = CELL_STATUS_WEAPON;
+
 	} else if (Obstacle.prototype.isPrototypeOf(object)) {
 		cell.status = CELL_STATUS_BLOCKED;
+		
 	} else {
 		console.log('Error: object type unknow');
 	}

@@ -3,15 +3,17 @@ var GameEngine = function(domDivId) {
 		'startButton': '.start-button',
 		'actionButton': '.action-button',
 		'attackButton': '#attack',
-		'defendButton': '#defend'
+		'defendButton': '#defend',
+		'endTurnButton': '#end-turn'
 	}
 	this.domDivId = domDivId; //boardWrapper, not clear
 	this.$startButton = $(this._selectors.startButton);
 	this.$actionsButtons = $(this._selectors.actionButton);
 	this.$attackButton = $(this._selectors.attackButton);
 	this.$defendButton =	$(this._selectors.defendButton);
+	this.$endTurnButton = $(this._selectors.endTurnButton);
 
-	this.actualPlayer = {};
+	this.currentPlayer = {};
 	this.accessibleCellList = [];
 	this.deathmatch = false; //Change to true if two players are on adjacent cell
 	this.cemetery = [];
@@ -24,7 +26,9 @@ GameEngine.prototype.getLastPlayerAlive = function() { //not very clear
 		var player = this.playerStore.getPlayer(playerIndex);
 
 		if (player.isAlive()) {
+
 			return player;
+
 		} else {
 			playerIndex++;
 		}
@@ -62,21 +66,21 @@ GameEngine.prototype.getSurroundingCells = function(cell) {
 
 	var splitCellId = cell.id.split("-");
 
-	var actualRow = splitCellId[0];
-	var previousRow = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) - 1];
-	var nextRow = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) + 1];
+	var currentRow = splitCellId[0];
+	var previousRow = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(currentRow) - 1];
+	var nextRow = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(currentRow) + 1];
 
 	//comments
 	var previousColumnNumber = parseInt(splitCellId[1], 10) - 1;
-	var actualColumnNumber = parseInt(splitCellId[1], 10);
+	var currentColumnNumber = parseInt(splitCellId[1], 10);
 	var nextColumnNumber = parseInt(splitCellId[1], 10) + 1;
 
 	//Checking the cell on top of this one and moving around from left to right (vertical and horizontal)
 	var surroundingCellList = [
-		(previousRow + '-' + actualColumnNumber),
-		(actualRow + '-' + nextColumnNumber),
-		(nextRow + '-' + actualColumnNumber),
-		(actualRow + '-' + previousColumnNumber),
+		(previousRow + '-' + currentColumnNumber),
+		(currentRow + '-' + nextColumnNumber),
+		(nextRow + '-' + currentColumnNumber),
+		(currentRow + '-' + previousColumnNumber),
 	];
 
 	return surroundingCellList;
@@ -89,18 +93,17 @@ GameEngine.prototype.ChangeTurnToPlay = function() {
 		var player = this.playerStore.getPlayer(playerIndex);
 
 		if (player.turnToPlay) {
-
 			player.turnToPlay = false;
-			this.actualPlayer = player;
-			this.gameEffectManager.changeTheme(this.actualPlayer.color);
+			this.currentPlayer = player;
+			this.gameEffectManager.changeTheme(this.currentPlayer.color);
 
 			//If we are not at the end of the players list
 			if (playerIndex != this.playerStore.playerStoreList.length - 1) {
 				playerIndex++;
+
 			} else {
 				playerIndex = 0;
 			}
-
 			this.playerStore.getPlayer(playerIndex).turnToPlay = true;
 			break;
 		}
@@ -110,12 +113,11 @@ GameEngine.prototype.ChangeTurnToPlay = function() {
 
 GameEngine.prototype.definePlayerEnemy = function() {
 
-	var surroundingCells = this.getSurroundingCells(this.actualPlayer.position);
+	var surroundingCells = this.getSurroundingCells(this.currentPlayer.position);
 	var players = this.playerStore.playerStoreList;
 	var enemy = 'unknow';
 
 	for(var key in surroundingCells) {
-
 		var cell = this.boardManager.getCell(surroundingCells[key]);
 
 		$.each(players, function (playerIndex, value) { //for each, not each jquery
@@ -135,6 +137,7 @@ GameEngine.prototype.getRandomNumber = function(number) { //comments or var
 GameEngine.prototype.getRandomLetter = function(number) {
 	//Number is here to say : "how far must we go into the alphabet ?"
 	var letter = this.boardManager.rowLetters[this.getRandomNumber(this.boardManager.boardSize - 1)];
+
 	return letter;
 };
 
@@ -144,12 +147,11 @@ GameEngine.prototype.generateRandomId = function(number) {
 	var randomCellId = row + '-' + index;
 
 	return randomCellId;
-
-	var cell = this.board.getCell(randomCellId); //useless ?
 };
 
 GameEngine.prototype.launchNewGame = function() {
 	this.createAndStartManagers();
+
 	this.$startButton.click(function() {
 		this.startGame();
 		this.playTurns();
@@ -195,6 +197,7 @@ GameEngine.prototype.createWeapons = function() {
 
 GameEngine.prototype.distributeWeapons = function() {
 	var index = 0
+
 	while (index < this.getPlayersNumber()) {
 		var player = this.playerStore.getPlayer(index);
 		player.weapon = this.weaponStore.getWeapon(index);
@@ -206,10 +209,8 @@ GameEngine.prototype.placeObstacles = function() {
 	var obstaclesNumber = Math.floor(Math.random() * 5) + 5;
 
 	for(var i = 0; i < obstaclesNumber; i ++) {
-
 		var cell = this.getAppropriateSpawnPosition();
 		var obstacle = new Obstacle();
-
 		obstacle.position = cell;
 		this.boardManager.attributeCellTo(obstacle, cell);
 	}
@@ -219,10 +220,8 @@ GameEngine.prototype.placeWeapons = function() {
 
 	//First weapons are for players, the rest goes on the board
 	for(var weaponIndex = this.getPlayersNumber(); weaponIndex < this.getWeaponsNumber(); weaponIndex ++) {
-
 		var weapon = this.weaponStore.getWeapon(weaponIndex);
 		var cell = this.getAppropriateSpawnPosition();
-
 		weapon.position = cell;
 		this.boardManager.attributeCellTo(weapon, cell);
 	}
@@ -231,10 +230,8 @@ GameEngine.prototype.placeWeapons = function() {
 GameEngine.prototype.placePlayers = function(player) {
 
 	for(var playerIndex = 0; playerIndex < this.getPlayersNumber(); playerIndex ++) {
-
 		var player = this.playerStore.getPlayer(playerIndex);
 		var cell = this.getAppropriateSpawnPosition();
-
 		player.position = cell;
 		this.boardManager.attributeCellTo(player, cell);
 	}
@@ -244,13 +241,10 @@ GameEngine.prototype.installElementsOnBoard = function() {
 	this.placeObstacles();
 	this.placeWeapons();
 	this.placePlayers();
-
-	//Everything has a place, now show it
-	this.gameEffectManager.updateVisualFromBoardObject();
+	this.gameEffectManager.updateVisualFromBoardObject(); //Everything has a place, now show it
 };
 
 GameEngine.prototype.startGame = function() {
-
 	this.resetGame();
 	this.logsDetailsManager.displayGameInfos('Début de la partie !');
 	this.createPlayers();
@@ -265,9 +259,11 @@ GameEngine.prototype.startGame = function() {
 };
 
 GameEngine.prototype.playTurns = function() {
+
 	if (this.enoughPlayersToFight()) {
 		this.ChangeTurnToPlay();
 		this.organisePlayerTurn();
+
 	} else {
 		this.endGame();
 	}
@@ -289,24 +285,22 @@ GameEngine.prototype.resetGame = function() {
 };
 
 GameEngine.prototype.organisePlayerTurn = function() {
-	this.playersDetailsManager.displayPlayersInfos(this.actualPlayer);
+	this.playersDetailsManager.displayPlayersInfos(this.currentPlayer);
 	this.organiseMovingPhase();
 	this.organiseActionPhase();
 };
 
 GameEngine.prototype.organiseMovingPhase = function() {
-	if (!this.deathmatch) { //Move only if players arent figthing
 
-		this.configAccessibleCellList();
+	if (!this.deathmatch) { //Move only if players arent figthing
+		this.setAccessibleCellList();
 		this.gameEffectManager.addClassAccessible(this.accessibleCellList);
 		this.setAccessiblesCellsEvent();
 	}
 };
 
 GameEngine.prototype.setAccessiblesCellsEvent = function() {
-
-	//To keep both the jquery and object context
-	var self = this;
+	var self = this; //To keep both the jquery and object context
 
 	$('.accessible').on("click", function() {
 
@@ -315,17 +309,17 @@ GameEngine.prototype.setAccessiblesCellsEvent = function() {
 		var clickedCell = self.boardManager.getCell(clickedCellId);
 
 		//Reset the old player's cell
-		self.boardManager.resetCell(self.actualPlayer.position);
+		self.boardManager.resetCell(self.currentPlayer.position);
 
 		//Send place to move and weapon that might be on cell to player
 		var weaponOnCell = self.boardManager.checkAndReturnWeapon(clickedCell);
-		self.actualPlayer.move(clickedCell, weaponOnCell);
+		self.currentPlayer.move(clickedCell, weaponOnCell);
 
 		//Changes on the board and visuals effects related
-		self.logsDetailsManager.displayGameInfos(self.actualPlayer.name + ' se déplace en ' + self.actualPlayer.position.id);
+		self.logsDetailsManager.displayGameInfos(self.currentPlayer.name + ' se déplace en ' + self.currentPlayer.position.id);
 
 		self.boardManager.updateCellsAttributes(self.weaponStore, self.playerStore);
-		self.playersDetailsManager.displayPlayersInfos(self.actualPlayer);
+		self.playersDetailsManager.displayPlayersInfos(self.currentPlayer);
 
 		self.checkAndActiveDeathmatch();
 		self.removeAccessiblesCellsEvent();
@@ -340,43 +334,40 @@ GameEngine.prototype.removeAccessiblesCellsEvent = function() {
 
 GameEngine.prototype.organiseActionPhase = function() {
 
-	this.playersDetailsManager.displayPlayersInfos(this.actualPlayer);
+	this.playersDetailsManager.displayPlayersInfos(this.currentPlayer);
 
 	this.$attackButton.on("click", function() {
 		var enemy = this.definePlayerEnemy();
-
-		//Just in case the player choose not to move
-		this.removeAccessiblesCellsEvent(this.accessibleCellList);
-		
-		this.actualPlayer.attack(enemy);
-		this.removeEvent(this.$actionsButtons);
-
+		this.currentPlayer.attack(enemy);
 		this.killPlayerIfNecessary(enemy);
-		this.playTurns();
-
+		this.endTurn();
 	}.bind(this));
 
 	this.$defendButton.on("click", function() {
-
-		//Just in case the player choose not to move
-		this.removeAccessiblesCellsEvent(this.accessibleCellList);
-
-		this.actualPlayer.defend();
-		this.removeEvent(this.$actionsButtons);
-		this.playTurns();
-
+		this.currentPlayer.defend();
+		this.endTurn();
 	}.bind(this));
+
+	this.$endTurnButton.on("click", function() {
+		this.endTurn();
+	}.bind(this));
+};
+
+GameEngine.prototype.endTurn = function() {
+	this.removeAccessiblesCellsEvent(this.accessibleCellList); //Just in case the player choose not to move
+	this.removeEvent(this.$actionsButtons);
+	this.playTurns();
 };
 
 GameEngine.prototype.enoughPlayersToFight = function() {
 	enoughPlayer = this.getPlayersNumber() - this.cemetery.length == 1 ? false : true;
+
 	return enoughPlayer;
 };
 
 GameEngine.prototype.killPlayerIfNecessary = function(player) {
 
 	if (!player.isAlive()) {
-
 		player.life = 0;
 		this.cemetery.push(player);
 		console.log('He\'s dead Jim.');
@@ -398,21 +389,23 @@ GameEngine.prototype.checkEnnemyProximity = function(surroundingCellsList) {
 };
 
 GameEngine.prototype.checkAndActiveDeathmatch = function() {
-
-	var closeToEnemy = this.checkEnnemyProximity(this.getSurroundingCells(this.actualPlayer.position)); //divide in two var for lisibility
+	var closeToEnemy = this.checkEnnemyProximity(this.getSurroundingCells(this.currentPlayer.position)); //divide in two var for lisibility
 	//can be a const (close to enemy)
 
 	if (closeToEnemy) {
 		this.deathmatch = true;
 		this.$attackButton.prop('disabled', false);
-		this.gameEffectManager.colorActionButtons(this.actualPlayer.color);
+		this.gameEffectManager.colorActionButtons(this.currentPlayer.color);
 	}
 };
 
 GameEngine.prototype.isAccessible = function(cell) {
+
 	if (typeof cell != 'undefined') {
+
 		if ((cell.status == CELL_STATUS_EMPTY ) || (cell.status == CELL_STATUS_WEAPON)) {
 			return true;
+
 		} else {
 			return false;
 		}
@@ -426,11 +419,9 @@ GameEngine.prototype.removeEvent = function(element) {
 GameEngine.prototype.resetBoardVisual = function() { //move to game effect manager
 
 	for(var key in this.boardManager.board) {
-
 		var cell = this.boardManager.board[key];
 		this.boardManager.resetCell(cell);
 	}
-
 	this.gameEffectManager.updateVisualFromBoardObject();
 };
 
@@ -439,21 +430,16 @@ GameEngine.prototype.resetBoardVisual = function() { //move to game effect manag
  * Not really satisfied with the following
  * It reapeat itself a bit but I want a loop in each direction that will stop if the way is blocked
 */
-GameEngine.prototype.configAccessibleCellList = function() {
-
+GameEngine.prototype.setAccessibleCellList = function() {
 	this.accessibleCellList = [];
-
-	var actualCellId = this.actualPlayer.position.id.split("-");
-
-	var actualRow = actualCellId[0];
-	var actualColumn = parseInt(actualCellId[1], 10);
-
-
+	var currentCellId = this.currentPlayer.position.id.split("-");
+	var currentRow = currentCellId[0];
+	var currentColumn = parseInt(currentCellId[1], 10);
 
 	/*Cells to the right*/
-	for (var i = 1; i <= this.actualPlayer.movement; i++) {
+	for (var i = 1; i <= this.currentPlayer.movement; i++) {
 
-		var nextCellId = actualRow + '-' + (actualColumn + i);
+		var nextCellId = currentRow + '-' + (currentColumn + i);
 		var nextCell = this.boardManager.getCell(nextCellId);
 
 		if (this.isAccessible(nextCell)) {
@@ -464,9 +450,9 @@ GameEngine.prototype.configAccessibleCellList = function() {
 	}
 
 	/*Cells to the left*/
-	for (var i = 1; i <= this.actualPlayer.movement; i++) {
+	for (var i = 1; i <= this.currentPlayer.movement; i++) {
 
-		var previousCellId = actualRow + '-' + (actualColumn - i);
+		var previousCellId = currentRow + '-' + (currentColumn - i);
 		var previousCell = this.boardManager.getCell(previousCellId);
 
 		if (this.isAccessible(previousCell)) {
@@ -477,9 +463,9 @@ GameEngine.prototype.configAccessibleCellList = function() {
 	}
 
 	/*Cells on top of the player's*/
-	for (var i = 1; i <= this.actualPlayer.movement; i++) {
+	for (var i = 1; i <= this.currentPlayer.movement; i++) {
 
-		var upperCellId = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) - i] + '-' + actualColumn;
+		var upperCellId = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(currentRow) - i] + '-' + currentColumn;
 		var upperCell = this.boardManager.getCell(upperCellId);
 
 		if (this.isAccessible(upperCell)) {
@@ -490,9 +476,9 @@ GameEngine.prototype.configAccessibleCellList = function() {
 	}
 
 	/*Cells beside the player's*/
-	for (var i = 1; i <= this.actualPlayer.movement; i++) {
+	for (var i = 1; i <= this.currentPlayer.movement; i++) {
 
-		var underCellId = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) + i] + '-' + actualColumn;
+		var underCellId = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(currentRow) + i] + '-' + currentColumn;
 		var underCell = this.boardManager.getCell(underCellId);
 
 		if (this.isAccessible(underCell)) {

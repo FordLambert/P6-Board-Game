@@ -44,7 +44,7 @@
 			          		<p>- Un joueur peut choisir de se déplacer jusqu'à trois case de distance si aucun
 			          		obstacle n'est présent sur le chemin.<br>
 			          		- Si un joueur passe sur une case contenant une arme, il s'en équipera automatiquement.<br>
-			          		- Après la phase de mouvement, un joueur doit choisir d'attaquer ou de défendre : l'attaque n'est possible
+			          		- Après la phase de mouvement, un joueur peut choisir d'attaquer ou de défendre : l'attaque n'est possible
 			          		que si l'adversaire est sur une case adjacent horizontalement ou verticalement.<br>
 			          		La défense permet de ne recevoir que la moitié des dégats au tour suivant seulement.</p>
 			        	</div>
@@ -103,14 +103,22 @@
 						  	</div>
 						</div>
 					</div>
-					<div class="actions-block col-xs-offset-1 col-xs-10">
-						<button class="col-sm-4 action-button" title="Seulement possible lors d'un combat à mort" id="attack" disabled="true">
-							Attaquer
-						</button>
-						<p class="col-sm-4"> ou </p>
-						<button class="col-sm-4 action-button" title="50% des dégats en moins au prochain tour" id="defend">
-							Se défendre
-						</button>
+					<div class="actions-block col-xs-12">
+						<div class="col-sm-4">
+							<button class="col-xs-12 action-button btn" disabled title="Seulement possible lors d'un combat à mort" id="attack">
+								Attaquer
+							</button>
+						</div>
+						<div class="col-sm-4">
+							<button class="col-xs-12 action-button btn" title="50% des dégats en moins au prochain tour" id="defend">
+								Se défendre
+							</button>
+						</div>
+						<div class="col-sm-4">
+							<button class="col-xs-12 action-button btn" id="end-turn">
+								Finir le tour
+							</button>
+						</div>
 					</div>
 				</div>
 

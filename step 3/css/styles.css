@@ -6843,6 +6843,9 @@ button {
   box-shadow: 2px 2px 2px black;
   background-color: white;
 }
+.btn {
+  font-size: 1.2em;
+}
 .column-display,
 .row-display {
   position: absolute;
