@@ -16,7 +16,6 @@ Player.prototype.isAlive = function() {
 };
 
 Player.prototype.move = function move(newCell, weaponOnCell) {
-
 	this.position = newCell;
 	
 	if (typeof weaponOnCell != 'undefined') {
@@ -25,36 +24,31 @@ Player.prototype.move = function move(newCell, weaponOnCell) {
 };
 
 Player.prototype.pickUp = function(weapon) {
-
 	this.weapon.position = this.position;
 	this.weapon = weapon;
 	this.weapon.position = {};
-
 	this.speak(this.name + ' a ramassé l\'arme "' + this.weapon.name + '"');
 };
 
 Player.prototype.defend = function() {
 	this.protected = true;
-
 	this.speak(this.name + ' est sur ses gardes.');
 };
 
 Player.prototype.attack = function(enemy) {
 	this.protected = false;
-
 	this.speak('Le ' + this.name + ' tire !');
-
 	var hitPoints = 0;
-	if (enemy.protected) {
 
+	if (enemy.protected) {
 		hitPoints = this.weapon.damage / 2;
 		this.speak(enemy.name + ' a paré la moitié des dégats et n\'en reçoit que ' + hitPoints + ' !');
 
 	} else {
-
 		hitPoints = this.weapon.damage;
 		this.speak(enemy.name + ' a reçu ' + hitPoints + ' points de dégats !');
 	}
+	
 	enemy.life -= hitPoints;
 };
 

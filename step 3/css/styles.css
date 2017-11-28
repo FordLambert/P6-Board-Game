@@ -6760,7 +6760,7 @@ button {
   margin-left: 5%;
   margin-bottom: 2vh;
 }
-@media only screen and (max-device-width: 1200px) {
+@media only screen and (max-width: 1200px) {
   .board-wrapper {
     margin-left: 10%;
     margin-top: 10vh;
@@ -6799,7 +6799,7 @@ button {
   background-size: 100% 100%;
   /*thanks to free logo maker for the weapons png*/
 }
-@media only screen and (max-device-width: 1200px) {
+@media only screen and (max-width: 1200px) {
   .cell {
     height: 10vw;
     width: 10vw;
@@ -6855,13 +6855,13 @@ button {
 .row-display p {
   margin: 0px;
 }
-@media only screen and (max-device-width: 800px) {
+@media only screen and (max-width: 800px) {
   .column-display,
   .row-display {
     font-size: 0.6em;
   }
 }
-@media only screen and (max-device-width: 500px) {
+@media only screen and (max-width: 500px) {
   .column-display,
   .row-display {
     font-size: 0.4em;
@@ -6937,7 +6937,7 @@ header button {
   background-repeat: no-repeat;
   box-shadow: 2px 2px 2px black;
 }
-@media only screen and (max-device-width: 600px) {
+@media only screen and (max-width: 600px) {
   .title-block h1 {
     font-size: 1.5em;
   }

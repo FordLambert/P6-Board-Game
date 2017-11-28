@@ -5,7 +5,7 @@ var GameEngine = function(domDivId) {
 		'attackButton': '#attack',
 		'defendButton': '#defend'
 	}
-	this.domDivId = domDivId;
+	this.domDivId = domDivId; //boardWrapper, not clear
 	this.$startButton = $(this._selectors.startButton);
 	this.$actionsButtons = $(this._selectors.actionButton);
 	this.$attackButton = $(this._selectors.attackButton);
@@ -19,8 +19,8 @@ var GameEngine = function(domDivId) {
 
 GameEngine.prototype.getLastPlayerAlive = function() { //not very clear
 	var playerIndex = 0;
-	while (playerIndex <= this.playerStore.playerStoreList.length - 1) {
 
+	while (playerIndex <= this.playerStore.playerStoreList.length - 1) { //for each, not while
 		var player = this.playerStore.getPlayer(playerIndex);
 
 		if (player.isAlive()) {
@@ -41,11 +41,11 @@ GameEngine.prototype.getWeaponsNumber = function() {
 
 GameEngine.prototype.getAppropriateSpawnPosition = function() {
 
-	var i = 0;
+	var i = 0; //boolean would be better
 	while (i != 1) {
 
 		var randomId = this.generateRandomId(this.boardManager.boardSize);
-		var safeCell = this.boardManager.getCell(randomId);
+		var safeCell = this.boardManager.getCell(randomId); //not sure it's safe
 		var surroundingCellsList = this.getSurroundingCells(safeCell);
 
 		if ((this.checkEnnemyProximity(surroundingCellsList)) || (safeCell.status != CELL_STATUS_EMPTY )) {
@@ -66,6 +66,7 @@ GameEngine.prototype.getSurroundingCells = function(cell) {
 	var previousRow = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) - 1];
 	var nextRow = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(actualRow) + 1];
 
+	//comments
 	var previousColumnNumber = parseInt(splitCellId[1], 10) - 1;
 	var actualColumnNumber = parseInt(splitCellId[1], 10);
 	var nextColumnNumber = parseInt(splitCellId[1], 10) + 1;
@@ -117,7 +118,7 @@ GameEngine.prototype.definePlayerEnemy = function() {
 
 		var cell = this.boardManager.getCell(surroundingCells[key]);
 
-		$.each(players, function (playerIndex, value) {
+		$.each(players, function (playerIndex, value) { //for each, not each jquery
 
 			if (players[playerIndex].position == cell) {
 				enemy = players[playerIndex];
@@ -127,7 +128,7 @@ GameEngine.prototype.definePlayerEnemy = function() {
 	return enemy;
 };
 
-GameEngine.prototype.getRandomNumber = function(number) {
+GameEngine.prototype.getRandomNumber = function(number) { //comments or var
 	return Math.floor(Math.random() * (number - 1) + 1);
 };
 
@@ -141,9 +142,10 @@ GameEngine.prototype.generateRandomId = function(number) {
 	var row = this.getRandomLetter(number);
 	var index = this.getRandomNumber(number);
 	var randomCellId = row + '-' + index;
+
 	return randomCellId;
 
-	var cell = this.board.getCell(randomCellId);
+	var cell = this.board.getCell(randomCellId); //useless ?
 };
 
 GameEngine.prototype.launchNewGame = function() {
@@ -154,7 +156,7 @@ GameEngine.prototype.launchNewGame = function() {
 	}.bind(this));
 };
 
-GameEngine.prototype.createAndStartManagers = function() {
+GameEngine.prototype.createAndStartManagers = function() { //inside constructor
 	this.boardManager = new BoardManager(this.domDivId);
 	this.boardManager.createBoard(8);
 
@@ -382,15 +384,14 @@ GameEngine.prototype.killPlayerIfNecessary = function(player) {
 };
 
 GameEngine.prototype.checkEnnemyProximity = function(surroundingCellsList) {
-
 	var ennemyNumber = 0;
 
 	for (var listIndex = 0; listIndex < surroundingCellsList.length; listIndex++) {
-
 		var cell = this.boardManager.getCell(surroundingCellsList[listIndex]);
-		if ((typeof cell != 'undefined') && (cell.status == CELL_STATUS_PLAYER)) {
-			ennemyNumber ++;
-		} 
+
+		if ((typeof cell != 'undefined') && (cell.status == CELL_STATUS_PLAYER)) { //comment the undefined
+			ennemyNumber++;
+		}
 	}
 
 	return ennemyNumber > 0 ? true : false;
@@ -398,7 +399,8 @@ GameEngine.prototype.checkEnnemyProximity = function(surroundingCellsList) {
 
 GameEngine.prototype.checkAndActiveDeathmatch = function() {
 
-	var closeToEnemy = this.checkEnnemyProximity(this.getSurroundingCells(this.actualPlayer.position));
+	var closeToEnemy = this.checkEnnemyProximity(this.getSurroundingCells(this.actualPlayer.position)); //divide in two var for lisibility
+	//can be a const (close to enemy)
 
 	if (closeToEnemy) {
 		this.deathmatch = true;
@@ -421,7 +423,7 @@ GameEngine.prototype.removeEvent = function(element) {
 	$(element).unbind( "click" );
 };
 
-GameEngine.prototype.resetBoardVisual = function() {
+GameEngine.prototype.resetBoardVisual = function() { //move to game effect manager
 
 	for(var key in this.boardManager.board) {
 
@@ -434,8 +436,8 @@ GameEngine.prototype.resetBoardVisual = function() {
 
 
 /*
-*Not really satisfied with the following
-*It reapeat itself a bit but I want a loop in each direction that will stop if the way is blocked
+ * Not really satisfied with the following
+ * It reapeat itself a bit but I want a loop in each direction that will stop if the way is blocked
 */
 GameEngine.prototype.configAccessibleCellList = function() {
 
@@ -445,6 +447,8 @@ GameEngine.prototype.configAccessibleCellList = function() {
 
 	var actualRow = actualCellId[0];
 	var actualColumn = parseInt(actualCellId[1], 10);
+
+
 
 	/*Cells to the right*/
 	for (var i = 1; i <= this.actualPlayer.movement; i++) {
