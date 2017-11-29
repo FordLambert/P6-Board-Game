@@ -1,4 +1,4 @@
-var GameEngine = function(domDivId) {
+var GameEngine = function(boardWrapper) {
 	this._selectors = {
 		'startButton': '.start-button',
 		'actionButton': '.action-button',
@@ -6,12 +6,17 @@ var GameEngine = function(domDivId) {
 		'defendButton': '#defend',
 		'endTurnButton': '#end-turn'
 	}
-	this.domDivId = domDivId; //boardWrapper, not clear
+	this.boardWrapper = boardWrapper;
 	this.$startButton = $(this._selectors.startButton);
 	this.$actionsButtons = $(this._selectors.actionButton);
 	this.$attackButton = $(this._selectors.attackButton);
 	this.$defendButton =	$(this._selectors.defendButton);
 	this.$endTurnButton = $(this._selectors.endTurnButton);
+
+	this.boardManager = new BoardManager(this.boardWrapper);
+	this.gameEffectManager = new GameEffectManager(this.boardManager);
+	this.playersDetailsManager = new PlayersDetailsManager();
+	this.logsDetailsManager = new LogsDetailsManager();
 
 	this.currentPlayer = {};
 	this.accessibleCellList = [];
@@ -19,18 +24,14 @@ var GameEngine = function(domDivId) {
 	this.cemetery = [];
 };
 
-GameEngine.prototype.getLastPlayerAlive = function() { //not very clear
-	var playerIndex = 0;
+GameEngine.prototype.getLastPlayerAlive = function() {
 
-	while (playerIndex <= this.playerStore.playerStoreList.length - 1) { //for each, not while
-		var player = this.playerStore.getPlayer(playerIndex);
+	for (var playerIndex in this.playerStore.playerStoreList) {
+		var player = this.playerStore.playerStoreList[playerIndex];
 
 		if (player.isAlive()) {
 
 			return player;
-
-		} else {
-			playerIndex++;
 		}
 	}
 };
@@ -44,22 +45,18 @@ GameEngine.prototype.getWeaponsNumber = function() {
 };
 
 GameEngine.prototype.getAppropriateSpawnPosition = function() {
+	var isSafe = false;
 
-	var i = 0; //boolean would be better
-	while (i != 1) {
-
+	while (!isSafe) {
 		var randomId = this.generateRandomId(this.boardManager.boardSize);
-		var safeCell = this.boardManager.getCell(randomId); //not sure it's safe
-		var surroundingCellsList = this.getSurroundingCells(safeCell);
+		var cell = this.boardManager.getCell(randomId);
+		var surroundingCellsList = this.getSurroundingCells(cell);
 
-		if ((this.checkEnnemyProximity(surroundingCellsList)) || (safeCell.status != CELL_STATUS_EMPTY )) {
-			//Do nothing
-		} else {
-			//We can get out the loop with a really safe cell
-			i++
+		if ((!this.checkEnnemyProximity(surroundingCellsList)) && (cell.status == CELL_STATUS_EMPTY )) {
+			isSafe = true;
 		}
 	}
-	return safeCell;
+	return cell;
 };
 
 GameEngine.prototype.getSurroundingCells = function(cell) {
@@ -120,18 +117,18 @@ GameEngine.prototype.definePlayerEnemy = function() {
 	for(var key in surroundingCells) {
 		var cell = this.boardManager.getCell(surroundingCells[key]);
 
-		$.each(players, function (playerIndex, value) { //for each, not each jquery
+		for (var playerIndex in players) {
 
 			if (players[playerIndex].position == cell) {
 				enemy = players[playerIndex];
 			}
-		});
+		}
 	}
 	return enemy;
 };
 
-GameEngine.prototype.getRandomNumber = function(number) { //comments or var
-	return Math.floor(Math.random() * (number - 1) + 1);
+GameEngine.prototype.getRandomNumber = function(number) {
+	return Math.floor(Math.random() * (number - 1) + 1); //random number between number (max) and 1 (include)
 };
 
 GameEngine.prototype.getRandomLetter = function(number) {
@@ -150,24 +147,13 @@ GameEngine.prototype.generateRandomId = function(number) {
 };
 
 GameEngine.prototype.launchNewGame = function() {
-	this.createAndStartManagers();
+	this.boardManager.createBoard(8);
+	this.gameEffectManager.createVisualFromBoardObject();
 
 	this.$startButton.click(function() {
 		this.startGame();
 		this.playTurns();
 	}.bind(this));
-};
-
-GameEngine.prototype.createAndStartManagers = function() { //inside constructor
-	this.boardManager = new BoardManager(this.domDivId);
-	this.boardManager.createBoard(8);
-
-	this.gameEffectManager = new GameEffectManager(this.boardManager);
-	this.gameEffectManager.createVisualFromBoardObject();
-
-	this.playersDetailsManager = new PlayersDetailsManager();
-
-	this.logsDetailsManager = new LogsDetailsManager();
 };
 
 GameEngine.prototype.createPlayers = function() {
@@ -278,7 +264,7 @@ GameEngine.prototype.endGame = function() {
 GameEngine.prototype.resetGame = function() {
 	this.removeEvent(this.$actionsButtons);
 	this.removeEvent('.cell');
-	this.resetBoardVisual();
+	this.gameEffectManager.resetBoardVisual();
 	this.logsDetailsManager.resetLogs();
 	this.deathmatch = false;
 	this.$attackButton.prop('disabled', true);
@@ -333,7 +319,6 @@ GameEngine.prototype.removeAccessiblesCellsEvent = function() {
 
 
 GameEngine.prototype.organiseActionPhase = function() {
-
 	this.playersDetailsManager.displayPlayersInfos(this.currentPlayer);
 
 	this.$attackButton.on("click", function() {
@@ -380,7 +365,7 @@ GameEngine.prototype.checkEnnemyProximity = function(surroundingCellsList) {
 	for (var listIndex = 0; listIndex < surroundingCellsList.length; listIndex++) {
 		var cell = this.boardManager.getCell(surroundingCellsList[listIndex]);
 
-		if ((typeof cell != 'undefined') && (cell.status == CELL_STATUS_PLAYER)) { //comment the undefined
+		if ((typeof cell != 'undefined') && (cell.status == CELL_STATUS_PLAYER)) { //checking 'undefined' in case we are on the edge of the board
 			ennemyNumber++;
 		}
 	}
@@ -389,9 +374,9 @@ GameEngine.prototype.checkEnnemyProximity = function(surroundingCellsList) {
 };
 
 GameEngine.prototype.checkAndActiveDeathmatch = function() {
-	var closeToEnemy = this.checkEnnemyProximity(this.getSurroundingCells(this.currentPlayer.position)); //divide in two var for lisibility
-	//can be a const (close to enemy)
-
+	var surroundingCells = this.getSurroundingCells(this.currentPlayer.position);
+	var closeToEnemy = this.checkEnnemyProximity(surroundingCells);
+	
 	if (closeToEnemy) {
 		this.deathmatch = true;
 		this.$attackButton.prop('disabled', false);
@@ -416,73 +401,50 @@ GameEngine.prototype.removeEvent = function(element) {
 	$(element).unbind( "click" );
 };
 
-GameEngine.prototype.resetBoardVisual = function() { //move to game effect manager
-
-	for(var key in this.boardManager.board) {
-		var cell = this.boardManager.board[key];
-		this.boardManager.resetCell(cell);
-	}
-	this.gameEffectManager.updateVisualFromBoardObject();
-};
-
-
-/*
- * Not really satisfied with the following
- * It reapeat itself a bit but I want a loop in each direction that will stop if the way is blocked
-*/
 GameEngine.prototype.setAccessibleCellList = function() {
 	this.accessibleCellList = [];
+	this.addCellsToAccessibleList('left');
+	this.addCellsToAccessibleList('right');
+	this.addCellsToAccessibleList('up');
+	this.addCellsToAccessibleList('down');
+};
+
+GameEngine.prototype.addCellsToAccessibleList = function(direction) {
 	var currentCellId = this.currentPlayer.position.id.split("-");
 	var currentRow = currentCellId[0];
 	var currentColumn = parseInt(currentCellId[1], 10);
 
-	/*Cells to the right*/
 	for (var i = 1; i <= this.currentPlayer.movement; i++) {
+		var currentCellId = '';
+		
+		switch (direction) {
 
-		var nextCellId = currentRow + '-' + (currentColumn + i);
-		var nextCell = this.boardManager.getCell(nextCellId);
+		    case 'left':
+		        currentCellId = currentRow + '-' + (currentColumn - i);
+		        break;
 
-		if (this.isAccessible(nextCell)) {
-			this.accessibleCellList.push(nextCellId);
-		} else {
-			break;
+		    case 'right':
+		       	currentCellId = currentRow + '-' + (currentColumn + i);
+		        break;
+
+		    case 'up':
+		       	var letterIndex = this.boardManager.rowLetters.indexOf(currentRow) - i;
+		       	currentCellId = this.boardManager.rowLetters[letterIndex] + '-' + currentColumn;
+		        break;
+
+		    case 'down':
+		       	var letterIndex = this.boardManager.rowLetters.indexOf(currentRow) + i;
+		       	currentCellId = this.boardManager.rowLetters[letterIndex] + '-' + currentColumn;
+		        break;
+
+		    default:
+		        console.log('Error: incorrect direction');
 		}
-	}
+		var currentCell = this.boardManager.getCell(currentCellId);
 
-	/*Cells to the left*/
-	for (var i = 1; i <= this.currentPlayer.movement; i++) {
+		if (this.isAccessible(currentCell)) {
+			this.accessibleCellList.push(currentCell.id);
 
-		var previousCellId = currentRow + '-' + (currentColumn - i);
-		var previousCell = this.boardManager.getCell(previousCellId);
-
-		if (this.isAccessible(previousCell)) {
-			this.accessibleCellList.push(previousCellId);
-		} else {
-			break;
-		}
-	}
-
-	/*Cells on top of the player's*/
-	for (var i = 1; i <= this.currentPlayer.movement; i++) {
-
-		var upperCellId = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(currentRow) - i] + '-' + currentColumn;
-		var upperCell = this.boardManager.getCell(upperCellId);
-
-		if (this.isAccessible(upperCell)) {
-			this.accessibleCellList.push(upperCellId);
-		} else {
-			break;
-		}
-	}
-
-	/*Cells beside the player's*/
-	for (var i = 1; i <= this.currentPlayer.movement; i++) {
-
-		var underCellId = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(currentRow) + i] + '-' + currentColumn;
-		var underCell = this.boardManager.getCell(underCellId);
-
-		if (this.isAccessible(underCell)) {
-			this.accessibleCellList.push(underCellId);
 		} else {
 			break;
 		}

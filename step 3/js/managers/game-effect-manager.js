@@ -43,7 +43,6 @@ GameEffectManager.prototype.getNewBgClass = function(color) {
 	    default:
 	        console.log('Error: unknown color');
 	}
-
 	return strippedColor;
 };
 
@@ -78,4 +77,13 @@ GameEffectManager.prototype.addClassAccessible = function(cellIdList) {
 	for (var i = 0; i < cellIdList.length; i++) {
 		$('#' + cellIdList[i]).addClass('accessible');
 	}
+};
+
+GameEffectManager.prototype.resetBoardVisual = function() {
+
+	for(var key in this.boardManager.board) {
+		var cell = this.boardManager.board[key];
+		this.boardManager.resetCell(cell);
+	}
+	this.updateVisualFromBoardObject();
 };

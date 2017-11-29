@@ -3,7 +3,6 @@ var PlayersDetailsManager = function() {
 };
 
 PlayersDetailsManager.prototype.displayPlayersInfos = function(player) {
-
 	this.htmlDisplayBoxId = ('#' + player.color);
 
 	var $lifeBar = $(this.htmlDisplayBoxId).find('.life');
