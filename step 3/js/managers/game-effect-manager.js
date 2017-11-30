@@ -8,8 +8,8 @@ var GameEffectManager = function(boardManager) {
 	this.boardManager = boardManager;
 	this.$actionButtons = $(this._selectors.actionButtons);
 	this.$changingBackground = $(this._selectors.changingBackground);
-	this.$columnDivDisplay = $(this._selectors.columnDivDisplay);
-	this.$rowDivDisplay = $(this._selectors.rowDivDisplay);
+	this.$columnDivDisplay = $(this._selectors.columnDivDisplay); //where to display column (numbers)
+	this.$rowDivDisplay = $(this._selectors.rowDivDisplay); //where to display row (letters)
 };
 
 GameEffectManager.prototype.changeTheme = function(color) {
@@ -30,6 +30,7 @@ GameEffectManager.prototype.colorActionButtons = function(color) {
 
 GameEffectManager.prototype.getNewBgClass = function(color) {
 	var strippedColor = '';
+
 	switch (color) {
 
 	    case 'red':
@@ -56,7 +57,6 @@ GameEffectManager.prototype.createVisualFromBoardObject = function() {
 
 	for (var i = 0; i < this.boardManager.boardSize; i++) {
 		var columnIndex = this.boardManager.rowLetters[i]
-
 		this.$columnDivDisplay.append('<p>' + columnIndex + '</p>');
 		this.$rowDivDisplay.append('<p>' + (i+ 1) + '</p>');
 	}

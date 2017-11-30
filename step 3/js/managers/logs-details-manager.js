@@ -1,9 +1,9 @@
 var LogsDetailsManager = function() {
 	this._selectors = {
-		'gameInfosArea': '.display-area',
+		'gameInfosWrapper': '.display-area',
 		'logsDisplayArea': '.logs-area'
 	}
-	this.$gameInfosArea = $(this._selectors.gameInfosArea);
+	this.$gameInfosWrapper = $(this._selectors.gameInfosWrapper);
 	this.$logsDisplayArea = $(this._selectors.logsDisplayArea);
 };
 

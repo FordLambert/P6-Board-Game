@@ -1,15 +1,15 @@
 var PlayersDetailsManager = function() {
-	this.htmlDisplayBoxId = ''; //Target the dom element for actual player's infos
+	this.playerInfosWrapper = ''; //Target the dom element for actual player's infos
 };
 
 PlayersDetailsManager.prototype.displayPlayersInfos = function(player) {
-	this.htmlDisplayBoxId = ('#' + player.color);
+	this.playerInfosWrapper = ('#' + player.color);
 
-	var $lifeBar = $(this.htmlDisplayBoxId).find('.life');
-	var $activeWeapon = $(this.htmlDisplayBoxId).find('.weapon');
-	var $weaponStat = $(this.htmlDisplayBoxId).find('.weapon-stat');
+	var $lifeBar = $(this.playerInfosWrapper).find('.life');
+	var $activeWeapon = $(this.playerInfosWrapper).find('.weapon');
+	var $weaponDamage = $(this.playerInfosWrapper).find('.weapon-stat');
 
 	$lifeBar.text(player.life + '/100 pv');
 	$activeWeapon.text('Arme : ' + player.weapon.name);
-	$weaponStat.text('Dégats : ' + player.weapon.damage);
+	$weaponDamage.text('Dégats : ' + player.weapon.damage);
 };

@@ -48,7 +48,6 @@ Player.prototype.attack = function(enemy) {
 		hitPoints = this.weapon.damage;
 		this.speak(enemy.name + ' a reçu ' + hitPoints + ' points de dégats !');
 	}
-	
 	enemy.life -= hitPoints;
 };
 

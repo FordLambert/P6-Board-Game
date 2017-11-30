@@ -30,7 +30,6 @@ GameEngine.prototype.getLastPlayerAlive = function() {
 		var player = this.playerStore.playerStoreList[playerIndex];
 
 		if (player.isAlive()) {
-
 			return player;
 		}
 	}
@@ -60,16 +59,16 @@ GameEngine.prototype.getAppropriateSpawnPosition = function() {
 };
 
 GameEngine.prototype.getSurroundingCells = function(cell) {
-
 	var splitCellId = cell.id.split("-");
-
+	
 	var currentRow = splitCellId[0];
+	//fetch the row (letter) in the alphabet and remove or add one to the index to have the previous/next row
 	var previousRow = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(currentRow) - 1];
 	var nextRow = this.boardManager.rowLetters[this.boardManager.rowLetters.indexOf(currentRow) + 1];
 
-	//comments
-	var previousColumnNumber = parseInt(splitCellId[1], 10) - 1;
 	var currentColumnNumber = parseInt(splitCellId[1], 10);
+	//convert the column (string) into an int and add/remove one to obtain next/previous column 
+	var previousColumnNumber = parseInt(splitCellId[1], 10) - 1; 
 	var nextColumnNumber = parseInt(splitCellId[1], 10) + 1;
 
 	//Checking the cell on top of this one and moving around from left to right (vertical and horizontal)
@@ -84,8 +83,8 @@ GameEngine.prototype.getSurroundingCells = function(cell) {
 };
 
 GameEngine.prototype.ChangeTurnToPlay = function() {
-
 	var playerIndex = 0;
+
 	while (playerIndex < this.getPlayersNumber()) {
 		var player = this.playerStore.getPlayer(playerIndex);
 
@@ -109,7 +108,6 @@ GameEngine.prototype.ChangeTurnToPlay = function() {
 };
 
 GameEngine.prototype.definePlayerEnemy = function() {
-
 	var surroundingCells = this.getSurroundingCells(this.currentPlayer.position);
 	var players = this.playerStore.playerStoreList;
 	var enemy = 'unknow';
@@ -166,7 +164,6 @@ GameEngine.prototype.createPlayers = function() {
 };
 
 GameEngine.prototype.createWeapons = function() {
-
 	var bat1 = new Weapon('Batte', 10, 'bat.png');
 	var bat2 = new Weapon('Batte', 10, 'bat.png');
 	var knife = new Weapon('Couteau', 8, 'knife.png');
@@ -369,7 +366,6 @@ GameEngine.prototype.checkEnnemyProximity = function(surroundingCellsList) {
 			ennemyNumber++;
 		}
 	}
-
 	return ennemyNumber > 0 ? true : false;
 };
 
@@ -428,11 +424,13 @@ GameEngine.prototype.addCellsToAccessibleList = function(direction) {
 		        break;
 
 		    case 'up':
+		    	//fetch the row (letter) in the alphabet and remove one to the index to have the previous row
 		       	var letterIndex = this.boardManager.rowLetters.indexOf(currentRow) - i;
 		       	currentCellId = this.boardManager.rowLetters[letterIndex] + '-' + currentColumn;
 		        break;
 
 		    case 'down':
+		    	//fetch the row (letter) in the alphabet and add one to the index to have the next row
 		       	var letterIndex = this.boardManager.rowLetters.indexOf(currentRow) + i;
 		       	currentCellId = this.boardManager.rowLetters[letterIndex] + '-' + currentColumn;
 		        break;

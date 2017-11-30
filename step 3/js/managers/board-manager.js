@@ -1,7 +1,7 @@
-var BoardManager = function(domDivId) {
+var BoardManager = function(boardWrapper) {
 	this.boardSize = 0; //Board created will be a square of boardsize * boardsize
 	this.board = {}; //Associative array, will contain cells
-	this.domDivId = domDivId;
+	this.boardWrapper = boardWrapper;
 	this.rowLetters = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
 };
 
@@ -71,7 +71,6 @@ BoardManager.prototype.updateCellsAttributes = function(weaponStore, playerStore
 };
 
 BoardManager.prototype.attributeCellTo = function(object, cell) {
-
 	cell.texture = object.texture;
 
 	if (Player.prototype.isPrototypeOf(object)) {
