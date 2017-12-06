@@ -1,0 +1,45 @@
+header {
+	margin-top: 20px;
+	margin-bottom: 35px;
+	button {
+		margin-top: 0px;
+	}
+}
+
+.title-block {
+	height: 160px;
+	background-image: url(../pictures/main-sign.png);
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	box-shadow: 2px 2px 2px @black;
+	h1 {
+		@media only screen and (max-width : 600px) {
+			font-size: @smaller-title;
+		}
+	}
+}
+
+.main-title {
+	padding-top: 60px;
+}
+
+.icon {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+/*-----Used by Js game-effect-manager*/
+
+.red {
+	background-color: @light-red;
+	border-color: @dark-red;
+}
+
+.blue {
+	background-color: @light-blue;
+	border-color: @light-blue;
+}
+
+.start-button, .rules-button {
+	margin-top: 10px;
+}

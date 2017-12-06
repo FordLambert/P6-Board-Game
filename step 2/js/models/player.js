@@ -1,35 +1,30 @@
-var Player = function(name, color, turnToPlay, texture) {
+var Player = function(name, color, turnToPlay, texture, logsDetailsManager) {
 	this.name = name;
-	this.movement = 3;
-	this.cell = '';
+	this.movement = 3; //How far he can move
 	this.weapon = {};
 	this.life = 100;
 	this.color = color;
+	this.turnToPlay = turnToPlay; //true or false
 	this.texture = texture;
-	this.turnToPlay = turnToPlay;
+	this.position = {}; //Where he is, nowhere at first
+	this.logsDetailsManager = logsDetailsManager;
 };
 
 Player.prototype.move = function move(newCell, weaponOnCell) {
-
-	var newCell = newCell;
-	this.cell = newCell.id;
+	this.position = newCell;
 	
-	if (typeof weaponOnCell != 'undefined') {
+	if (weaponOnCell != null) {
 		this.pickUp(weaponOnCell);
 	}
 };
 
-Player.prototype.pickUp = function(weapon) {
-
-	this.weapon.cell = this.cell
-	this.weapon = weapon;
-	this.weapon.cell = '';
-
+Player.prototype.pickUp = function(newWeapon) {
+	this.weapon.position = this.position; //drop old weapon on this position
+	this.weapon = newWeapon; //assign the new weapon as current weapon
+	this.weapon.position = {}; //the new weapon isn't on board anymore
 	this.speak(this.name + ' a ramassé l\'arme "' + this.weapon.name + '"');
-
 };
 
-//I need to find a nice way ro remove the call to gameEngine, inject gameEffectManager ?
 Player.prototype.speak = function(sentence) {
-	gameEngine.gameEffectManager.displayGameInfos(sentence);
+	this.logsDetailsManager.displayGameInfos(sentence);
 };
