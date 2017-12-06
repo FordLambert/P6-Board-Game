@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>P6 - Jeu de plateau</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="https://fonts.googleapis.com/css?family=Annie+Use+Your+Telescope" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="css/styles.css">
+		<script src="js/librairies/jquery-3.2.1.min.js"></script>
+		<script src="js/librairies/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<div class="container text-center"><!--Bootstrap container, contain all the page-->
+
+
+			<header class="row">
+				<div class="col-xs-12">
+					<div class="title-block col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-4 col-md-4">
+						<h1 class="col-xs-12 main-title">Étape experimentale</h1>
+					</div>
+				</div>
+				<div class="col-xs-12">
+					<div class="col-xs-offset-2 col-xs-4 col-md-offset-2 col-md-2 ">
+						<button class="start-button">Nouvelle partie</button>
+					</div>
+					
+					<div class="col-xs-4 col-md-offset-4 col-md-2">
+						<button type="button" class="rules-button" data-toggle="modal" data-target="#myModal">Règles du jeu</button>
+					</div>
+				</div>
+			</header>
+
+			<!-- Modal -->
+			<div class="modal fade" id="myModal" role="dialog">
+			    <div class="modal-dialog"> 
+			     	<div class="modal-content">
+			        	<div class="modal-header">
+			          		<button type="button" class="close" data-dismiss="modal">&times;</button>
+			          		<h4 class="modal-title">Règles du jeu</h4>
+			        	</div>
+			        	<div class="modal-body text-left">
+			        		<img src="pictures/icon.png" alt="rules-icon" class="icon center-block">
+			          		<p>Se joue à deux, les joueurs jouent l'un après l'autre.</p>
+			          		<p>- Un joueur peut choisir de se déplacer jusqu'à trois case de distance si aucun
+			          		obstacle n'est présent sur le chemin.<br>
+			          		- Si un joueur passe sur une case contenant une arme, il s'en équipera automatiquement.<br>
+			          		- Après la phase de mouvement, un joueur peut choisir d'attaquer ou de défendre : l'attaque n'est possible
+			          		que si l'adversaire est sur une case adjacent horizontalement ou verticalement.<br>
+			          		La défense permet de ne recevoir que la moitié des dégats au tour suivant seulement.</p>
+			        	</div>
+			        	<div class="modal-footer">
+			          		<button type="button" class="btn btn-default" data-dismiss="modal">fermer</button>
+			        	</div>
+			      	</div>  
+			    </div>
+			</div> 
+
+			<section class="row game-infos-block">
+
+				<!--place for players information-->
+				<div class="col-xs-offset-1 col-xs-10 col-lg-offset-0 col-lg-3">
+
+					<div class="col-xs-12 col-sm-6 col-lg-12">
+						<div class="player-display player-1 red">
+							<h2>Joueur 1</h2>
+							<div class="row">
+								<img src="pictures/player-red.png" alt="player-1-red" class="col-sm-offset-4 col-sm-4 col-md-offset-1 col-md-5 player-picture hidden-xs img-responsive">
+								<div class="player-infos col-xs-12 col-md-6">
+									<p class="life">-/100 pv</p>
+									<p class="weapon">Arme : -</p>
+									<p class="weapon-stat">Dégats : -</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-6 col-lg-12">
+						<div class="player-display player-2 blue">
+							<h2>Joueur 2</h2>
+							<div class="row">
+								<img src="pictures/player-blue.png" alt="player-2-blue" class="col-sm-offset-4 col-sm-4 col-md-offset-1 col-md-5 player-picture hidden-xs img-responsive">
+								<div class="player-infos col-xs-12 col-md-6">
+									<p class="life">-/100 pv</p>
+									<p class="weapon">Arme : -</p>
+									<p class="weapon-stat">Dégats : -</p>
+								</div>
+							</div>		
+						</div>
+					</div>
+				</div>
+
+				<!--place for the board-->
+				<div class="col-xs-offset-3 col-xs-6 col-lg-offset-0 col-lg-6 board-wrapper">
+					<div class="column-display">
+						<!--Javascript will generate letters here-->
+					</div>
+					<div class="row-display">
+						<!--Javascript will generate number here -->
+					</div>
+					<div class="" id="board">
+						<div class="progress">
+						  	<div class="progress-bar progress-bar-striped active progress-bar-warning" role="progressbar"
+						  	aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+						  	</div>
+						</div>
+					</div>
+					<div class="actions-block col-xs-12">
+						<div class="col-sm-4">
+							<button class="col-xs-12 action-button btn" disabled title="Seulement possible lors d'un combat à mort" id="attack">
+								Attaquer
+							</button>
+						</div>
+						<div class="col-sm-4">
+							<button class="col-xs-12 action-button btn" disabled title="50% des dégats en moins au prochain tour" id="defend">
+								Se défendre
+							</button>
+						</div>
+						<div class="col-sm-4">
+							<button class="col-xs-12 action-button btn" disabled id="end-turn">
+								Finir le tour
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<!--place for information screen-->
+				<div class="col-sm-offset-1 col-sm-10 col-lg-offset-0 col-lg-3 hidden-xs">
+					<div class="col-sm-offset-1 col-sm-10">
+						<div class="display-area">
+							<h2>Déroulement de la partie:</h2>
+							<div class="logs-area">
+								<!--this will be filled in javascript-->
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</section>
+
+		</div><!--End of page container-->
+
+		<script src="js/models/cell.js"></script>
+		<script src="js/models/player.js"></script>
+		<script src="js/models/weapon.js"></script>
+		<script src="js/models/obstacle.js"></script>
+		<script src="js/models/stores/player-store.js"></script>
+		<script src="js/models/stores/weapon-store.js"></script>
+
+		<script src="js/managers/board-manager.js"></script>
+		<script src="js/managers/game-effect-manager.js"></script>
+		<script src="js/managers/logs-details-manager.js"></script>
+		<script src="js/managers/player-details-manager.js"></script>
+
+		<script src="js/game-engine.js"></script>
+		
+		<script>
+			var gameEngine = new GameEngine('#board');
+			gameEngine.launchNewGame();
+		</script>
+		
+	</body>
+</html>

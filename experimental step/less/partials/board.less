@@ -1,0 +1,128 @@
+/*-----Board and everything inside it-----*/
+.board-wrapper {
+	margin-top: 2vh;
+	position: relative;
+	padding: 0px;
+	height: 40vw;
+	width: 40vw;
+	margin-left: 5%;
+	margin-bottom: 2vh;
+	@media only screen and (max-width : 1200px) {
+		margin-left: 10%;
+		margin-top: 10vh;
+		margin-bottom: 38vh;
+		height: 80vw;
+		width: 80vw;
+	}
+}
+
+#board {
+	position: absolute;
+	width: 100%;
+	background-image: url(../pictures/blackboard.jpg);
+	background-size: cover;
+	padding: 0px;
+	margin-left: 0px;
+}
+
+.progress {
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+}
+
+.progress-bar {
+	position: absolute;
+	z-index: -1;
+	height: 110%;
+	width:110%;
+	right: -5%;
+	top: -5%;
+}
+
+.cell {
+	border: 1px solid @black;
+	height: 5vw;
+	width: 5vw;
+    float:left;
+    text-align:center;
+    background-size: 100% 100%;
+    @media only screen and (max-width : 1200px) {
+    	height: 10vw;
+		width: 10vw;
+    }
+
+}
+
+.accessible {
+	animation: borderchange 2s;
+    animation-iteration-count: infinite;
+    
+    @keyframes borderchange {
+    	0%   {border: 2px dashed @notification-lighter;}
+    	50%  {border: 2px dashed @notification-medium;}
+    	100% {border: 2px dashed @notification-darker;}
+    }
+}
+
+.accessible:hover {
+	cursor: pointer;
+	animation: backgroundchange 1s;
+    animation-iteration-count: infinite;
+    
+    @keyframes backgroundchange {
+    	0%   {background-color: @notification-lighter;}
+    	50%  {background-color: @notification-medium;}
+    	100% {background-color: @notification-darker;}
+    }
+
+}
+
+.actions-block {
+	position: absolute;
+	padding-top: 15px;
+	padding-bottom: 10px;
+	margin-top: 110%;
+	box-shadow: 2px 2px 2px @black;
+	background-color: @white;
+}
+
+.btn {
+	font-size: @smaller-font-size;
+	margin-bottom: 5px;
+}
+
+.column-display, .row-display {
+	position: absolute;
+	z-index: +1;
+	color: @white;
+	font-size: @paragraph-md-size;
+	p {
+		margin: 0px;
+	}
+	@media only screen and (max-width : 800px) {
+		font-size: @paragraph-sm-size;
+	}
+	@media only screen and (max-width : 500px) {
+		font-size: @paragraph-xs-size;
+	}
+}
+
+.column-display {
+	height: 100%;
+	width: 5%;
+	left: -5%;
+	display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.row-display {
+	width: 100%;
+	height: 5%;
+	top: -5%;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
