@@ -6897,17 +6897,17 @@ button {
   color: white;
   font-family: 'Annie Use Your Telescope', cursive;
   background-size: cover;
-  background-image: url(../pictures/display-background.png);
+  background-image: url(../pictures/display-background.jpg);
   padding: 15px;
   overflow: auto;
   box-shadow: 2px 2px 2px black;
 }
 /*-----Players infos and picture zones-----*/
 .player-1 {
-  background-image: url(../pictures/red-background.png);
+  background-image: url(../pictures/red-background.jpg);
 }
 .player-2 {
-  background-image: url(../pictures/blue-background.png);
+  background-image: url(../pictures/blue-background.jpg);
 }
 .player-display {
   margin-bottom: 10px;

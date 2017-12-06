@@ -157,8 +157,8 @@ GameEngine.prototype.launchNewGame = function() {
 };
 
 GameEngine.prototype.createPlayers = function() {
-	var playerRed = new Player('Joueur Rouge', 'red', true, 'red-background.png', this.logsDetailsManager);
-	var playerBlue = new Player('Joueur Bleu', 'blue', false, 'blue-background.png', this.logsDetailsManager);
+	var playerRed = new Player('Joueur Rouge', 'red', true, 'red-background.jpg', this.logsDetailsManager);
+	var playerBlue = new Player('Joueur Bleu', 'blue', false, 'blue-background.jpg', this.logsDetailsManager);
 
 	this.playerStore = new PlayerStore();
 	this.playerStore.addPlayer(playerRed);
