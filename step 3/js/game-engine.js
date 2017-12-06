@@ -85,7 +85,7 @@ GameEngine.prototype.getSurroundingCells = function(cell) {
 GameEngine.prototype.ChangeTurnToPlay = function() {
 	var playerIndex = 0;
 
-	while (playerIndex < this.getPlayersNumber()) {
+	while (playerIndex < this.getPlayersNumber()) { //for on player store
 		var player = this.playerStore.getPlayer(playerIndex);
 
 		if (player.turnToPlay) {
@@ -100,6 +100,7 @@ GameEngine.prototype.ChangeTurnToPlay = function() {
 			} else {
 				playerIndex = 0;
 			}
+
 			this.playerStore.getPlayer(playerIndex).turnToPlay = true;
 			break;
 		}
@@ -112,8 +113,8 @@ GameEngine.prototype.definePlayerEnemy = function() {
 	var players = this.playerStore.playerStoreList;
 	var enemy = 'unknow';
 
-	for(var key in surroundingCells) {
-		var cell = this.boardManager.getCell(surroundingCells[key]);
+	for(var cellIndex in surroundingCells) {
+		var cell = this.boardManager.getCell(surroundingCells[cellIndex]);
 
 		for (var playerIndex in players) {
 
@@ -122,6 +123,7 @@ GameEngine.prototype.definePlayerEnemy = function() {
 			}
 		}
 	}
+	
 	return enemy;
 };
 
@@ -237,7 +239,7 @@ GameEngine.prototype.startGame = function() {
 
 	//Displaying players infos (life, weapon...)
 	for (var playerIndex = 0; playerIndex < this.getPlayersNumber(); playerIndex++) {
-		this.playersDetailsManager.displayPlayersInfos(this.playerStore.getPlayer(playerIndex));
+		this.playersDetailsManager.updatePlayerInfos(this.playerStore.getPlayer(playerIndex));
 	}
 };
 
@@ -255,7 +257,7 @@ GameEngine.prototype.playTurns = function() {
 GameEngine.prototype.endGame = function() {
 	var winner = this.getLastPlayerAlive();
 	alert(winner.name + ' a gagné ! Un nouvel essai ?');
-	window.location.reload();
+	window.location.reload(true);
 };
 
 GameEngine.prototype.resetGame = function() {
@@ -264,11 +266,13 @@ GameEngine.prototype.resetGame = function() {
 	this.gameEffectManager.resetBoardVisual();
 	this.logsDetailsManager.resetLogs();
 	this.deathmatch = false;
+	this.$endTurnButton.prop('disabled', false);
+	this.$defendButton.prop('disabled', false);
 	this.$attackButton.prop('disabled', true);
 };
 
 GameEngine.prototype.organisePlayerTurn = function() {
-	this.playersDetailsManager.displayPlayersInfos(this.currentPlayer);
+	this.playersDetailsManager.updatePlayerInfos(this.currentPlayer);
 	this.organiseMovingPhase();
 	this.organiseActionPhase();
 };
@@ -278,11 +282,11 @@ GameEngine.prototype.organiseMovingPhase = function() {
 	if (!this.deathmatch) { //Move only if players arent figthing
 		this.setAccessibleCellList();
 		this.gameEffectManager.addClassAccessible(this.accessibleCellList);
-		this.setAccessiblesCellsEvent();
+		this.handleAccessibleCellMovement();
 	}
 };
 
-GameEngine.prototype.setAccessiblesCellsEvent = function() {
+GameEngine.prototype.handleAccessibleCellMovement = function() {
 	var self = this; //To keep both the jquery and object context
 
 	$('.accessible').on("click", function() {
@@ -300,9 +304,8 @@ GameEngine.prototype.setAccessiblesCellsEvent = function() {
 
 		//Changes on the board and visuals effects related
 		self.logsDetailsManager.displayGameInfos(self.currentPlayer.name + ' se déplace en ' + self.currentPlayer.position.id);
-
-		self.boardManager.updateCellsAttributes(self.weaponStore, self.playerStore);
-		self.playersDetailsManager.displayPlayersInfos(self.currentPlayer);
+		self.boardManager.updateCellsAttributes(self.weaponStore.weaponStoreList, self.playerStore.playerStoreList);
+		self.playersDetailsManager.updatePlayerInfos(self.currentPlayer);
 
 		self.checkAndActiveDeathmatch();
 		self.removeAccessiblesCellsEvent();
@@ -316,7 +319,7 @@ GameEngine.prototype.removeAccessiblesCellsEvent = function() {
 
 
 GameEngine.prototype.organiseActionPhase = function() {
-	this.playersDetailsManager.displayPlayersInfos(this.currentPlayer);
+	this.playersDetailsManager.updatePlayerInfos(this.currentPlayer);
 
 	this.$attackButton.on("click", function() {
 		var enemy = this.definePlayerEnemy();

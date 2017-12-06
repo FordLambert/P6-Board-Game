@@ -22,6 +22,7 @@ BoardManager.prototype.createBoard = function(boardSize) {
 			for (var cellIndex = 1; cellIndex <= boardSize; cellIndex++) {
 				var newId = letterIndex + '-' + cellIndex
 				var cell = new Cell(newId);
+
 				this.board[newId] = cell;
 			}
 		}
@@ -44,24 +45,28 @@ BoardManager.prototype.checkAndReturnWeapon = function(cell) {
 			return weapon;
 		}
 	}
+	return null
 };
 
 //Compare weapons and players position with board's cells
-BoardManager.prototype.updateCellsAttributes = function(weaponStore, playerStore) {
+BoardManager.prototype.updateCellsAttributes = function(weaponList, playerList) {
 
-	for(var key in this.board) {
-		var cell = this.board[key];
+	//scan all cells on board
+	for (var cellIndex in this.board) {
+		var cell = this.board[cellIndex];
 
-		for(var key in weaponStore.weaponStoreList) {
-			var weapon = weaponStore.weaponStoreList[key]
+		//If a cell match a weapon position, be sure the cell status say it
+		for (var weaponIndex in weaponList) {
+			var weapon = weaponList[weaponIndex]
 
 			if (cell == weapon.position) {
 			    this.attributeCellTo(weapon, cell);
 			}
 		}
 
-		for(var key in playerStore.playerStoreList) {
-			var player = playerStore.playerStoreList[key];
+		//If a cell match a player position, be sure the cell status say it
+		for (var playerIndex in playerList) {
+			var player = playerList[playerIndex];
 
 			if (cell == player.position) {
 			    this.attributeCellTo(player, cell);

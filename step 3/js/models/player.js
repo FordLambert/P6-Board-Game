@@ -8,7 +8,7 @@ var Player = function(name, color, turnToPlay, texture, logsDetailsManager) {
 	this.turnToPlay = turnToPlay; //true or false
 	this.texture = texture;
 	this.position = {}; //Where he is, nowhere at first
-	this.logsDetailsManager = logsDetailsManager; //Used in speak()
+	this.logsDetailsManager = logsDetailsManager;
 };
 
 Player.prototype.isAlive = function() {
@@ -18,15 +18,15 @@ Player.prototype.isAlive = function() {
 Player.prototype.move = function move(newCell, weaponOnCell) {
 	this.position = newCell;
 	
-	if (typeof weaponOnCell != 'undefined') {
+	if (weaponOnCell != null) {
 		this.pickUp(weaponOnCell);
 	}
 };
 
-Player.prototype.pickUp = function(weapon) {
-	this.weapon.position = this.position;
-	this.weapon = weapon;
-	this.weapon.position = {};
+Player.prototype.pickUp = function(newWeapon) {
+	this.weapon.position = this.position; //drop old weapon on this position
+	this.weapon = newWeapon; //assign the new weapon as current weapon
+	this.weapon.position = {}; //the new weapon isn't on board anymore
 	this.speak(this.name + ' a ramassé l\'arme "' + this.weapon.name + '"');
 };
 

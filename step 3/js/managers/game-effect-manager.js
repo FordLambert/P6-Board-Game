@@ -49,24 +49,24 @@ GameEffectManager.prototype.getNewBgClass = function(color) {
 
 GameEffectManager.prototype.createVisualFromBoardObject = function() {
 
-	for(var key in this.boardManager.board) {
-		var newCell = this.boardManager.board[key];
+	for(var cellIndex in this.boardManager.board) {
+		var newCell = this.boardManager.board[cellIndex];
 		newCell = $('<div>').addClass('cell').attr('id', newCell.id);
-		$(this.boardManager.domDivId).append(newCell);
+		$(this.boardManager.boardWrapper).append(newCell);
 	}
 
 	for (var i = 0; i < this.boardManager.boardSize; i++) {
-		var columnIndex = this.boardManager.rowLetters[i]
+		var columnIndex = this.boardManager.rowLetters[i];
 		this.$columnDivDisplay.append('<p>' + columnIndex + '</p>');
-		this.$rowDivDisplay.append('<p>' + (i+ 1) + '</p>');
+		this.$rowDivDisplay.append('<p>' + (i + 1) + '</p>');
 	}
 };
 
 GameEffectManager.prototype.updateVisualFromBoardObject = function() {	
 
-	for(var key in this.boardManager.board) {
-		var cell = this.boardManager.board[key];
-		var div = $('#' + cell.id)
+	for(var cellIndex in this.boardManager.board) {
+		var cell = this.boardManager.board[cellIndex];
+		var div = $('#' + cell.id);
 		div.css('background-image', 'url(pictures/' + cell.texture + ')');
 		div.attr('class', 'cell' +  ' ' + cell.status);
 	}
@@ -81,8 +81,8 @@ GameEffectManager.prototype.addClassAccessible = function(cellIdList) {
 
 GameEffectManager.prototype.resetBoardVisual = function() {
 
-	for(var key in this.boardManager.board) {
-		var cell = this.boardManager.board[key];
+	for(var cellIndex in this.boardManager.board) {
+		var cell = this.boardManager.board[cellIndex];
 		this.boardManager.resetCell(cell);
 	}
 	this.updateVisualFromBoardObject();

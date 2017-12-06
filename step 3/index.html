@@ -61,7 +61,7 @@
 				<div class="col-xs-offset-1 col-xs-10 col-lg-offset-0 col-lg-3">
 
 					<div class="col-xs-12 col-sm-6 col-lg-12">
-						<div class="player-display player-1" id="red">
+						<div class="player-display player-1 red">
 							<h2>Joueur 1</h2>
 							<div class="row">
 								<img src="pictures/player-red.png" alt="player-1-red" class="col-sm-offset-4 col-sm-4 col-md-offset-1 col-md-5 player-picture hidden-xs img-responsive">
@@ -74,7 +74,7 @@
 						</div>
 					</div>
 					<div class="col-xs-12 col-sm-6 col-lg-12">
-						<div class="player-display player-2" id="blue">
+						<div class="player-display player-2 blue">
 							<h2>Joueur 2</h2>
 							<div class="row">
 								<img src="pictures/player-blue.png" alt="player-2-blue" class="col-sm-offset-4 col-sm-4 col-md-offset-1 col-md-5 player-picture hidden-xs img-responsive">
@@ -110,12 +110,12 @@
 							</button>
 						</div>
 						<div class="col-sm-4">
-							<button class="col-xs-12 action-button btn" title="50% des dégats en moins au prochain tour" id="defend">
+							<button class="col-xs-12 action-button btn" disabled title="50% des dégats en moins au prochain tour" id="defend">
 								Se défendre
 							</button>
 						</div>
 						<div class="col-sm-4">
-							<button class="col-xs-12 action-button btn" id="end-turn">
+							<button class="col-xs-12 action-button btn" disabled id="end-turn">
 								Finir le tour
 							</button>
 						</div>
@@ -142,7 +142,8 @@
 		<script type="text/javascript" src="js/models/player.js"></script>
 		<script type="text/javascript" src="js/models/weapon.js"></script>
 		<script type="text/javascript" src="js/models/obstacle.js"></script>
-		<script type="text/javascript" src="js/models/stores.js"></script>
+		<script type="text/javascript" src="js/models/stores/player-store.js"></script>
+		<script type="text/javascript" src="js/models/stores/weapon-store.js"></script>
 
 		<script type="text/javascript" src="js/managers/board-manager.js"></script>
 		<script type="text/javascript" src="js/managers/game-effect-manager.js"></script>

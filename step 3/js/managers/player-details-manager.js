@@ -2,8 +2,8 @@ var PlayersDetailsManager = function() {
 	this.playerInfosWrapper = ''; //Target the dom element for actual player's infos
 };
 
-PlayersDetailsManager.prototype.displayPlayersInfos = function(player) {
-	this.playerInfosWrapper = ('#' + player.color);
+PlayersDetailsManager.prototype.updatePlayerInfos = function(player) {
+	this.playerInfosWrapper = ('.' + player.color);
 
 	var $lifeBar = $(this.playerInfosWrapper).find('.life');
 	var $activeWeapon = $(this.playerInfosWrapper).find('.weapon');
