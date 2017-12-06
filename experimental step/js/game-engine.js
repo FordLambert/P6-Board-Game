@@ -149,6 +149,7 @@ GameEngine.prototype.generateRandomId = function(number) {
 GameEngine.prototype.launchNewGame = function() {
 	this.boardManager.createBoard(8);
 	this.gameEffectManager.createVisualFromBoardObject();
+	this.logsDetailsManager.displayGameInfos();
 
 	this.$startButton.click(function() {
 		this.startGame();
@@ -157,8 +158,8 @@ GameEngine.prototype.launchNewGame = function() {
 };
 
 GameEngine.prototype.createPlayers = function() {
-	var playerRed = new Player('Joueur Rouge', 'red', true, 'red-background.jpg', this.logsDetailsManager);
-	var playerBlue = new Player('Joueur Bleu', 'blue', false, 'blue-background.jpg', this.logsDetailsManager);
+	var playerRed = new Player('Joueur Rouge', 'red', true, 'red-background.jpg');
+	var playerBlue = new Player('Joueur Bleu', 'blue', false, 'blue-background.jpg');
 
 	this.playerStore = new PlayerStore();
 	this.playerStore.addPlayer(playerRed);
@@ -231,7 +232,7 @@ GameEngine.prototype.installElementsOnBoard = function() {
 
 GameEngine.prototype.startGame = function() {
 	this.resetGame();
-	this.logsDetailsManager.displayGameInfos('Début de la partie !');
+	$(document).trigger('logEvent', 'Début de la partie !');
 	this.createPlayers();
 	this.createWeapons();
 	this.distributeWeapons();
@@ -303,7 +304,6 @@ GameEngine.prototype.handleAccessibleCellMovement = function() {
 		self.currentPlayer.move(clickedCell, weaponOnCell);
 
 		//Changes on the board and visuals effects related
-		self.logsDetailsManager.displayGameInfos(self.currentPlayer.name + ' se déplace en ' + self.currentPlayer.position.id);
 		self.boardManager.updateCellsAttributes(self.weaponStore.weaponStoreList, self.playerStore.playerStoreList);
 		self.playersDetailsManager.updatePlayerInfos(self.currentPlayer);
 

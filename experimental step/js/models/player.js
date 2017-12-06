@@ -1,4 +1,4 @@
-var Player = function(name, color, turnToPlay, texture, logsDetailsManager) {
+var Player = function(name, color, turnToPlay, texture) {
 	this.name = name;
 	this.movement = 3; //How far he can move
 	this.weapon = {};
@@ -8,7 +8,6 @@ var Player = function(name, color, turnToPlay, texture, logsDetailsManager) {
 	this.turnToPlay = turnToPlay; //true or false
 	this.texture = texture;
 	this.position = {}; //Where he is, nowhere at first
-	this.logsDetailsManager = logsDetailsManager;
 };
 
 Player.prototype.isAlive = function() {
@@ -17,7 +16,8 @@ Player.prototype.isAlive = function() {
 
 Player.prototype.move = function move(newCell, weaponOnCell) {
 	this.position = newCell;
-	
+	$(document).trigger('logEvent', this.name + ' se déplace en ' + this.position.id);
+
 	if (weaponOnCell != null) {
 		this.pickUp(weaponOnCell);
 	}
@@ -27,30 +27,26 @@ Player.prototype.pickUp = function(newWeapon) {
 	this.weapon.position = this.position; //drop old weapon on this position
 	this.weapon = newWeapon; //assign the new weapon as current weapon
 	this.weapon.position = {}; //the new weapon isn't on board anymore
-	this.speak(this.name + ' a ramassé l\'arme "' + this.weapon.name + '"');
+	$(document).trigger('logEvent', this.name + ' a ramassé l\'arme "' + this.weapon.name + '"');
 };
 
 Player.prototype.defend = function() {
 	this.protected = true;
-	this.speak(this.name + ' est sur ses gardes.');
+	$(document).trigger('logEvent', this.name + ' est sur ses gardes.');
 };
 
 Player.prototype.attack = function(enemy) {
 	this.protected = false;
-	this.speak('Le ' + this.name + ' tire !');
+	$(document).trigger('logEvent', this.name + ' attaque !');
 	var hitPoints = 0;
 
 	if (enemy.protected) {
 		hitPoints = this.weapon.damage / 2;
-		this.speak(enemy.name + ' a paré la moitié des dégats et n\'en reçoit que ' + hitPoints + ' !');
+		$(document).trigger('logEvent', enemy.name + ' a paré la moitié des dégats et n\'en reçoit que ' + hitPoints + ' !');
 
 	} else {
 		hitPoints = this.weapon.damage;
-		this.speak(enemy.name + ' a reçu ' + hitPoints + ' points de dégats !');
+		$(document).trigger('logEvent', enemy.name + ' a reçu ' + hitPoints + ' points de dégats !');
 	}
 	enemy.life -= hitPoints;
-};
-
-Player.prototype.speak = function(sentence) {
-	this.logsDetailsManager.displayGameInfos(sentence);
 };
