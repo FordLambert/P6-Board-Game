@@ -1,3 +1,4 @@
+"use strict";
 var BoardManager = function(boardWrapper) {
 	this.boardSize = 0; //Board created will be a square of boardsize * boardsize
 	this.board = {}; //Associative array, will contain cells

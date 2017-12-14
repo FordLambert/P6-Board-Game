@@ -1,3 +1,4 @@
+'use strict';
 var WeaponStore = function() {
 	this.weaponStoreList = [];
 };

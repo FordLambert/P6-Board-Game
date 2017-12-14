@@ -1,3 +1,4 @@
+'use strict';
 var PlayersDetailsManager = function() {
 	this.playerInfosWrapper = ''; //Target the dom element for actual player's infos
 };

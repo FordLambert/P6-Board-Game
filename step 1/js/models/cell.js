@@ -1,7 +1,8 @@
+'use strict';
 const CELL_STATUS_EMPTY = 'empty';
 const CELL_STATUS_PLAYER = 'has-player';
 const CELL_STATUS_WEAPON = 'has-weapon';
-const CELL_STATUS_BLOCKED = 'is-blocked';// _
+const CELL_STATUS_BLOCKED = 'is-blocked';
 
 var Cell = function(id) {
 	this.id = id;

@@ -1,3 +1,4 @@
+'use strict';
 const CELL_STATUS_EMPTY = 'empty';
 const CELL_STATUS_PLAYER = 'has-player';
 const CELL_STATUS_WEAPON = 'has-weapon';

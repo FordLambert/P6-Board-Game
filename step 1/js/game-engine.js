@@ -1,3 +1,4 @@
+'use strict';
 var GameEngine = function(boardWrapper) {
 	this._selectors = {
 		'startButton': '.start-button'
@@ -47,7 +48,7 @@ GameEngine.prototype.checkEnnemyProximity = function(surroundingCellsList) {
 };
 
 GameEngine.prototype.getSurroundingCells = function(cell) {
-	var splitCellId = cell.id.split("-");
+	var splitCellId = cell.id.split('-');
 	
 	var currentRow = splitCellId[0];
 	//fetch the row (letter) in the alphabet and remove or add one to the index to have the previous/next row
@@ -140,7 +141,7 @@ GameEngine.prototype.placeObstacles = function() {
 		var cell = this.getAppropriateSpawnPosition();
 		var obstacle = new Obstacle();
 		obstacle.position = cell;
-		this.boardManager.attributeCellTo(obstacle, cell);
+		this.boardManager.assignCellTo(obstacle, cell);
 	}
 };
 
@@ -151,7 +152,7 @@ GameEngine.prototype.placeWeapons = function() {
 		var weapon = this.weaponStore.getWeapon(weaponIndex);
 		var cell = this.getAppropriateSpawnPosition();
 		weapon.position = cell;
-		this.boardManager.attributeCellTo(weapon, cell);
+		this.boardManager.assignCellTo(weapon, cell);
 	}
 };
 
@@ -161,7 +162,7 @@ GameEngine.prototype.placePlayers = function(player) {
 		var player = this.playerStore.getPlayer(playerIndex);
 		var cell = this.getAppropriateSpawnPosition();
 		player.position = cell;
-		this.boardManager.attributeCellTo(player, cell);
+		this.boardManager.assignCellTo(player, cell);
 	}
 };
 
@@ -191,5 +192,5 @@ GameEngine.prototype.resetGame = function() {
 };
 
 GameEngine.prototype.removeEvent = function(element) {
-	$(element).unbind( "click" );
+	$(element).unbind( 'click' );
 };

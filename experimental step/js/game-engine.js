@@ -1,3 +1,4 @@
+"use strict";
 var GameEngine = function(boardWrapper) {
 	this._selectors = {
 		'startButton': '.start-button',
@@ -345,7 +346,7 @@ GameEngine.prototype.endTurn = function() {
 };
 
 GameEngine.prototype.enoughPlayersToFight = function() {
-	enoughPlayer = this.getPlayersNumber() - this.cemetery.length == 1 ? false : true;
+	var enoughPlayer = this.getPlayersNumber() - this.cemetery.length == 1 ? false : true;
 
 	return enoughPlayer;
 };

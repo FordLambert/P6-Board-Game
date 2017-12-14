@@ -1,3 +1,4 @@
+"use strict";
 var Player = function(name, color, turnToPlay, texture) {
 	this.name = name;
 	this.movement = 3; //How far he can move

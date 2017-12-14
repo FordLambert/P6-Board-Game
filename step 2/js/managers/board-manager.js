@@ -1,3 +1,4 @@
+'use strict';
 var BoardManager = function(boardWrapper) {
 	this.boardSize = 0; //Board created will be a square of boardsize * boardsize
 	this.board = {}; //Associative array, will contain cells
@@ -11,7 +12,7 @@ BoardManager.prototype.getCell = function(cellId) {
 
 BoardManager.prototype.createBoard = function(boardSize) {
 
-	if (!(boardSize > 26) && !(boardSize <= 4)) {
+	if (!(boardSize > 26) && !(boardSize <= 6)) {
 		this.boardSize = boardSize;
 
 		//'boardsize' (number) of row to create
@@ -27,7 +28,7 @@ BoardManager.prototype.createBoard = function(boardSize) {
 			}
 		}
 	} else {
-		console.log('Error: board size must be at least 4 and maximum 26');
+		console.log('Error: board size must be at least 6 and maximum 26');
 	}
 };
 
@@ -60,7 +61,7 @@ BoardManager.prototype.updateCellsAttributes = function(weaponList, playerList) 
 			var weapon = weaponList[weaponIndex]
 
 			if (cell == weapon.position) {
-			    this.attributeCellTo(weapon, cell);
+			    this.assignCellTo(weapon, cell);
 			}
 		}
 
@@ -69,13 +70,13 @@ BoardManager.prototype.updateCellsAttributes = function(weaponList, playerList) 
 			var player = playerList[playerIndex];
 
 			if (cell == player.position) {
-			    this.attributeCellTo(player, cell);
+			    this.assignCellTo(player, cell);
 			}
 		}
 	}
 };
 
-BoardManager.prototype.attributeCellTo = function(object, cell) {
+BoardManager.prototype.assignCellTo = function(object, cell) {
 	cell.texture = object.texture;
 
 	if (Player.prototype.isPrototypeOf(object)) {

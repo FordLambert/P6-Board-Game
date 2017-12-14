@@ -1,3 +1,4 @@
+"use strict";
 var LogsDetailsManager = function() {
 	this._selectors = {
 		'gameInfosWrapper': '.display-area',

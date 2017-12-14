@@ -1,3 +1,4 @@
+'use strict';
 var Player = function(name, color, texture) {
 	this.name = name;
 	this.weapon = {};
